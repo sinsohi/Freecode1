@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "927335528709",
+    "project_id": "freecode-30673",
+    "storage_bucket": "freecode-30673.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:927335528709:android:e0dd7dc9a152c894c29f6c",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDg8l8x98d8MzUfcBdgWslweOaE19A8umU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:927335528709:android:d8ae2a7f4fd000d1c29f6c",
+        "android_client_info": {
+          "package_name": "com.example.fluttersohi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDg8l8x98d8MzUfcBdgWslweOaE19A8umU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

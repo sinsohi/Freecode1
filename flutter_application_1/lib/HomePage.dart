@@ -1,0 +1,34 @@
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:flutterfire_ui/auth.dart';
+
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Home'),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () {
+              FirebaseAuth.instance.signOut();
+            },
+            icon: Icon(Icons.exit_to_app_sharp, color: Colors.white),
+          )
+        ],
+      ),
+      body: Center(
+        child: Text('Home',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+      ),
+    );
+  }
+}
