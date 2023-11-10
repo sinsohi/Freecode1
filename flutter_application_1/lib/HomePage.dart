@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'calendarPage.dart';
 // import 'package:flutterfire_ui/auth.dart';
 
 class HomePage extends StatefulWidget {
@@ -19,6 +20,7 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             onPressed: () {
+              //로그아웃 버튼
               FirebaseAuth.instance.signOut();
             },
             icon: Icon(Icons.exit_to_app_sharp, color: Colors.white),
@@ -28,6 +30,26 @@ class _HomePageState extends State<HomePage> {
       body: Center(
         child: Text('Home',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        height: 50,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            IconButton(
+                onPressed: () {
+                  // 캘린더 페이지로 이동
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => calendarPage(),
+                      ));
+                },
+                icon: Icon(Icons.calendar_month)),
+            Icon(Icons.home),
+            Icon(Icons.bar_chart_sharp)
+          ],
+        ),
       ),
     );
   }
