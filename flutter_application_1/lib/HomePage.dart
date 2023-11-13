@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'calendarPage.dart';
 import 'graph.dart';
+import 'profilePage.dart';
 // import 'package:flutterfire_ui/auth.dart';
 
 class HomePage extends StatefulWidget {
@@ -58,6 +59,16 @@ class _HomePageState extends State<HomePage> {
                       ));
                 },
                 icon: Icon(Icons.bar_chart_sharp)),
+            IconButton(
+                onPressed: () {
+                  // 프로필 페이지로 이동
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => profilePage(),
+                      ));
+                },
+                icon: Icon(Icons.person)),
           ],
         ),
       ),
