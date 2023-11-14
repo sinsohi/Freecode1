@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'calendarPage.dart';
 import 'graph.dart';
 import 'profilePage.dart';
@@ -19,15 +18,6 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text('Home'),
         centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () {
-              //로그아웃 버튼
-              FirebaseAuth.instance.signOut();
-            },
-            icon: Icon(Icons.exit_to_app_sharp, color: Colors.white),
-          )
-        ],
       ),
       body: Center(
         child: Text('Home',
