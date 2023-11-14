@@ -16,31 +16,35 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Color.fromRGBO(55, 115, 108, 1),
-          title: Container(
-            child: Row(
-              children: [
-                Icon(Icons.account_circle, color: Color.fromRGBO(248, 246, 232, 1), size: 50,),
-                SizedBox(width: 10), //아이콘이랑 글자사이의 공백을 조절하기 위한 박스얌
-                Text(
-                  'welcome!',
-                  style: TextStyle(
-                    color: Color.fromRGBO(248, 246, 232, 1),
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.5,
-                  ),
+        backgroundColor: Color.fromRGBO(55, 115, 108, 1),
+        title: Container(
+          child: Row(
+            children: [
+              Icon(
+                Icons.account_circle,
+                color: Color.fromRGBO(248, 246, 232, 1),
+                size: 50,
+              ),
+              SizedBox(width: 10), //아이콘이랑 글자사이의 공백을 조절하기 위한 박스얌
+              Text(
+                'welcome!',
+                style: TextStyle(
+                  color: Color.fromRGBO(248, 246, 232, 1),
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.5,
                 ),
-                Image.asset(
-                  'img-removebg-preview.png',
-                  fit: BoxFit.cover,
-                  height: 50,
-                  width: 50,
-                ),
-              ],
-            ),
+              ),
+              // Image.asset(
+              //   'img-removebg-preview.png',
+              //   fit: BoxFit.cover,
+              //   height: 50,
+              //   width: 50,
+              // ),
+            ],
           ),
         ),
+      ),
       body: Center(
         child: Text('Home',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
