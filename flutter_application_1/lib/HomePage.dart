@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Color.fromRGBO(55, 115, 108, 1),
         title: Container(
           child: Row(
-            children: [
+            children: const [
               Icon(
                 Icons.account_circle,
                 color: Color.fromRGBO(248, 246, 232, 1),
@@ -45,10 +45,10 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      body: Center(
-        child: Text('Home',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-      ),
+      body: Container(color: Color.fromRGBO(248, 246, 232, 1),),
+
+
+
       bottomNavigationBar: BottomAppBar(
         height: 50,
         child: Row(

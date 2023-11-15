@@ -48,7 +48,7 @@ class Authentication extends StatelessWidget {
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return SignInScreen(
-            providerConfigs: [EmailProviderConfiguration()],
+            providerConfigs: const [EmailProviderConfiguration()],
           );
         }
         return HomePage();
