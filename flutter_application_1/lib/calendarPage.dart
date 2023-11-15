@@ -44,6 +44,14 @@ class _calendarPageState extends State<calendarPage> {
             focusedDay: DateTime.now(),
             calendarStyle: CalendarStyle(
               isTodayHighlighted: true,
+              defaultTextStyle: TextStyle(
+                color: const Color(0xff37736c),
+                fontWeight: FontWeight.bold,
+              ),
+              weekendTextStyle: TextStyle(
+                color: const Color(0xff37736c),
+                fontWeight: FontWeight.bold,
+              ),
               outsideDaysVisible: false,
             ),
           ),
