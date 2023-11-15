@@ -14,6 +14,7 @@ class profilePage extends StatelessWidget {
             FirebaseAuth.instance.signOut();
             Navigator.pop(context);
           },
+          // 이건 변경할 사항
           icon: Icon(Icons.exit_to_app_sharp,
               color: const Color.fromARGB(255, 8, 8, 8)),
         ));
