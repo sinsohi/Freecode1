@@ -29,7 +29,7 @@ class _calendarPageState extends State<calendarPage> {
         Container(
           child: TableCalendar(
             headerStyle: HeaderStyle(
-              formatButtonVisible: false,
+              formatButtonVisible: true,
               titleCentered: true,
               leftChevronVisible: false,
               rightChevronVisible: false,
