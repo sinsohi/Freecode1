@@ -33,6 +33,11 @@ class _calendarPageState extends State<calendarPage> {
               titleCentered: true,
               leftChevronVisible: false,
               rightChevronVisible: false,
+              titleTextStyle: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: const Color(0xff37736c),
+                fontSize: 16,
+              ),
             ),
             firstDay: DateTime.utc(2021, 10, 16),
             lastDay: DateTime.utc(2030, 3, 14),
