@@ -17,10 +17,10 @@ class _HomePageState extends State<HomePage> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          backgroundColor: Color.fromRGBO(55, 115, 108, 1),
+          backgroundColor: Color.fromRGBO(55, 115, 108, 2),
           title: Container(
             child: Row(
-              children: [
+              children: const [
                 Icon(Icons.account_circle, color: Color.fromRGBO(248, 246, 232, 1), size: 50,),
                 SizedBox(width: 10),
                 Text(
