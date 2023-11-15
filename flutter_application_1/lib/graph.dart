@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:charts_flutter_new/flutter.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'dart:math' as math;
+
 
 // 여기부터 파이차트. 잘 나옴
 class PieModel {
@@ -20,7 +21,20 @@ class graph extends StatefulWidget {
   @override
   State<graph> createState() => _graphState();
 }
+Example of a Spark Bar by hiding both axis, reducing the chart margins.
+class SparkBar extends StatelessWidget {
+  final List<charts.Series> seriesList;
+  final bool animate;
 
+  SparkBar(this.seriesList, {this.animate});
+
+  factory SparkBar.withSampleData() {
+    return new SparkBar(
+      _createSampleData(),
+      // Disable animations for image tests.
+      animate: false,
+    );
+  }
 class _graphState extends State<graph> {
   @override
   Widget build(BuildContext context) {
@@ -34,25 +48,63 @@ class _graphState extends State<graph> {
       PieModel(count: 20, color: const Color.fromARGB(255, 156, 89, 168).withOpacity(1)),
     ];
 
-    return Scaffold(
-      appBar: AppBar(title: Text('Graph')),
-      body: Column(
-        children: [
-          Expanded(
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.width,
-              child: CustomPaint(
-                size: Size(
-                  MediaQuery.of(context).size.width,
-                  MediaQuery.of(context).size.width,
-                ),
-                painter: _PieChart(model),
-              ),
+  return Scaffold(
+  appBar: AppBar(title: Text('Graph')),
+  body: Column(
+    children: [
+      Expanded(
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.width,
+          child: CustomPaint(
+            size: Size(
+              MediaQuery.of(context).size.width,
+              MediaQuery.of(context).size.width,
             ),
+            painter: _PieChart(model),
           ),
-          // 여기에 다른 위젯 추가 가능
-          
+        ),
+      ),
+      // 여기에 다른 위젯 추가 가능
+      new charts.BarChart(
+        seriesList,
+        animate: animate,
+
+        // Assign a custom style for the measure axis.
+        primaryMeasureAxis:
+            new charts.NumericAxisSpec(renderSpec: new charts.NoneRenderSpec()),
+
+        // This is an OrdinalAxisSpec to match up with BarChart's default
+        // ordinal domain axis (use NumericAxisSpec or DateTimeAxisSpec for
+        // other charts).
+        domainAxis: new charts.OrdinalAxisSpec(
+          // Make sure that we draw the domain axis line.
+          showAxisLine: true,
+          // But don't draw anything else.
+          renderSpec: new charts.NoneRenderSpec(),
+        ),
+
+        // With a spark chart we likely don't want large chart margins.
+        // 1px is the smallest we can make each margin.
+        layoutConfig: new charts.LayoutConfig(
+          leftMarginSpec: new charts.MarginSpec.fixedPixel(0),
+          topMarginSpec: new charts.MarginSpec.fixedPixel(0),
+          rightMarginSpec: new charts.MarginSpec.fixedPixel(0),
+          bottomMarginSpec: new charts.MarginSpec.fixedPixel(0),
+        ),
+      ),
+    ],
+  ),
+);
+
+
+/// Sample ordinal data type.
+class OrdinalSales {
+  final String year;
+  final int sales;
+
+  OrdinalSales(this.year, this.sales);
+}
         ],
       ),
     );
