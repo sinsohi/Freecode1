@@ -53,6 +53,14 @@ class _calendarPageState extends State<calendarPage> {
                 fontWeight: FontWeight.bold,
               ),
               outsideDaysVisible: false,
+              todayTextStyle: const TextStyle(
+                color: const Color(0xfff8f6e8),
+                fontSize: 16.0,
+              ),
+              todayDecoration: const BoxDecoration(
+                color: const Color(0xff37736c),
+                shape: BoxShape.circle,
+              ),
             ),
           ),
         )
