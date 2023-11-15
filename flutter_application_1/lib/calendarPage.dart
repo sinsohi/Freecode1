@@ -28,6 +28,12 @@ class _calendarPageState extends State<calendarPage> {
       children: [
         Container(
           child: TableCalendar(
+            headerStyle: HeaderStyle(
+              formatButtonVisible: false,
+              titleCentered: true,
+              leftChevronVisible: false,
+              rightChevronVisible: false,
+            ),
             firstDay: DateTime.utc(2021, 10, 16),
             lastDay: DateTime.utc(2030, 3, 14),
             focusedDay: DateTime.now(),
