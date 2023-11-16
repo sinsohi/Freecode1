@@ -5,6 +5,10 @@ import 'calendarPage.dart';
 import 'graph.dart';
 import 'HomePage.dart';
 
+FirebaseAuth auth = FirebaseAuth.instance;
+User? user = auth.currentUser;
+String? userId = user?.email;
+
 class profilePage extends StatelessWidget {
   const profilePage({super.key});
 
@@ -55,9 +59,11 @@ class profilePage extends StatelessWidget {
                                   width: 70,
                                 ),
                                 SizedBox(
-                                  child: Text('id : (email)',
-                                      style: TextStyle(fontSize: 30)),
-                                  width: 200,
+                                  // 파이어베이스에서 email 끌고와서 표시
+                                  child: Text('id(email) : $userId',
+                                      style: TextStyle(fontSize: 18)),
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.7,
                                 )
                               ],
                             ),
