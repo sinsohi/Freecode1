@@ -11,8 +11,32 @@ class profilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(),
+        body: Column(
+          children: [
+            Flexible(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  color: Colors.green,
+                  child: Text(
+                    'Profile',
+                    style: TextStyle(fontSize: 36, fontWeight: FontWeight.w700),
+                  ),
+                ),
+              ),
+              flex: 1,
+            ),
+            Flexible(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+                child: Container(color: Colors.red),
+              ),
+              flex: 9,
+            )
+          ],
+        ),
         backgroundColor: Color.fromRGBO(55, 115, 108, 100),
+
         // IconButton(
         //   onPressed: () {
         //     //로그아웃 버튼
