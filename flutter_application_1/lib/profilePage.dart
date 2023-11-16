@@ -45,10 +45,24 @@ class profilePage extends StatelessWidget {
                     children: [
                       Flexible(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(color: Colors.red),
+                            padding:
+                                const EdgeInsets.fromLTRB(5.0, 10.0, 8.0, 8.0),
+                            // id 표시
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  child: Icon(Icons.person_pin, size: 55),
+                                  width: 70,
+                                ),
+                                SizedBox(
+                                  child: Text('id : (email)',
+                                      style: TextStyle(fontSize: 30)),
+                                  width: 200,
+                                )
+                              ],
+                            ),
                           ),
-                          flex: 1),
+                          flex: 2),
                       Flexible(
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -60,13 +74,13 @@ class profilePage extends StatelessWidget {
                             padding: const EdgeInsets.all(8.0),
                             child: Container(color: Colors.white),
                           ),
-                          flex: 5),
+                          flex: 4),
                       Flexible(
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Container(color: Colors.amber),
                           ),
-                          flex: 3),
+                          flex: 2),
                     ],
                   ),
                 ),
