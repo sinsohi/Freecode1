@@ -33,9 +33,41 @@ class profilePage extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(30.0, 8.0, 30.0, 20.0),
                 child: Container(
+                  // 모서리 둥근 큰 컨테이너
                   decoration: BoxDecoration(
                     color: Colors.blue,
-                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                        color: Color.fromRGBO(22, 57, 26, 100),
+                        width: 3), // 컨테이너 테두리
+                    borderRadius: BorderRadius.circular(20), // 컨테이너 박스 둥글게
+                  ),
+                  child: Column(
+                    children: [
+                      Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(color: Colors.red),
+                          ),
+                          flex: 1),
+                      Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(color: Colors.green),
+                          ),
+                          flex: 1),
+                      Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(color: Colors.white),
+                          ),
+                          flex: 5),
+                      Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(color: Colors.amber),
+                          ),
+                          flex: 3),
+                    ],
                   ),
                 ),
               ),
