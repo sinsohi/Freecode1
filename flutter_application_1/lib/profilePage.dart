@@ -39,7 +39,16 @@ class profilePage extends StatelessWidget {
                 child: Container(
                   // 모서리 둥근 큰 컨테이너
                   decoration: BoxDecoration(
-                    color: Colors.blue,
+                    color: Color.fromRGBO(55, 115, 108, 1),
+                    boxShadow: [
+                      BoxShadow(
+                        // 그림자
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
                     border: Border.all(
                         color: Color.fromRGBO(22, 57, 26, 100),
                         width: 3), // 컨테이너 테두리
