@@ -17,10 +17,13 @@ class profilePage extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
-                  color: Colors.green,
+                  color: Color.fromRGBO(55, 115, 108, 1),
                   child: Text(
                     'Profile',
-                    style: TextStyle(fontSize: 36, fontWeight: FontWeight.w700),
+                    style: TextStyle(
+                        fontSize: 36,
+                        fontWeight: FontWeight.w700,
+                        color: Color.fromRGBO(248, 246, 232, 1)),
                   ),
                 ),
               ),
@@ -28,14 +31,19 @@ class profilePage extends StatelessWidget {
             ),
             Flexible(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
-                child: Container(color: Colors.red),
+                padding: const EdgeInsets.fromLTRB(30.0, 8.0, 30.0, 20.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
               ),
               flex: 9,
             )
           ],
         ),
-        backgroundColor: Color.fromRGBO(55, 115, 108, 100),
+        backgroundColor: Color.fromRGBO(55, 115, 108, 1),
 
         // IconButton(
         //   onPressed: () {
@@ -49,14 +57,6 @@ class profilePage extends StatelessWidget {
         // ),
 
         bottomNavigationBar: Container(
-          decoration: BoxDecoration(
-            boxShadow: const <BoxShadow>[
-              BoxShadow(
-                color: Colors.grey,
-                blurRadius: 15,
-              ),
-            ],
-          ),
           child: BottomNavigationBar(
             backgroundColor: Color.fromRGBO(55, 115, 108, 1),
             type: BottomNavigationBarType.fixed,
