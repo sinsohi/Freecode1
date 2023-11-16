@@ -50,7 +50,7 @@ class profilePage extends StatelessWidget {
                       ),
                     ],
                     border: Border.all(
-                        color: Color.fromRGBO(22, 57, 26, 100),
+                        color: Color.fromRGBO(55, 115, 108, 1),
                         width: 3), // 컨테이너 테두리
                     borderRadius: BorderRadius.circular(20), // 컨테이너 박스 둥글게
                   ),
@@ -59,7 +59,7 @@ class profilePage extends StatelessWidget {
                       Flexible(
                           child: Padding(
                             padding:
-                                const EdgeInsets.fromLTRB(5.0, 10.0, 8.0, 8.0),
+                                const EdgeInsets.fromLTRB(5.0, 10.0, 8.0, 5.0),
                             // id 표시
                             child: Row(
                               children: [
@@ -70,7 +70,12 @@ class profilePage extends StatelessWidget {
                                 SizedBox(
                                   // 파이어베이스에서 email 끌고와서 표시
                                   child: Text('id(email) : $userId',
-                                      style: TextStyle(fontSize: 18)),
+                                      style: TextStyle(
+                                        color:
+                                            Color.fromRGBO(255, 255, 255, 50),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w700,
+                                      )),
                                   width:
                                       MediaQuery.of(context).size.width * 0.7,
                                 )
@@ -81,7 +86,16 @@ class profilePage extends StatelessWidget {
                       Flexible(
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Container(color: Colors.green),
+                            child: Container(
+                              color: Color.fromRGBO(55, 115, 108, 1),
+                              child: Text(
+                                'WishList',
+                                style: TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.w700,
+                                    color: Color.fromRGBO(255, 255, 255, 50)),
+                              ),
+                            ),
                           ),
                           flex: 1),
                       Flexible(
@@ -96,6 +110,19 @@ class profilePage extends StatelessWidget {
                             child: Container(color: Colors.amber),
                           ),
                           flex: 2),
+                      // 로그아웃 버튼
+                      TextButton(
+                          onPressed: () {
+                            FirebaseAuth.instance.signOut();
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            'LogOut',
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                                color: Color.fromRGBO(255, 255, 255, 50)),
+                          ))
                     ],
                   ),
                 ),
