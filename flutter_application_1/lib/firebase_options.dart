@@ -47,6 +47,7 @@ class DefaultFirebaseOptions {
     apiKey: 'AIzaSyB0bC2119m-tIHjmW88spGTRDEVhdKdj_c',
     appId: '1:927335528709:web:84f6d3d466fc523fc29f6c',
     messagingSenderId: '927335528709',
+    databaseURL: "https://freecode-30673-default-rtdb.firebaseio.com",
     projectId: 'freecode-30673',
     authDomain: 'freecode-30673.firebaseapp.com',
     storageBucket: 'freecode-30673.appspot.com',

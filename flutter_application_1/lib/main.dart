@@ -5,19 +5,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutterfire_ui/auth.dart';
 import 'HomePage.dart';
 
-//main.dart -> signup,login page
-//HomePage.dart -> mainPage
+// main.dart -> signup, login page
+// HomePage.dart -> mainPage
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    //options: DefaultFirebaseOptions.currentPlatform,
     options: DefaultFirebaseOptions.web,
   );
+
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyPage extends StatelessWidget {
-  const MyPage({super.key});
+  const MyPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,7 @@ class MyPage extends StatelessWidget {
 }
 
 class Authentication extends StatelessWidget {
-  const Authentication({super.key});
+  const Authentication({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
