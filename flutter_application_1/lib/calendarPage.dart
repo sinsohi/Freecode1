@@ -27,6 +27,7 @@ class _calendarPageState extends State<calendarPage> {
     return Scaffold(
       appBar: AppBar(),
       body: content(),
+      backgroundColor: Color(0xfff8f6e8),
     );
   }
 
@@ -53,7 +54,7 @@ class _calendarPageState extends State<calendarPage> {
             lastDay: DateTime.utc(2030, 3, 14),
             onDaySelected: _onDaySelected,
             calendarStyle: CalendarStyle(
-              isTodayHighlighted: true,
+              isTodayHighlighted: false,
               defaultTextStyle: TextStyle(
                 color: const Color(0xff37736c),
                 fontWeight: FontWeight.bold,
