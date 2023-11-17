@@ -107,7 +107,7 @@ class profilePage extends StatelessWidget {
                       Flexible(
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Container(color: Colors.amber),
+                            child: Image.asset('assets/pig.png'),
                           ),
                           flex: 2),
                       // 로그아웃 버튼
