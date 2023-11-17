@@ -16,11 +16,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final DatabaseReference expenseRef =
-  FirebaseDatabase.instance.reference().child('expenses');
+      FirebaseDatabase.instance.reference().child('expenses');
   double totalExpenses = 0.0;
   List<Map<String, dynamic>> expensesList = [];
 
-  Future<void> addExpense(String type, DateTime date, String category, String itemName, double amount) async {
+  Future<void> addExpense(String type, DateTime date, String category,
+      String itemName, double amount) async {
     await expenseRef.push().set({
       'type': type,
       'date': DateFormat('yyyy-MM-dd').format(date),
@@ -31,28 +32,27 @@ class _HomePageState extends State<HomePage> {
     _loadExpenses();
   }
 
- Future<void> _loadExpenses() async {
-  await expenseRef.once().then((DataSnapshot snapshot) {
-    if (snapshot.value != null) {
-      expensesList.clear();
-      Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
+  Future<void> _loadExpenses() async {
+    await expenseRef.once().then((DataSnapshot snapshot) {
+          if (snapshot.value != null) {
+            expensesList.clear();
+            Map<dynamic, dynamic>? values =
+                snapshot.value as Map<dynamic, dynamic>?;
 
-      if (values != null) {
-        values.forEach((key, value) {
-          expensesList.add({
-            'type': value['type'],
-            'amount': value['amount'],
-            'date': value['date'],
-          });
-        });
+            if (values != null) {
+              values.forEach((key, value) {
+                expensesList.add({
+                  'type': value['type'],
+                  'amount': value['amount'],
+                  'date': value['date'],
+                });
+              });
 
-        _updateTotalExpenses();
-      }
-    }
-  } as FutureOr Function(DatabaseEvent value));
-}
-
-
+              _updateTotalExpenses();
+            }
+          }
+        } as FutureOr Function(DatabaseEvent value));
+  }
 
   void _updateTotalExpenses() {
     double total = 0.0;
@@ -73,7 +73,11 @@ class _HomePageState extends State<HomePage> {
           title: Container(
             child: Row(
               children: const [
-                Icon(Icons.account_circle, color: Color.fromRGBO(248, 246, 232, 1), size: 50,),
+                Icon(
+                  Icons.account_circle,
+                  color: Color.fromRGBO(248, 246, 232, 1),
+                  size: 50,
+                ),
                 SizedBox(width: 10),
                 Text(
                   'welcome!',
@@ -93,12 +97,21 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(width: double.infinity, height: 30,),
+              SizedBox(
+                width: double.infinity,
+                height: 30,
+              ),
               // ignore: avoid_unnecessary_containers
-              Container(color: Color.fromRGBO(55, 115, 108, 1),width: double.infinity, height: 300,
+              Container(
+                color: Color.fromRGBO(55, 115, 108, 1),
+                width: double.infinity,
+                height: 300,
                 child: Column(
                   children: [
-                    Container(color: Color.fromRGBO(100, 115, 108, 1), width: double.infinity, height: 100,
+                    Container(
+                      color: Color.fromRGBO(100, 115, 108, 1),
+                      width: double.infinity,
+                      height: 100,
                       child: Row(
                         children: [
                           ElevatedButton(
@@ -134,8 +147,10 @@ class _HomePageState extends State<HomePage> {
             type: BottomNavigationBarType.fixed,
             selectedItemColor: Color.fromRGBO(248, 246, 232, 1),
             unselectedItemColor: Color.fromRGBO(248, 246, 232, 1),
-            selectedLabelStyle: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-            unselectedLabelStyle: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+            selectedLabelStyle:
+                TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+            unselectedLabelStyle:
+                TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
             showSelectedLabels: true,
             showUnselectedLabels: false,
             items: const <BottomNavigationBarItem>[
@@ -159,24 +174,24 @@ class _HomePageState extends State<HomePage> {
             onTap: (int index) {
               switch (index) {
                 case 0:
-                // 홈 페이지로 이동 (아직 구현되지 않음)
+                  // 홈 페이지로 이동 (아직 구현되지 않음)
                   break;
                 case 1:
-                // 캘린더 페이지로 이동
+                  // 캘린더 페이지로 이동
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => calendarPage()),
                   );
                   break;
                 case 2:
-                // 통계자료 페이지로 이동
+                  // 통계자료 페이지로 이동
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => graph()),
                   );
                   break;
                 case 3:
-                // 마이페이지로 이동
+                  // 마이페이지로 이동
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => profilePage()),
@@ -200,84 +215,88 @@ class _HomePageState extends State<HomePage> {
           title: Text('지출 추가'),
           content: SingleChildScrollView(
             child: ListBody(
-            children: <Widget>[
-              // 날짜 선택 위젯
-              InkWell(
-                onTap: () async {
-                  DateTime? date = await showDatePicker(
-                    context: context,
-                    initialDate: selectedDate,
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2101),
-                    builder: (BuildContext context, Widget? child) {
-                      return Theme(
-                        data: ThemeData.light().copyWith(
-                          primaryColor: Color.fromRGBO(55, 115, 108, 1), // 선택한 날짜의 색상
-                          hintColor: Color.fromRGBO(55, 115, 108, 1), // 선택한 날짜 주위의 테두리 색상
-                          colorScheme: ColorScheme.light(primary: Color.fromRGBO(55, 115, 108, 1)),
-                          buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
-                        ),
-                        child: child!,
-                      );
-                    },
-                  );
-                  
-                  if (date != null && date != selectedDate) {
-                    setState(() {
-                      selectedDate = date;
-                    });
-                  }
-                },
-                child: Row(
-                  children: [
-                    Icon(Icons.calendar_today),
-                    SizedBox(width: 10),
-                    Text(
-                      DateFormat('yyyy-MM-dd').format(selectedDate),
-                    ),
-                  ],
-                ),
-              ),
+              children: <Widget>[
+                // 날짜 선택 위젯
+                InkWell(
+                  onTap: () async {
+                    DateTime? date = await showDatePicker(
+                      context: context,
+                      initialDate: selectedDate,
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2101),
+                      builder: (BuildContext context, Widget? child) {
+                        return Theme(
+                          data: ThemeData.light().copyWith(
+                            primaryColor:
+                                Color.fromRGBO(55, 115, 108, 1), // 선택한 날짜의 색상
+                            hintColor: Color.fromRGBO(
+                                55, 115, 108, 1), // 선택한 날짜 주위의 테두리 색상
+                            colorScheme: ColorScheme.light(
+                                primary: Color.fromRGBO(55, 115, 108, 1)),
+                            buttonTheme: ButtonThemeData(
+                                textTheme: ButtonTextTheme.primary),
+                          ),
+                          child: child!,
+                        );
+                      },
+                    );
 
-              // 다른 지출 세부 정보 입력란
-              TextField(
-                decoration: InputDecoration(labelText: '지출 항목'),
-              ),
-              TextField(
-                decoration: InputDecoration(labelText: '지출 내역 이름'),
-              ),
-              TextField(
-                decoration: InputDecoration(labelText: '지출 금액'),
-                keyboardType: TextInputType.number,
-              ),
-            ],
+                    if (date != null && date != selectedDate) {
+                      setState(() {
+                        selectedDate = date;
+                      });
+                    }
+                  },
+                  child: Row(
+                    children: [
+                      Icon(Icons.calendar_today),
+                      SizedBox(width: 10),
+                      Text(
+                        DateFormat('yyyy-MM-dd').format(selectedDate),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // 다른 지출 세부 정보 입력란
+                TextField(
+                  decoration: InputDecoration(labelText: '지출 항목'),
+                ),
+                TextField(
+                  decoration: InputDecoration(labelText: '지출 내역 이름'),
+                ),
+                TextField(
+                  decoration: InputDecoration(labelText: '지출 금액'),
+                  keyboardType: TextInputType.number,
+                ),
+              ],
+            ),
           ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Text('취소'),
-          ),
-          TextButton(
-            onPressed: () {
-              addExpense(
-                '지출',
-                selectedDate,
-                '카테고리',
-                '지출 내역 이름',
-                100.0,
-              );
-              Navigator.of(context).pop();
-            },
-            child: Text('추가'),
-          ),
-        ],
-      );
-    },
-  );
-}
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('취소'),
+            ),
+            TextButton(
+              onPressed: () {
+                addExpense(
+                  '지출',
+                  selectedDate,
+                  '카테고리',
+                  '지출 내역 이름',
+                  100.0,
+                );
+                Navigator.of(context).pop();
+              },
+              child: Text('추가'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   // 수입 다이얼로그 표시 (위와 유사)
   Future<void> _showIncomeDialog(BuildContext context) async {
