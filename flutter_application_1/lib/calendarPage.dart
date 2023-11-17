@@ -71,6 +71,10 @@ class _calendarPageState extends State<calendarPage> {
                 color: const Color(0xff37736c),
                 shape: BoxShape.circle,
               ),
+              selectedDecoration: const BoxDecoration(
+                color: const Color(0xff82a282),
+                shape: BoxShape.circle,
+              ),
             ),
           ),
         )
