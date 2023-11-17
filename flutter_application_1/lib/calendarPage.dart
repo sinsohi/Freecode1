@@ -15,6 +15,13 @@ class calendarPage extends StatefulWidget {
 }
 
 class _calendarPageState extends State<calendarPage> {
+  DateTime today = DateTime.now();
+  void _onDaySelected(DateTime day, DateTime focusedDay) {
+    setState(() {
+      today = day;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +36,7 @@ class _calendarPageState extends State<calendarPage> {
         Container(
           child: TableCalendar(
             headerStyle: HeaderStyle(
-              formatButtonVisible: true,
+              formatButtonVisible: false,
               titleCentered: true,
               leftChevronVisible: false,
               rightChevronVisible: false,
@@ -39,9 +46,12 @@ class _calendarPageState extends State<calendarPage> {
                 fontSize: 16,
               ),
             ),
+            availableGestures: AvailableGestures.all,
+            selectedDayPredicate: (day) => isSameDay(day, today),
+            focusedDay: today,
             firstDay: DateTime.utc(2021, 10, 16),
             lastDay: DateTime.utc(2030, 3, 14),
-            focusedDay: DateTime.now(),
+            onDaySelected: _onDaySelected,
             calendarStyle: CalendarStyle(
               isTodayHighlighted: true,
               defaultTextStyle: TextStyle(
