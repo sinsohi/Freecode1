@@ -25,6 +25,7 @@ class profilePage extends StatelessWidget {
                   child: Text(
                     'Profile',
                     style: TextStyle(
+                        fontFamily: 'LilitaOne',
                         fontSize: 36,
                         fontWeight: FontWeight.w700,
                         color: Color.fromRGBO(248, 246, 232, 1)),
@@ -71,6 +72,7 @@ class profilePage extends StatelessWidget {
                                   // 파이어베이스에서 email 끌고와서 표시
                                   child: Text('id(email) : $userId',
                                       style: TextStyle(
+                                        fontFamily: 'LilitaOne',
                                         color:
                                             Color.fromRGBO(255, 255, 255, 50),
                                         fontSize: 18,
@@ -91,6 +93,7 @@ class profilePage extends StatelessWidget {
                               child: Text(
                                 'WishList',
                                 style: TextStyle(
+                                    fontFamily: 'LilitaOne',
                                     fontSize: 30,
                                     fontWeight: FontWeight.w700,
                                     color: Color.fromRGBO(255, 255, 255, 50)),
@@ -107,7 +110,7 @@ class profilePage extends StatelessWidget {
                       Flexible(
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Container(color: Colors.amber),
+                            child: Image.asset('assets/pig.png'),
                           ),
                           flex: 2),
                       // 로그아웃 버튼
@@ -119,6 +122,7 @@ class profilePage extends StatelessWidget {
                           child: Text(
                             'LogOut',
                             style: TextStyle(
+                                fontFamily: 'LilitaOne',
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
                                 color: Color.fromRGBO(255, 255, 255, 50)),
