@@ -19,6 +19,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final DatabaseReference expenseRef =
       FirebaseDatabase.instance.reference().child('expenses');
+  final DatabaseReference incomeRef =
+    FirebaseDatabase.instance.reference().child('incomes');
   double totalExpenses = 0.0;
   List<Map<String, dynamic>> expensesList = [];
   Future<List<Map<String, dynamic>>>? expensesFuture;
