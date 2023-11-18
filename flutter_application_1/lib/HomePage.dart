@@ -87,9 +87,53 @@ Future<List<Map<String, dynamic>>> _loadExpenses() async {
 
 Future<List<Map<String, dynamic>>> _loadIncomes() async {
   List<Map<String, dynamic>> loadedIncomes = [];
-  String today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  
 
-  DataSnapshot snapshot = await incomeRef.orderByChild('date').equalTo(today).get();
+  DataSnapshot snapshot = await incomeRef.get();
+
+  if (snapshot.value != null) {
+    Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
+
+    if (values != null) {
+      values.forEach((key, value) {
+        loadedIncomes.add({
+          'amount': value['amount'],
+          'date': value['date'],
+        });
+      });
+    }
+  }
+
+  return loadedIncomes;
+}
+
+
+Future<List<Map<String, dynamic>>> _loadAllExpenses() async {
+  List<Map<String, dynamic>> loadedExpenses = [];
+
+  DataSnapshot snapshot = await expenseRef.get();
+
+  if (snapshot.value != null) {
+    Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
+
+    if (values != null) {
+      values.forEach((key, value) {
+        loadedExpenses.add({
+          'type': value['type'],
+          'amount': value['amount'],
+          'date': value['date'],
+        });
+      });
+    }
+  }
+
+  return loadedExpenses;
+}
+
+Future<List<Map<String, dynamic>>> _loadAllIncomes() async {
+  List<Map<String, dynamic>> loadedIncomes = [];
+
+  DataSnapshot snapshot = await incomeRef.get();
 
   if (snapshot.value != null) {
     Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
@@ -112,7 +156,7 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
   double _calculateTotalExpenses(List<Map<String, dynamic>> expenses) {
     double total = 0.0;
     for (var expense in expenses) {
-      total += double.parse(expense['amount'].toString());
+      total += (expense['amount'] as num).toDouble();
     }
     return total;
   }
@@ -124,6 +168,12 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
     total += (income['amount'] as num).toDouble();
   }
   return total;
+}
+
+double _calculateCurrentAsset(List<Map<String, dynamic>> incomes, List<Map<String, dynamic>> expenses) {
+  double totalIncome = _calculateTotalIncomes(incomes);
+  double totalExpense = _calculateTotalExpenses(expenses);
+  return totalIncome - totalExpense;
 }
 
 
@@ -211,6 +261,28 @@ FutureBuilder<List<Map<String, dynamic>>>(
     }
   },
 ),
+
+FutureBuilder<List<List<Map<String, dynamic>>>>(
+  future: Future.wait([_loadAllIncomes(), _loadAllExpenses()]),
+  builder: (context, snapshot) {
+    if (snapshot.connectionState == ConnectionState.done) {
+      List<Map<String, dynamic>> incomes = snapshot.data?[0] ?? [];
+      List<Map<String, dynamic>> expenses = snapshot.data?[1] ?? [];
+      double currentAsset = _calculateCurrentAsset(incomes, expenses);
+      return Text('현재 자산 현황: $currentAsset');
+    } else if (snapshot.hasError) {
+      return Text('Error: ${snapshot.error}');
+    } else {
+      return CircularProgressIndicator();
+    }
+  },
+),
+
+
+
+
+
+
 
 
 // ...
