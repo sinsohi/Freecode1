@@ -22,13 +22,20 @@ class _HomePageState extends State<HomePage> {
   final DatabaseReference incomeRef =
     FirebaseDatabase.instance.reference().child('incomes');
   double totalExpenses = 0.0;
+  double totalincomes = 0.0;
   List<Map<String, dynamic>> expensesList = [];
+  List<Map<String, dynamic>> incomesList = [];
   Future<List<Map<String, dynamic>>>? expensesFuture;
+  late Future<List<Map<String, dynamic>>> incomesFuture;
+  
+ 
 
   @override
   void initState() {
     super.initState();
     expensesFuture = _loadExpenses();
+    incomesFuture = _loadIncomes();
+    
   }
 
   Future<void> addExpense(String type, DateTime date, String category, String itemName, double amount) async {
@@ -43,6 +50,17 @@ class _HomePageState extends State<HomePage> {
       expensesFuture = _loadExpenses();
     });
   }
+
+  Future<void> addIncome(DateTime date, double amount) async {
+    await incomeRef.push().set({
+      'date': DateFormat('yyyy-MM-dd').format(date),
+      'amount': amount,
+    });
+    setState(() {
+      incomesFuture = _loadIncomes();
+    });
+  }
+
 
 Future<List<Map<String, dynamic>>> _loadExpenses() async {
   List<Map<String, dynamic>> loadedExpenses = [];
@@ -67,12 +85,27 @@ Future<List<Map<String, dynamic>>> _loadExpenses() async {
   return loadedExpenses;
 }
 
+Future<List<Map<String, dynamic>>> _loadIncomes() async {
+  List<Map<String, dynamic>> loadedIncomes = [];
+  String today = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
+  DataSnapshot snapshot = await incomeRef.orderByChild('date').equalTo(today).get();
 
+  if (snapshot.value != null) {
+    Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
 
+    if (values != null) {
+      values.forEach((key, value) {
+        loadedIncomes.add({
+          'amount': value['amount'],
+          'date': value['date'],
+        });
+      });
+    }
+  }
 
-
-
+  return loadedIncomes;
+}
 
 
 
@@ -83,6 +116,19 @@ Future<List<Map<String, dynamic>>> _loadExpenses() async {
     }
     return total;
   }
+
+ // ignore: unused_element
+ double _calculateTotalIncomes(List<Map<String, dynamic>> incomes) {
+  double total = 0.0;
+  for (var income in incomes) {
+    total += (income['amount'] as num).toDouble();
+  }
+  return total;
+}
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -151,6 +197,21 @@ FutureBuilder<List<Map<String, dynamic>>>(
             }
           },
         ),
+
+        FutureBuilder<List<Map<String, dynamic>>>(
+  future: incomesFuture,
+  builder: (context, snapshot) {
+    if (snapshot.connectionState == ConnectionState.done) {
+      double total = _calculateTotalExpenses(snapshot.data ?? []);
+      return Text('오늘의 수입 합계: $total');
+    } else if (snapshot.hasError) {
+      return Text('Error: ${snapshot.error}');
+    } else {
+      return CircularProgressIndicator();
+    }
+  },
+),
+
 
 // ...
 
@@ -389,19 +450,17 @@ FutureBuilder<List<Map<String, dynamic>>>(
               },
               child: Text('cancel'),
             ),
-            TextButton(
-              onPressed: () {
-                addExpense(
-                  '수입',
-                  selectedDate,
-                  '',
-                  '',
-                  amount,
-                );
-                Navigator.of(context).pop();
-              },
-              child: Text('add'),
-            ),
+           TextButton(
+            onPressed: () {
+               addIncome(
+               selectedDate,
+                amount,
+    );
+    Navigator.of(context).pop();
+  },
+  child: Text('add'),
+),
+
           ],
         );
       },
