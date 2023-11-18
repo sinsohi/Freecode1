@@ -88,7 +88,15 @@ class _calendarPageState extends State<calendarPage> {
             ),
             eventLoader: _getEventsForDay,
           ),
-        )
+        ),
+        SizedBox(height: 20), // 간격 조절
+        Expanded(
+          child: ListView(
+            children: _getEventsForDay(today)
+                .map((event) => ListTile(title: Text(event)))
+                .toList(),
+          ),
+        ),
       ],
     );
   }
