@@ -12,6 +12,29 @@ import 'calendarPage.dart'; //바텀네비게이션바
 import 'graph.dart';
 import 'profilePage.dart';
 
+
+class RowItem extends StatelessWidget {
+  final Color color;
+  final String label;
+
+  RowItem({required this.color, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 10, // 작은 네모 너비 조절
+          height: 10, // 작은 네모 높이 조절
+          color: color,
+        ),
+        SizedBox(width: 6), // 네모와 텍스트 간 간격 조절
+        Text(label),
+      ],
+    );
+  }
+}
+
 class PieModel {
   final int count;
   final Color color;
@@ -43,17 +66,21 @@ class _graphState extends State<graph> {
       PieModel(count: 20, color: Color.fromARGB(255, 255, 143, 238).withOpacity(1)),
     ];
     
+
+    
     return Scaffold(
-      appBar: AppBar(title: Text('graph')),
+      backgroundColor: Color(0xFFF8F6E8),
+      appBar: AppBar(title: Text('11월 통계')),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Expanded(
             flex: 2,
             child: Align(
               alignment: Alignment.center,
               child: Container( //원래 Sizedbox였는데 좀 바꿈
-            width: MediaQuery.of(context).size.width * 0.8,
-            height: MediaQuery.of(context).size.width * 0.8, //파이차트의 높이
+            width: MediaQuery.of(context).size.width * 0.7,
+            height: MediaQuery.of(context).size.width * 0.7, //파이차트의 높이
             child: CustomPaint(
               size: Size(MediaQuery.of(context).size.width,
                   200,),
@@ -62,7 +89,29 @@ class _graphState extends State<graph> {
           ),
             ),
           ),
-      
+      Expanded(
+        flex: 1,
+        child: Stack(
+          alignment: Alignment.centerRight,
+          children: [
+            Positioned(
+              left: 360.0, //여백 조절
+              top: 20.0, // 여백 및 이동 조절
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
+                children: [
+            RowItem(color: Color.fromARGB(255, 255, 17, 0).withOpacity(1), label: '여가'),
+            RowItem(color: Color.fromARGB(255, 30, 154, 255).withOpacity(1), label: '교통'),
+            RowItem(color: const Color.fromARGB(255, 214, 214, 214).withOpacity(1), label: '식비'),
+            // 추가적인 지출항목에 대한 RowItem 추가
+          ],
+        ),
+      ),
+          ],
+        ),
+      ),
+   
           //여기에 막대그래프 추가
           Expanded(
             flex: 3,
@@ -78,71 +127,78 @@ class _graphState extends State<graph> {
           makeItDouble: true,
           listOfHorizontalBarData: [
             HorizontalDetailsModel(
-              name: 'Mon',
-              color: const Color(0xFFEB7735),
+              name: '1일',
+              color: const Color(0xFFFBBC05),
               size: 73,
               sizeTwo: 40,
-              colorTwo: Colors.blue,
+              colorTwo: Color(0xFF37736C),
             ),
             HorizontalDetailsModel(
-              name: 'Tues',
-              color: const Color(0xFFEB7735),
+              name: '2일',
+              color: const Color(0xFFFBBC05),
               size: 92,
               sizeTwo: 85,
-              colorTwo: Colors.blue,
+              colorTwo: Color(0xFF37736C),
             ),
             HorizontalDetailsModel(
-              name: 'Wed',
+              name: '3일',
               color: const Color(0xFFFBBC05),
               size: 120,
               sizeTwo: 100,
-              colorTwo: Colors.blue,
+              colorTwo: Color(0xFF37736C),
             ),
             HorizontalDetailsModel(
-              name: 'Thurs',
+              name: '4일',
               color: const Color(0xFFFBBC05),
               size: 86,
               sizeTwo: 220,
-              colorTwo: Colors.blue,
+              colorTwo: Color(0xFF37736C),
             ),
             HorizontalDetailsModel(
-              name: 'Fri',
+              name: '5일',
               color: const Color(0xFFFBBC05),
               size: 64,
               sizeTwo: 170,
-              colorTwo: Colors.blue,
+              colorTwo: Color(0xFF37736C),
             ),
             HorizontalDetailsModel(
-              name: 'Sat',
+              name: '6일',
               color: const Color(0xFFFBBC05),
               size: 155,
               sizeTwo: 120,
-              colorTwo: Colors.blue,
+              colorTwo: Color(0xFF37736C),
             ),
             HorizontalDetailsModel(
-              name: 'Sun',
+              name: '7일',
               color: const Color(0xFFFBBC05),
               size: 200,
               sizeTwo: 96,
-              colorTwo: Colors.blue,
+              colorTwo: Color(0xFF37736C),
             ),
              HorizontalDetailsModel(
-              name: 'Sun',
+              name: '8일',
               color: const Color(0xFFFBBC05),
               size: 200,
               sizeTwo: 96,
-              colorTwo: Colors.blue,
+              colorTwo: Color(0xFF37736C),
             ),
              HorizontalDetailsModel(
-              name: 'Sun',
+              name: '9일',
               color: const Color(0xFFFBBC05),
               size: 200,
               sizeTwo: 96,
-              colorTwo: Colors.blue,
+              colorTwo: Color(0xFF37736C),
+            ),
+            HorizontalDetailsModel(
+              name: '10일',
+              color: const Color(0xFFFBBC05),
+              size: 200,
+              sizeTwo: 96,
+              colorTwo: Color(0xFF37736C),
             ),
           ],
-          verticalInterval: 100,
-          horizontalBarPadding: 20,
+          verticalInterval: 100, //세로축 눈금 간격
+          horizontalBarPadding: 20, //각 막대 사이의 간격 조절
           )
       )
             ),
@@ -150,7 +206,7 @@ class _graphState extends State<graph> {
           ),
       ],
       ),
-      bottomNavigationBar: Container(
+      bottomNavigationBar: Container( //여기서부턴 바텀네비게이션바(하단)
           decoration: BoxDecoration(
             boxShadow: const <BoxShadow>[
               BoxShadow(
@@ -254,6 +310,8 @@ class _PieChart extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
+
+
 
 void main() {
   runApp(MaterialApp(
