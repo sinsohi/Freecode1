@@ -16,10 +16,18 @@ class calendarPage extends StatefulWidget {
 
 class _calendarPageState extends State<calendarPage> {
   DateTime today = DateTime.now();
+  Map<DateTime, List<String>> events = {
+    DateTime.utc(2023, 11, 20): ['쇼핑'],
+    DateTime.utc(2023, 11, 25): ['교통'],
+  };
   void _onDaySelected(DateTime day, DateTime focusedDay) {
     setState(() {
       today = day;
     });
+  }
+
+  List<String> _getEventsForDay(DateTime day) {
+    return events[day] ?? [];
   }
 
   @override
@@ -46,6 +54,7 @@ class _calendarPageState extends State<calendarPage> {
                 color: const Color(0xff37736c),
                 fontSize: 16,
               ),
+              headerPadding: const EdgeInsets.symmetric(vertical: 15.0),
             ),
             availableGestures: AvailableGestures.all,
             selectedDayPredicate: (day) => isSameDay(day, today),
@@ -77,6 +86,7 @@ class _calendarPageState extends State<calendarPage> {
                 shape: BoxShape.circle,
               ),
             ),
+            eventLoader: _getEventsForDay,
           ),
         )
       ],
