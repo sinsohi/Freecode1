@@ -132,7 +132,7 @@ Future<List<Map<String, dynamic>>> _loadExpenses() async {
                   ],
                 ),
               ),
-              Text('오늘의 지출 내역'),
+              
               Text('항목별 지출 금액'),
               // ...
 
