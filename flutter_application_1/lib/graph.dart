@@ -103,8 +103,8 @@ class _graphState extends State<graph> {
                 children: [
             RowItem(color: Color.fromARGB(255, 255, 17, 0).withOpacity(1), label: '여가'),
             RowItem(color: Color.fromARGB(255, 30, 154, 255).withOpacity(1), label: '교통'),
-            RowItem(color: const Color.fromARGB(255, 214, 214, 214).withOpacity(1), label: '식비'),
-            // 추가적인 지출항목에 대한 RowItem 추가
+            RowItem(color: const Color.fromARGB(255, 214, 214, 214).withOpacity(1), label: '식비'), //비율 가장 큰 지출항목 3개 반영할 계획
+            //지출항목에 대한 RowItem 추가
           ],
         ),
       ),
@@ -129,75 +129,75 @@ class _graphState extends State<graph> {
             HorizontalDetailsModel(
               name: '1일',
               color: const Color(0xFFFBBC05),
-              size: 73,
-              sizeTwo: 40,
+              size: 7300,
+              sizeTwo: 4000,
               colorTwo: Color(0xFF37736C),
             ),
             HorizontalDetailsModel(
               name: '2일',
               color: const Color(0xFFFBBC05),
-              size: 92,
-              sizeTwo: 85,
+              size: 9200,
+              sizeTwo: 8500,
               colorTwo: Color(0xFF37736C),
             ),
             HorizontalDetailsModel(
               name: '3일',
               color: const Color(0xFFFBBC05),
-              size: 120,
-              sizeTwo: 100,
+              size: 12000,
+              sizeTwo: 10000,
               colorTwo: Color(0xFF37736C),
             ),
             HorizontalDetailsModel(
               name: '4일',
               color: const Color(0xFFFBBC05),
-              size: 86,
-              sizeTwo: 220,
+              size: 8600,
+              sizeTwo: 22000,
               colorTwo: Color(0xFF37736C),
             ),
             HorizontalDetailsModel(
               name: '5일',
               color: const Color(0xFFFBBC05),
-              size: 64,
-              sizeTwo: 170,
+              size: 6400,
+              sizeTwo: 17000,
               colorTwo: Color(0xFF37736C),
             ),
             HorizontalDetailsModel(
               name: '6일',
               color: const Color(0xFFFBBC05),
-              size: 155,
-              sizeTwo: 120,
+              size: 15500,
+              sizeTwo: 12000,
               colorTwo: Color(0xFF37736C),
             ),
             HorizontalDetailsModel(
               name: '7일',
               color: const Color(0xFFFBBC05),
-              size: 200,
-              sizeTwo: 96,
+              size: 20000,
+              sizeTwo: 9600,
               colorTwo: Color(0xFF37736C),
             ),
              HorizontalDetailsModel(
               name: '8일',
               color: const Color(0xFFFBBC05),
-              size: 200,
-              sizeTwo: 96,
+              size: 20000,
+              sizeTwo: 9600,
               colorTwo: Color(0xFF37736C),
             ),
              HorizontalDetailsModel(
               name: '9일',
               color: const Color(0xFFFBBC05),
-              size: 200,
-              sizeTwo: 96,
+              size: 20000,
+              sizeTwo: 9600,
               colorTwo: Color(0xFF37736C),
             ),
             HorizontalDetailsModel(
               name: '10일',
               color: const Color(0xFFFBBC05),
-              size: 200,
-              sizeTwo: 96,
+              size: 20000,
+              sizeTwo: 9600,
               colorTwo: Color(0xFF37736C),
             ),
           ],
-          verticalInterval: 100, //세로축 눈금 간격
+          verticalInterval: 10000, //세로축 눈금 간격
           horizontalBarPadding: 20, //각 막대 사이의 간격 조절
           )
       )
