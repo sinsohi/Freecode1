@@ -120,11 +120,11 @@ Future<List<Map<String, dynamic>>> _loadExpenses() async {
                         children: [
                           ElevatedButton(
                             onPressed: () => _showExpenseDialog(context),
-                            child: Text('지출 추가'),
+                            child: Text('Expense'),
                           ),
                           ElevatedButton(
                             onPressed: () => _showIncomeDialog(context),
-                            child: Text('수입 추가'),
+                            child: Text('Income'),
                           ),
                         ],
                       ),
@@ -133,7 +133,7 @@ Future<List<Map<String, dynamic>>> _loadExpenses() async {
                 ),
               ),
               
-              Text('항목별 지출 금액'),
+              Text('category expense'),
               // ...
 
 FutureBuilder<List<Map<String, dynamic>>>(
@@ -141,7 +141,7 @@ FutureBuilder<List<Map<String, dynamic>>>(
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               double total = _calculateTotalExpenses(snapshot.data ?? []);
-              return Text('오늘의 지출 합계: $total');
+              return Text('today expense total: $total');
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else {
@@ -235,7 +235,7 @@ FutureBuilder<List<Map<String, dynamic>>>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('지출 추가'),
+          title: Text('expense'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
@@ -276,7 +276,7 @@ FutureBuilder<List<Map<String, dynamic>>>(
                   ),
                 ),
                 TextField(
-                  decoration: InputDecoration(labelText: '지출 항목'),
+                  decoration: InputDecoration(labelText: 'category'),
                   onChanged: (text) {
                     setState(() {
                       category = text;
@@ -284,7 +284,7 @@ FutureBuilder<List<Map<String, dynamic>>>(
                   },
                 ),
                 TextField(
-                  decoration: InputDecoration(labelText: '지출 내역 이름'),
+                  decoration: InputDecoration(labelText: 'detail'),
                   onChanged: (text) {
                     setState(() {
                       itemName = text;
@@ -292,7 +292,7 @@ FutureBuilder<List<Map<String, dynamic>>>(
                   },
                 ),
                 TextField(
-                  decoration: InputDecoration(labelText: '지출 금액'),
+                  decoration: InputDecoration(labelText: 'account'),
                   keyboardType: TextInputType.number,
                   onChanged: (text) {
                     setState(() {
@@ -308,12 +308,12 @@ FutureBuilder<List<Map<String, dynamic>>>(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('취소'),
+              child: Text('cancel'),
             ),
             TextButton(
               onPressed: () {
                 addExpense(
-                  '지출',
+                  'expense',
                   selectedDate,
                   category,
                   itemName,
@@ -321,7 +321,7 @@ FutureBuilder<List<Map<String, dynamic>>>(
                 );
                 Navigator.of(context).pop();
               },
-              child: Text('추가'),
+              child: Text('add'),
             ),
           ],
         );
@@ -336,7 +336,7 @@ FutureBuilder<List<Map<String, dynamic>>>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('income add'),
+          title: Text('income'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
@@ -357,7 +357,7 @@ FutureBuilder<List<Map<String, dynamic>>>(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('cancle'),
+              child: Text('cancel'),
             ),
             TextButton(
               onPressed: () {
