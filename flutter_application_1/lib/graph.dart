@@ -46,24 +46,34 @@ class _graphState extends State<graph> {
     return Scaffold(
       appBar: AppBar(title: Text('graph')),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,//중앙정렬
         children: [
-          Container( //원래 Sizedbox였는데 좀 바꿈
-            width: MediaQuery.of(context).size.width,
-            height: 10,
+          Expanded(
+            flex: 2,
+            child: Align(
+              alignment: Alignment.center,
+              child: Container( //원래 Sizedbox였는데 좀 바꿈
+            width: MediaQuery.of(context).size.width * 0.8,
+            height: MediaQuery.of(context).size.width * 0.8, //파이차트의 높이
             child: CustomPaint(
               size: Size(MediaQuery.of(context).size.width,
-                  MediaQuery.of(context).size.width),
+                  200,),
               painter: _PieChart(model),
             ),
           ),
-
-
+            ),
+          ),
+      
           //여기에 막대그래프 추가
-          Container(
+          Expanded(
+            flex: 3,
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+              child: Container(
             //막대그래프 코드
-            height: 400,
-        width: MediaQuery.of(context).size.width,
+            //height: 400, //막대그래프의 높이
+        width: MediaQuery.of(context).size.width * 1.5, //막대그래프 가로 크기(0.8이었는데 1.5로 잠시수정)
         child: SimpleBarChart(
           makeItDouble: true,
           listOfHorizontalBarData: [
@@ -135,9 +145,9 @@ class _graphState extends State<graph> {
           horizontalBarPadding: 20,
           )
       )
-      
-      
-      
+            ),
+          ),
+          ),
       ],
       ),
       bottomNavigationBar: Container(
@@ -215,12 +225,13 @@ class _PieChart extends CustomPainter {
   final List<PieModel> data;
 
   _PieChart(this.data);
+  
   @override
   void paint(Canvas canvas, Size size) {
     Paint circlePaint = Paint()..color = Colors.white;
 
     Offset offset = Offset(size.width / 2, size.width / 2);
-    double radius = (size.width / 2) * 0.8;
+    double radius = (size.width / 2) * 0.5; // 반지름 크기 조절. ex: 0.6은 현재 크기의 60%
     canvas.drawCircle(offset, radius, circlePaint);
 
     double _startPoint = 0.0;
