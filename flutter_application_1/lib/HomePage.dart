@@ -325,11 +325,57 @@ FutureBuilder<List<Map<String, dynamic>>>(
             ),
           ],
         );
-      },
+      }, 
     );
   }
 
   Future<void> _showIncomeDialog(BuildContext context) async {
-    // 구현이 필요함
+    double amount = 0.0;
+
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('income add'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                TextField(
+                  decoration: InputDecoration(labelText: 'account'),
+                  keyboardType: TextInputType.number,
+                  onChanged: (text) {
+                    setState(() {
+                      amount = double.parse(text);
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('cancle'),
+            ),
+            TextButton(
+              onPressed: () {
+                addExpense(
+                  'income',
+                  DateTime.now(),
+                  '',
+                  '',
+                  amount,
+                );
+                Navigator.of(context).pop();
+              },
+              child: Text('add'),
+            ),
+          ],
+        );
+      },
+    );
   }
+
 }
