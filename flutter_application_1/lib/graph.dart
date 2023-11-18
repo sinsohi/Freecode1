@@ -8,6 +8,9 @@ import 'package:unique_simple_bar_chart/horizontal_line.dart';
 import 'package:unique_simple_bar_chart/simple_bar_chart.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'dart:math' as math;
+import 'calendarPage.dart'; //바텀네비게이션바
+import 'graph.dart';
+import 'profilePage.dart';
 
 class PieModel {
   final int count;
@@ -43,7 +46,7 @@ class _graphState extends State<graph> {
     return Scaffold(
       appBar: AppBar(title: Text('graph')),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center, //중앙정렬
+        mainAxisAlignment: MainAxisAlignment.center,//중앙정렬
         children: [
           Container( //원래 Sizedbox였는데 좀 바꿈
             width: MediaQuery.of(context).size.width,
@@ -54,10 +57,12 @@ class _graphState extends State<graph> {
               painter: _PieChart(model),
             ),
           ),
+
+
           //여기에 막대그래프 추가
           Container(
             //막대그래프 코드
-            height: 100,
+            height: 400,
         width: MediaQuery.of(context).size.width,
         child: SimpleBarChart(
           makeItDouble: true,
@@ -111,12 +116,96 @@ class _graphState extends State<graph> {
               sizeTwo: 96,
               colorTwo: Colors.blue,
             ),
+             HorizontalDetailsModel(
+              name: 'Sun',
+              color: const Color(0xFFFBBC05),
+              size: 200,
+              sizeTwo: 96,
+              colorTwo: Colors.blue,
+            ),
+             HorizontalDetailsModel(
+              name: 'Sun',
+              color: const Color(0xFFFBBC05),
+              size: 200,
+              sizeTwo: 96,
+              colorTwo: Colors.blue,
+            ),
           ],
           verticalInterval: 100,
           horizontalBarPadding: 20,
           )
-      )],
+      )
+      
+      
+      
+      ],
       ),
+      bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            boxShadow: const <BoxShadow>[
+              BoxShadow(
+                color: Colors.grey,
+                blurRadius: 15,
+              ),
+            ],
+          ),
+          child: BottomNavigationBar(
+            backgroundColor: Color.fromRGBO(55, 115, 108, 1),
+            type: BottomNavigationBarType.fixed,
+            selectedItemColor: Color.fromRGBO(248, 246, 232, 1),
+            unselectedItemColor: Color.fromRGBO(248, 246, 232, 1),
+            selectedLabelStyle: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+            unselectedLabelStyle: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+            showSelectedLabels: true,
+            showUnselectedLabels: false,
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: '홈',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.calendar_month),
+                label: '캘린더',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.bar_chart_sharp),
+                label: '통계자료',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.people),
+                label: '마이페이지',
+              ),
+            ],
+            onTap: (int index) {
+              switch (index) {
+                case 0:
+                // 홈 페이지로 이동 (아직 구현되지 않음)
+                  break;
+                case 1:
+                // 캘린더 페이지로 이동
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => calendarPage()),
+                  );
+                  break;
+                case 2:
+                // 통계자료 페이지로 이동
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => graph()),
+                  );
+                  break;
+                case 3:
+                // 마이페이지로 이동
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => profilePage()),
+                  );
+                  break;
+              }
+            },
+          ),
+    )
     );
     
   }
