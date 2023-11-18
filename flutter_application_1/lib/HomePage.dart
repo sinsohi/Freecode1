@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable, duplicate_ignore, file_names, library_private_types_in_public_api, deprecated_member_use, avoid_unnecessary_containers
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -15,6 +17,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  
   final DatabaseReference expenseRef =
   FirebaseDatabase.instance.reference().child('expenses');
   double totalExpenses = 0.0;
@@ -51,6 +54,7 @@ class _HomePageState extends State<HomePage> {
     }
   } as FutureOr Function(DatabaseEvent value));
 }
+
 
 
 
@@ -193,6 +197,11 @@ class _HomePageState extends State<HomePage> {
   Future<void> _showExpenseDialog(BuildContext context) async {
     // ignore: unused_local_variable
     DateTime selectedDate = DateTime.now(); // 기본값은 현재 날짜로 설정
+    String expenseItem = ''; // TextField에서 입력한 지출 항목을 저장할 변수
+  String expenseName = ''; // TextField에서 입력한 지출 내역 이름을 저장할 변수
+  double expenseAmount = 0.0; // TextField에서 입력한 지출 금액을 저장할 변수
+
+
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -242,13 +251,29 @@ class _HomePageState extends State<HomePage> {
               // 다른 지출 세부 정보 입력란
               TextField(
                 decoration: InputDecoration(labelText: '지출 항목'),
+                 onChanged: (text) {
+                  setState(() {
+                    expenseItem = text;
+                  });
+                },
+   
               ),
               TextField(
                 decoration: InputDecoration(labelText: '지출 내역 이름'),
+                onChanged: (text) {
+                  setState(() {
+                    expenseName = text;
+                  });
+                },
               ),
               TextField(
                 decoration: InputDecoration(labelText: '지출 금액'),
                 keyboardType: TextInputType.number,
+                onChanged: (text) {
+                  setState(() {
+                    expenseAmount = double.parse(text);
+                  });
+                },
               ),
             ],
           ),
@@ -265,9 +290,9 @@ class _HomePageState extends State<HomePage> {
               addExpense(
                 '지출',
                 selectedDate,
-                '카테고리',
-                '지출 내역 이름',
-                100.0,
+                expenseItem ,
+                expenseName,
+                expenseAmount,
               );
               Navigator.of(context).pop();
             },
