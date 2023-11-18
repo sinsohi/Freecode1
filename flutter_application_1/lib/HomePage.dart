@@ -17,11 +17,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  
   final DatabaseReference expenseRef =
-  FirebaseDatabase.instance.reference().child('expenses');
+      FirebaseDatabase.instance.reference().child('expenses');
   double totalExpenses = 0.0;
   List<Map<String, dynamic>> expensesList = [];
+  Future<List<Map<String, dynamic>>>? expensesFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    expensesFuture = _loadExpenses();
+  }
 
   Future<void> addExpense(String type, DateTime date, String category, String itemName, double amount) async {
     await expenseRef.push().set({
@@ -31,41 +37,49 @@ class _HomePageState extends State<HomePage> {
       'itemName': itemName,
       'amount': amount,
     });
-    _loadExpenses();
+    setState(() {
+      expensesFuture = _loadExpenses();
+    });
   }
 
- Future<void> _loadExpenses() async {
-  await expenseRef.once().then((DataSnapshot snapshot) {
-    if (snapshot.value != null) {
-      expensesList.clear();
-      Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
+Future<List<Map<String, dynamic>>> _loadExpenses() async {
+  List<Map<String, dynamic>> loadedExpenses = [];
+  String today = DateFormat('yyyy-MM-dd').format(DateTime.now()); // 오늘 날짜를 yyyy-MM-dd 형식의 문자열로 변환
 
-      if (values != null) {
-        values.forEach((key, value) {
-          expensesList.add({
-            'type': value['type'],
-            'amount': value['amount'],
-            'date': value['date'],
-          });
+  DataSnapshot snapshot = await expenseRef.orderByChild('date').equalTo(today).get();
+
+  if (snapshot.value != null) {
+    Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
+
+    if (values != null) {
+      values.forEach((key, value) {
+        loadedExpenses.add({
+          'type': value['type'],
+          'amount': value['amount'],
+          'date': value['date'],
         });
-
-        _updateTotalExpenses();
-      }
+      });
     }
-  } as FutureOr Function(DatabaseEvent value));
+  }
+
+  return loadedExpenses;
 }
 
 
 
 
-  void _updateTotalExpenses() {
+
+
+
+
+
+
+  double _calculateTotalExpenses(List<Map<String, dynamic>> expenses) {
     double total = 0.0;
-    for (var expense in expensesList) {
+    for (var expense in expenses) {
       total += double.parse(expense['amount'].toString());
     }
-    setState(() {
-      totalExpenses = total;
-    });
+    return total;
   }
 
   @override
@@ -98,8 +112,7 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(width: double.infinity, height: 30,),
-              // ignore: avoid_unnecessary_containers
-              Container(color: Color.fromRGBO(55, 115, 108, 1),width: double.infinity, height: 300,
+              Container(color: Color.fromRGBO(55, 115, 108, 1), width: double.infinity, height: 300,
                 child: Column(
                   children: [
                     Container(color: Color.fromRGBO(100, 115, 108, 1), width: double.infinity, height: 100,
@@ -121,6 +134,24 @@ class _HomePageState extends State<HomePage> {
               ),
               Text('오늘의 지출 내역'),
               Text('항목별 지출 금액'),
+              // ...
+
+FutureBuilder<List<Map<String, dynamic>>>(
+          future: expensesFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              double total = _calculateTotalExpenses(snapshot.data ?? []);
+              return Text('오늘의 지출 합계: $total');
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              return CircularProgressIndicator();
+            }
+          },
+        ),
+
+// ...
+
             ],
           ),
         ),
@@ -163,24 +194,24 @@ class _HomePageState extends State<HomePage> {
             onTap: (int index) {
               switch (index) {
                 case 0:
-                // 홈 페이지로 이동 (아직 구현되지 않음)
+                  // 홈 페이지로 이동 (아직 구현되지 않음)
                   break;
                 case 1:
-                // 캘린더 페이지로 이동
+                  // 캘린더 페이지로 이동
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => calendarPage()),
                   );
                   break;
                 case 2:
-                // 통계자료 페이지로 이동
+                  // 통계자료 페이지로 이동
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => graph()),
                   );
                   break;
                 case 3:
-                // 마이페이지로 이동
+                  // 마이페이지로 이동
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => profilePage()),
@@ -195,12 +226,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _showExpenseDialog(BuildContext context) async {
-    // ignore: unused_local_variable
-    DateTime selectedDate = DateTime.now(); // 기본값은 현재 날짜로 설정
-    String expenseItem = ''; // TextField에서 입력한 지출 항목을 저장할 변수
-  String expenseName = ''; // TextField에서 입력한 지출 내역 이름을 저장할 변수
-  double expenseAmount = 0.0; // TextField에서 입력한 지출 금액을 저장할 변수
-
+    DateTime selectedDate = DateTime.now();
+    String category = '';
+    String itemName = '';
+    double amount = 0.0;
 
     return showDialog<void>(
       context: context,
@@ -209,102 +238,97 @@ class _HomePageState extends State<HomePage> {
           title: Text('지출 추가'),
           content: SingleChildScrollView(
             child: ListBody(
-            children: <Widget>[
-              // 날짜 선택 위젯
-              InkWell(
-                onTap: () async {
-                  DateTime? date = await showDatePicker(
-                    context: context,
-                    initialDate: selectedDate,
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2101),
-                    builder: (BuildContext context, Widget? child) {
-                      return Theme(
-                        data: ThemeData.light().copyWith(
-                          primaryColor: Color.fromRGBO(55, 115, 108, 1), // 선택한 날짜의 색상
-                          hintColor: Color.fromRGBO(55, 115, 108, 1), // 선택한 날짜 주위의 테두리 색상
-                          colorScheme: ColorScheme.light(primary: Color.fromRGBO(55, 115, 108, 1)),
-                          buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
-                        ),
-                        child: child!,
-                      );
-                    },
-                  );
-                  
-                  if (date != null && date != selectedDate) {
-                    setState(() {
-                      selectedDate = date;
-                    });
-                  }
-                },
-                child: Row(
-                  children: [
-                    Icon(Icons.calendar_today),
-                    SizedBox(width: 10),
-                    Text(
-                      DateFormat('yyyy-MM-dd').format(selectedDate),
-                    ),
-                  ],
+              children: <Widget>[
+                InkWell(
+                  onTap: () async {
+                    DateTime? date = await showDatePicker(
+                      context: context,
+                      initialDate: selectedDate,
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2101),
+                      builder: (BuildContext context, Widget? child) {
+                        return Theme(
+                          data: ThemeData.light().copyWith(
+                            primaryColor: Color.fromRGBO(55, 115, 108, 1),
+                            hintColor: Color.fromRGBO(55, 115, 108, 1),
+                            colorScheme: ColorScheme.light(primary: Color.fromRGBO(55, 115, 108, 1)),
+                            buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
+                          ),
+                          child: child!,
+                        );
+                      },
+                    );
+
+                    if (date != null && date != selectedDate) {
+                      setState(() {
+                        selectedDate = date;
+                      });
+                    }
+                  },
+                  child: Row(
+                    children: [
+                      Icon(Icons.calendar_today),
+                      SizedBox(width: 10),
+                      Text(
+                        DateFormat('yyyy-MM-dd').format(selectedDate),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+                TextField(
+                  decoration: InputDecoration(labelText: '지출 항목'),
+                  onChanged: (text) {
+                    setState(() {
+                      category = text;
+                    });
+                  },
+                ),
+                TextField(
+                  decoration: InputDecoration(labelText: '지출 내역 이름'),
+                  onChanged: (text) {
+                    setState(() {
+                      itemName = text;
+                    });
+                  },
+                ),
+                TextField(
+                  decoration: InputDecoration(labelText: '지출 금액'),
+                  keyboardType: TextInputType.number,
+                  onChanged: (text) {
+                    setState(() {
+                      amount = double.parse(text);
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('취소'),
+            ),
+            TextButton(
+              onPressed: () {
+                addExpense(
+                  '지출',
+                  selectedDate,
+                  category,
+                  itemName,
+                  amount,
+                );
+                Navigator.of(context).pop();
+              },
+              child: Text('추가'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
-              // 다른 지출 세부 정보 입력란
-              TextField(
-                decoration: InputDecoration(labelText: '지출 항목'),
-                 onChanged: (text) {
-                  setState(() {
-                    expenseItem = text;
-                  });
-                },
-   
-              ),
-              TextField(
-                decoration: InputDecoration(labelText: '지출 내역 이름'),
-                onChanged: (text) {
-                  setState(() {
-                    expenseName = text;
-                  });
-                },
-              ),
-              TextField(
-                decoration: InputDecoration(labelText: '지출 금액'),
-                keyboardType: TextInputType.number,
-                onChanged: (text) {
-                  setState(() {
-                    expenseAmount = double.parse(text);
-                  });
-                },
-              ),
-            ],
-          ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Text('취소'),
-          ),
-          TextButton(
-            onPressed: () {
-              addExpense(
-                '지출',
-                selectedDate,
-                expenseItem ,
-                expenseName,
-                expenseAmount,
-              );
-              Navigator.of(context).pop();
-            },
-            child: Text('추가'),
-          ),
-        ],
-      );
-    },
-  );
-}
-
-  // 수입 다이얼로그 표시 (위와 유사)
   Future<void> _showIncomeDialog(BuildContext context) async {
     // 구현이 필요함
   }
