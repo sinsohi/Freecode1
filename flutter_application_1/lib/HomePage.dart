@@ -331,7 +331,10 @@ FutureBuilder<List<Map<String, dynamic>>>(
     );
   }
 
-  Future<void> _showIncomeDialog(BuildContext context) async {
+
+
+   Future<void> _showIncomeDialog(BuildContext context) async {
+    DateTime selectedDate = DateTime.now();
     double amount = 0.0;
 
     return showDialog<void>(
@@ -342,6 +345,31 @@ FutureBuilder<List<Map<String, dynamic>>>(
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
+                InkWell(
+                  onTap: () async {
+                    DateTime? date = await showDatePicker(
+                      context: context,
+                      initialDate: selectedDate,
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2101),
+                    );
+
+                    if (date != null && date != selectedDate) {
+                      setState(() {
+                        selectedDate = date;
+                      });
+                    }
+                  },
+                  child: Row(
+                    children: [
+                      Icon(Icons.calendar_today),
+                      SizedBox(width: 10),
+                      Text(
+                        DateFormat('yyyy-MM-dd').format(selectedDate),
+                      ),
+                    ],
+                  ),
+                ),
                 TextField(
                   decoration: InputDecoration(labelText: 'account'),
                   keyboardType: TextInputType.number,
@@ -364,8 +392,8 @@ FutureBuilder<List<Map<String, dynamic>>>(
             TextButton(
               onPressed: () {
                 addExpense(
-                  'income',
-                  DateTime.now(),
+                  '수입',
+                  selectedDate,
                   '',
                   '',
                   amount,
@@ -380,4 +408,5 @@ FutureBuilder<List<Map<String, dynamic>>>(
     );
   }
 
-}
+
+  }
