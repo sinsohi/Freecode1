@@ -23,6 +23,7 @@ class Event {
 class _calendarPageState extends State<calendarPage> {
   DateTime today = DateTime.now();
   Map<DateTime, List<Event>> events = {
+    DateTime.utc(2023, 11, 08): [Event('음식')],
     DateTime.utc(2023, 11, 20): [Event('쇼핑')],
     DateTime.utc(2023, 11, 25): [Event('교통')],
   };
@@ -108,28 +109,46 @@ class _calendarPageState extends State<calendarPage> {
       return Column(
         children: [
           Container(
-            color: const Color(0xff37736c),
-            padding: EdgeInsets.all(16.0),
-            width: double.infinity,
-            child: Text(
-              'Selected Day Events',
-              style: TextStyle(
-                fontSize: 18,
-                color: const Color(0xfff8f6e8),
-                fontWeight: FontWeight.bold,
-              ),
+            decoration: BoxDecoration(
+              color: const Color(0xff37736c),
+              borderRadius: BorderRadius.circular(10.0),
             ),
-          ),
-          SizedBox(height: 8.0),
-          Container(
-            color: const Color(0xff82a282),
             padding: EdgeInsets.all(16.0),
-            width: double.infinity,
+            width: 480,
+            height: 150.0,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: eventsForSelectedDay
-                  .map((event) => Text(event.name))
-                  .toList(),
+              children: [
+                Text(
+                  '소비 내역',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: const Color(0xfff8f6e8),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8.0),
+                Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xff82a282),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  padding: EdgeInsets.all(16.0),
+                  width: 480,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: eventsForSelectedDay
+                        .map((event) => Text(
+                              event.name,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: const Color(0xfff8f6e8),
+                              ),
+                            ))
+                        .toList(),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
