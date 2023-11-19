@@ -51,6 +51,16 @@ class _calendarPageState extends State<calendarPage> {
       children: [
         Container(
           child: TableCalendar(
+            daysOfWeekStyle: DaysOfWeekStyle(
+              weekdayStyle: TextStyle(
+                color: const Color(0xff82a282),
+                fontWeight: FontWeight.bold,
+              ), // 주중의 스타일 설정
+              weekendStyle: TextStyle(
+                color: const Color(0xff37736c),
+                fontWeight: FontWeight.bold,
+              ), // 주말의 스타일 설정
+            ),
             headerStyle: HeaderStyle(
               formatButtonVisible: false,
               titleCentered: true,
@@ -130,7 +140,7 @@ class _calendarPageState extends State<calendarPage> {
             ),
             padding: EdgeInsets.all(16.0),
             width: 480,
-            height: 150.0,
+            height: 270.0,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
