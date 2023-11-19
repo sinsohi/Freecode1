@@ -14,11 +14,17 @@ class calendarPage extends StatefulWidget {
   State<calendarPage> createState() => _calendarPageState();
 }
 
+class Event {
+  final String name;
+
+  Event(this.name);
+}
+
 class _calendarPageState extends State<calendarPage> {
   DateTime today = DateTime.now();
-  Map<DateTime, List<String>> events = {
-    DateTime.utc(2023, 11, 20): ['쇼핑'],
-    DateTime.utc(2023, 11, 25): ['교통'],
+  Map<DateTime, List<Event>> events = {
+    DateTime.utc(2023, 11, 20): [Event('쇼핑')],
+    DateTime.utc(2023, 11, 25): [Event('교통')],
   };
   void _onDaySelected(DateTime day, DateTime focusedDay) {
     setState(() {
@@ -26,7 +32,7 @@ class _calendarPageState extends State<calendarPage> {
     });
   }
 
-  List<String> _getEventsForDay(DateTime day) {
+  List<Event> _getEventsForDay(DateTime day) {
     return events[day] ?? [];
   }
 
@@ -96,31 +102,37 @@ class _calendarPageState extends State<calendarPage> {
   }
 
   Widget _buildEventBanner() {
-    List<String> eventsForSelectedDay = _getEventsForDay(today);
+    List<Event> eventsForSelectedDay = _getEventsForDay(today);
 
     if (eventsForSelectedDay.isNotEmpty) {
-      return Container(
-        color: Colors.grey.shade200,
-        padding: EdgeInsets.all(16.0),
-        width: double.infinity,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
+      return Column(
+        children: [
+          Container(
+            color: const Color(0xff37736c),
+            padding: EdgeInsets.all(16.0),
+            width: double.infinity,
+            child: Text(
               'Selected Day Events',
               style: TextStyle(
                 fontSize: 18,
+                color: const Color(0xfff8f6e8),
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 8),
-            Column(
+          ),
+          SizedBox(height: 8.0),
+          Container(
+            color: const Color(0xff82a282),
+            padding: EdgeInsets.all(16.0),
+            width: double.infinity,
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children:
-                  eventsForSelectedDay.map((event) => Text(event)).toList(),
+              children: eventsForSelectedDay
+                  .map((event) => Text(event.name))
+                  .toList(),
             ),
-          ],
-        ),
+          ),
+        ],
       );
     } else {
       return Container(); // 이벤트가 없는 경우 빈 컨테이너 반환
