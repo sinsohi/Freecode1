@@ -94,6 +94,21 @@ class _calendarPageState extends State<calendarPage> {
               ),
             ),
             eventLoader: _getEventsForDay,
+            calendarBuilders: CalendarBuilders(
+              markerBuilder: (context, date, dynamic event) {
+                if (event.isNotEmpty) {
+                  return Container(
+                    width: 35,
+                    decoration: BoxDecoration(
+                      color: Colors.blue.withOpacity(0.2),
+                      shape: BoxShape.circle,
+                    ),
+                  );
+                } else {
+                  return Container(); // event가 비어있을 때는 빈 컨테이너 반환
+                }
+              },
+            ),
           ),
         ),
         SizedBox(height: 20),
