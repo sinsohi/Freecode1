@@ -89,15 +89,41 @@ class _calendarPageState extends State<calendarPage> {
             eventLoader: _getEventsForDay,
           ),
         ),
-        SizedBox(height: 20), // 간격 조절
-        Expanded(
-          child: ListView(
-            children: _getEventsForDay(today)
-                .map((event) => ListTile(title: Text(event)))
-                .toList(),
-          ),
-        ),
+        SizedBox(height: 20),
+        _buildEventBanner(),
       ],
     );
+  }
+
+  Widget _buildEventBanner() {
+    List<String> eventsForSelectedDay = _getEventsForDay(today);
+
+    if (eventsForSelectedDay.isNotEmpty) {
+      return Container(
+        color: Colors.grey.shade200,
+        padding: EdgeInsets.all(16.0),
+        width: double.infinity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Selected Day Events',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 8),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children:
+                  eventsForSelectedDay.map((event) => Text(event)).toList(),
+            ),
+          ],
+        ),
+      );
+    } else {
+      return Container(); // 이벤트가 없는 경우 빈 컨테이너 반환
+    }
   }
 }
