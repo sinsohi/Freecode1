@@ -23,7 +23,10 @@ class Event {
 class _calendarPageState extends State<calendarPage> {
   DateTime today = DateTime.now();
   Map<DateTime, List<Event>> events = {
-    DateTime.utc(2023, 11, 08): [Event('음식')],
+    DateTime.utc(2023, 11, 08): [
+      Event('음식'),
+      Event('교통'),
+    ],
     DateTime.utc(2023, 11, 20): [Event('쇼핑')],
     DateTime.utc(2023, 11, 25): [Event('교통')],
   };
@@ -162,15 +165,7 @@ class _calendarPageState extends State<calendarPage> {
                   width: 480,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: eventsForSelectedDay
-                        .map((event) => Text(
-                              event.name,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: const Color(0xfff8f6e8),
-                              ),
-                            ))
-                        .toList(),
+                    children: _buildEventContainers(eventsForSelectedDay),
                   ),
                 ),
               ],
@@ -181,5 +176,31 @@ class _calendarPageState extends State<calendarPage> {
     } else {
       return Container(); // 이벤트가 없는 경우 빈 컨테이너 반환
     }
+  }
+
+  List<Widget> _buildEventContainers(List<Event> events) {
+    List<Widget> containers = [];
+
+    for (Event event in events) {
+      containers.add(
+        Container(
+          margin: EdgeInsets.only(bottom: 8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                event.name,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xfff8f6e8),
+                ),
+              ),
+              SizedBox(height: 8.0),
+            ],
+          ),
+        ),
+      );
+    }
+    return containers;
   }
 }
