@@ -77,6 +77,7 @@ Future<List<Map<String, dynamic>>> _loadExpenses() async {
           'type': value['type'],
           'amount': value['amount'],
           'date': value['date'],
+          'category': value['category'], 
         });
       });
     }
@@ -122,6 +123,7 @@ Future<List<Map<String, dynamic>>> _loadAllExpenses() async {
           'type': value['type'],
           'amount': value['amount'],
           'date': value['date'],
+          'category': value['category'], 
         });
       });
     }
@@ -151,6 +153,37 @@ Future<List<Map<String, dynamic>>> _loadAllIncomes() async {
   return loadedIncomes;
 }
 
+static const category = ['음식', '교통', '여가', '쇼핑', '기타'];
+
+Map<String, List<Map<String, dynamic>>> groupExpensesByCategory(List<Map<String, dynamic>> expenses) {
+  Map<String, List<Map<String, dynamic>>> groupedExpenses = {
+    for (var category in category.where((c) => c != '기타'))
+      category: expenses.where((e) => e['category'] == category).toList(),
+  };
+
+  groupedExpenses['기타'] = expenses.where((e) => !category.where((c) => c != '기타').contains(e['category'])).toList();
+
+  return groupedExpenses;
+}
+
+
+
+Map<String, double> calculateCategoryExpenses(List<Map<String, dynamic>> expenses) {
+  var groupedExpenses = groupExpensesByCategory(expenses);
+  
+  Map<String, double> categoryExpenses = {};
+  groupedExpenses.forEach((category, expenses) {
+    double total = 0.0;
+    for (var expense in expenses) {
+      total += (expense['amount'] as num).toDouble();
+    }
+    categoryExpenses[category] = total;
+  });
+
+  return categoryExpenses;
+}
+
+
 
 
   double _calculateTotalExpenses(List<Map<String, dynamic>> expenses) {
@@ -175,6 +208,8 @@ double _calculateCurrentAsset(List<Map<String, dynamic>> incomes, List<Map<Strin
   double totalExpense = _calculateTotalExpenses(expenses);
   return totalIncome - totalExpense;
 }
+
+
 
 
 
@@ -272,6 +307,27 @@ FutureBuilder<List<List<Map<String, dynamic>>>>(
       return Text('현재 자산 현황: $currentAsset');
     } else if (snapshot.hasError) {
       return Text('Error: ${snapshot.error}');
+    } else {
+      return CircularProgressIndicator();
+    }
+  },
+),
+
+// 위의 함수를 사용해 지출을 카테고리별로 분류하고, 각 카테고리의 총 지출을 계산
+FutureBuilder<List<Map<String, dynamic>>>(
+  future: expensesFuture,
+  builder: (context, snapshot) {
+    if (snapshot.connectionState == ConnectionState.done) {
+      if (snapshot.hasError) {
+        return Text('Error: ${snapshot.error}');
+      }
+
+      Map<String, double> categoryExpenses = calculateCategoryExpenses(snapshot.data ?? []);
+      return Column(
+        children: categoryExpenses.entries.map((entry) {
+          return Text('${entry.key}: ${entry.value}');
+        }).toList(),
+      );
     } else {
       return CircularProgressIndicator();
     }
