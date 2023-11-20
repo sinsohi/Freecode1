@@ -47,9 +47,9 @@ class DefaultFirebaseOptions {
     apiKey: 'AIzaSyB0bC2119m-tIHjmW88spGTRDEVhdKdj_c',
     appId: '1:927335528709:web:84f6d3d466fc523fc29f6c',
     messagingSenderId: '927335528709',
-    databaseURL: "https://freecode-30673-default-rtdb.firebaseio.com",
     projectId: 'freecode-30673',
     authDomain: 'freecode-30673.firebaseapp.com',
+    databaseURL: 'https://freecode-30673-default-rtdb.firebaseio.com',
     storageBucket: 'freecode-30673.appspot.com',
     measurementId: 'G-D9GDER368L',
   );
@@ -59,6 +59,7 @@ class DefaultFirebaseOptions {
     appId: '1:927335528709:android:e0dd7dc9a152c894c29f6c',
     messagingSenderId: '927335528709',
     projectId: 'freecode-30673',
+    databaseURL: 'https://freecode-30673-default-rtdb.firebaseio.com',
     storageBucket: 'freecode-30673.appspot.com',
   );
 
@@ -67,6 +68,7 @@ class DefaultFirebaseOptions {
     appId: '1:927335528709:ios:c6091e7b63292857c29f6c',
     messagingSenderId: '927335528709',
     projectId: 'freecode-30673',
+    databaseURL: 'https://freecode-30673-default-rtdb.firebaseio.com',
     storageBucket: 'freecode-30673.appspot.com',
     iosBundleId: 'com.example.flutterApplication1',
   );
@@ -76,6 +78,7 @@ class DefaultFirebaseOptions {
     appId: '1:927335528709:ios:e9eb986fbb5e9b58c29f6c',
     messagingSenderId: '927335528709',
     projectId: 'freecode-30673',
+    databaseURL: 'https://freecode-30673-default-rtdb.firebaseio.com',
     storageBucket: 'freecode-30673.appspot.com',
     iosBundleId: 'com.example.flutterApplication1.RunnerTests',
   );

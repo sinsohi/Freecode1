@@ -14,12 +14,33 @@ class calendarPage extends StatefulWidget {
   State<calendarPage> createState() => _calendarPageState();
 }
 
+class Event {
+  final String name;
+
+  Event(this.name);
+}
+
 class _calendarPageState extends State<calendarPage> {
   DateTime today = DateTime.now();
+  Map<DateTime, List<Event>> events = {
+    DateTime.utc(2023, 11, 08): [
+      Event('식비'),
+      Event('교통'),
+      Event('쇼핑'),
+      Event('여가비'),
+      Event('기타'),
+    ],
+    DateTime.utc(2023, 11, 20): [Event('쇼핑')],
+    DateTime.utc(2023, 11, 25): [Event('교통')],
+  };
   void _onDaySelected(DateTime day, DateTime focusedDay) {
     setState(() {
       today = day;
     });
+  }
+
+  List<Event> _getEventsForDay(DateTime day) {
+    return events[day] ?? [];
   }
 
   @override
@@ -36,6 +57,16 @@ class _calendarPageState extends State<calendarPage> {
       children: [
         Container(
           child: TableCalendar(
+            daysOfWeekStyle: DaysOfWeekStyle(
+              weekdayStyle: TextStyle(
+                color: const Color(0xff82a282),
+                fontWeight: FontWeight.bold,
+              ), // 주중의 스타일 설정
+              weekendStyle: TextStyle(
+                color: const Color(0xff37736c),
+                fontWeight: FontWeight.bold,
+              ), // 주말의 스타일 설정
+            ),
             headerStyle: HeaderStyle(
               formatButtonVisible: false,
               titleCentered: true,
@@ -46,6 +77,7 @@ class _calendarPageState extends State<calendarPage> {
                 color: const Color(0xff37736c),
                 fontSize: 16,
               ),
+              headerPadding: const EdgeInsets.symmetric(vertical: 15.0),
             ),
             availableGestures: AvailableGestures.all,
             selectedDayPredicate: (day) => isSameDay(day, today),
@@ -77,9 +109,101 @@ class _calendarPageState extends State<calendarPage> {
                 shape: BoxShape.circle,
               ),
             ),
+            eventLoader: _getEventsForDay,
+            calendarBuilders: CalendarBuilders(
+              markerBuilder: (context, date, dynamic event) {
+                if (event.isNotEmpty) {
+                  return Container(
+                    width: 35,
+                    decoration: BoxDecoration(
+                      color: Colors.blue.withOpacity(0.2),
+                      shape: BoxShape.circle,
+                    ),
+                  );
+                } else {
+                  return Container(); // event가 비어있을 때는 빈 컨테이너 반환
+                }
+              },
+            ),
           ),
-        )
+        ),
+        SizedBox(height: 20),
+        _buildEventBanner(),
       ],
     );
+  }
+
+  Widget _buildEventBanner() {
+    List<Event> eventsForSelectedDay = _getEventsForDay(today);
+
+    if (eventsForSelectedDay.isNotEmpty) {
+      return Column(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: const Color(0xff37736c),
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            padding: EdgeInsets.all(16.0),
+            width: 480,
+            height: 270.0,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '소비 내역',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: const Color(0xfff8f6e8),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8.0),
+                Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xff82a282),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  padding: EdgeInsets.all(16.0),
+                  width: 480,
+                  height: 200.0, // 높이를 유동적으로 조절하거나 필요에 따라 설정하세요.
+                  child: ListView(
+                    children: _buildEventContainers(eventsForSelectedDay),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    } else {
+      return Container(); // 이벤트가 없는 경우 빈 컨테이너 반환
+    }
+  }
+
+  List<Widget> _buildEventContainers(List<Event> events) {
+    List<Widget> containers = [];
+
+    for (Event event in events) {
+      containers.add(
+        Container(
+          margin: EdgeInsets.only(bottom: 8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                event.name,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xfff8f6e8),
+                ),
+              ),
+              SizedBox(height: 8.0),
+            ],
+          ),
+        ),
+      );
+    }
+    return containers;
   }
 }
