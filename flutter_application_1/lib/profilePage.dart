@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+// import 'dart:async';
+// import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:intl/intl.dart';
 import 'package:flutter_application_1/HomePage.dart';
 import 'calendarPage.dart';
 import 'graph.dart';
@@ -9,6 +13,217 @@ import 'main.dart';
 FirebaseAuth auth = FirebaseAuth.instance;
 User? user = auth.currentUser;
 String? userId = user?.email;
+
+class WishlistScreen extends StatefulWidget {
+  @override
+  _WishlistScreenState createState() => _WishlistScreenState();
+}
+
+class _WishlistScreenState extends State<WishlistScreen> {
+  List<WishlistItem> wishlistItems = [];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('위시리스트'),
+      ),
+      body: ListView.builder(
+        itemCount: wishlistItems.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Icon(Icons.star),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditWishlistItemScreen(
+                    wishlistItem: wishlistItems[index],
+                    onSave: (newItem) {
+                      setState(() {
+                        wishlistItems[index] = newItem;
+                      });
+                      _saveItemToFirestore(newItem);
+                      // FirebaseFirestore 클래스의 collection() 메서드와 doc() 메서드를 사용하여 Firestore에 데이터를 저장하는 기능을 구현한 사용자 정의 함수입니다. 이 함수는 Firestore에 데이터를 저장하기 위해 사용자가 직접 작성해야 하는 함수
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddWishlistItemScreen(
+                onSave: (newItem) {
+                  setState(() {
+                    wishlistItems.add(newItem);
+                  });
+                  _saveItemToFirestore(newItem);
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          );
+        },
+        child: Icon(Icons.add),
+      ),
+    );
+  }
+
+  Future<void> _saveItemToFirestore(WishlistItem item) async {
+    await FirebaseFirestore.instance
+        .collection('wishlist')
+        .doc(item.id)
+        .set(item.toMap());
+  }
+}
+
+class WishlistItem {
+  final String id;
+  final String title;
+  String product;
+
+  WishlistItem({
+    required this.id,
+    required this.title,
+    this.product = '',
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'title': title,
+      'product': product,
+    };
+  }
+}
+
+class AddWishlistItemScreen extends StatefulWidget {
+  final Function(WishlistItem) onSave;
+
+  AddWishlistItemScreen({required this.onSave});
+
+  @override
+  _AddWishlistItemScreenState createState() => _AddWishlistItemScreenState();
+}
+
+class _AddWishlistItemScreenState extends State<AddWishlistItemScreen> {
+  String title = '';
+  String product = '';
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('위시리스트 항목 추가'),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              decoration: InputDecoration(
+                labelText: '항목 제목',
+              ),
+              onChanged: (value) {
+                setState(() {
+                  title = value;
+                });
+              },
+            ),
+            TextField(
+              decoration: InputDecoration(
+                labelText: '사고 싶은 물품',
+              ),
+              onChanged: (value) {
+                setState(() {
+                  product = value;
+                });
+              },
+            ),
+            ElevatedButton(
+              onPressed: () {
+                WishlistItem newItem = WishlistItem(
+                  id: DateTime.now().toString(),
+                  title: title,
+                  product: product,
+                );
+                widget.onSave(newItem);
+              },
+              child: Text('저장'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class EditWishlistItemScreen extends StatefulWidget {
+  final WishlistItem wishlistItem;
+  final Function(WishlistItem) onSave;
+
+  EditWishlistItemScreen({
+    required this.wishlistItem,
+    required this.onSave,
+  });
+
+  @override
+  _EditWishlistItemScreenState createState() => _EditWishlistItemScreenState();
+}
+
+class _EditWishlistItemScreenState extends State<EditWishlistItemScreen> {
+  String product = '';
+
+  @override
+  void initState() {
+    super.initState();
+    product = widget.wishlistItem.product;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('위시리스트 항목 편집'),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Text(widget.wishlistItem.title),
+            TextField(
+              decoration: InputDecoration(
+                labelText: '사고 싶은 물품',
+              ),
+              onChanged: (value) {
+                setState(() {
+                  product = value;
+                });
+              },
+            ),
+            ElevatedButton(
+              onPressed: () {
+                WishlistItem updatedItem = WishlistItem(
+                  id: widget.wishlistItem.id,
+                  title: widget.wishlistItem.title,
+                  product: product,
+                );
+                widget.onSave(updatedItem);
+              },
+              child: Text('저장'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 class profilePage extends StatelessWidget {
   const profilePage({super.key});
@@ -149,6 +364,14 @@ class profilePage extends StatelessWidget {
                 ),
               ),
               flex: 9,
+            ),
+            FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => WishlistScreen()),
+                );
+              },
             )
           ],
         ),
