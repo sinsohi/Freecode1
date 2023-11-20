@@ -4,6 +4,7 @@ import 'package:flutter_application_1/HomePage.dart';
 import 'calendarPage.dart';
 import 'graph.dart';
 import 'HomePage.dart';
+import 'main.dart';
 
 FirebaseAuth auth = FirebaseAuth.instance;
 User? user = auth.currentUser;
@@ -11,7 +12,6 @@ String? userId = user?.email;
 
 class profilePage extends StatelessWidget {
   const profilePage({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +27,7 @@ class profilePage extends StatelessWidget {
                     style: TextStyle(
                         fontFamily: 'LilitaOne',
                         fontSize: 36,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w500,
                         color: Color.fromRGBO(248, 246, 232, 1)),
                   ),
                 ),
@@ -51,8 +51,8 @@ class profilePage extends StatelessWidget {
                       ),
                     ],
                     border: Border.all(
-                        color: Color.fromRGBO(55, 115, 108, 1),
-                        width: 3), // 컨테이너 테두리
+                        color: Color.fromRGBO(22, 57, 26, 100),
+                        width: 2), // 컨테이너 테두리
                     borderRadius: BorderRadius.circular(20), // 컨테이너 박스 둥글게
                   ),
                   child: Column(
@@ -65,7 +65,11 @@ class profilePage extends StatelessWidget {
                             child: Row(
                               children: [
                                 SizedBox(
-                                  child: Icon(Icons.person_pin, size: 55),
+                                  child: Icon(
+                                    Icons.account_circle,
+                                    color: Color.fromRGBO(248, 246, 232, 50),
+                                    size: 50,
+                                  ),
                                   width: 70,
                                 ),
                                 SizedBox(
@@ -76,7 +80,7 @@ class profilePage extends StatelessWidget {
                                         color:
                                             Color.fromRGBO(255, 255, 255, 50),
                                         fontSize: 18,
-                                        fontWeight: FontWeight.w700,
+                                        fontWeight: FontWeight.w500,
                                       )),
                                   width:
                                       MediaQuery.of(context).size.width * 0.7,
@@ -95,7 +99,7 @@ class profilePage extends StatelessWidget {
                                 style: TextStyle(
                                     fontFamily: 'LilitaOne',
                                     fontSize: 30,
-                                    fontWeight: FontWeight.w700,
+                                    fontWeight: FontWeight.w500,
                                     color: Color.fromRGBO(255, 255, 255, 50)),
                               ),
                             ),
@@ -103,28 +107,40 @@ class profilePage extends StatelessWidget {
                           flex: 1),
                       Flexible(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(color: Colors.white),
+                            padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Color.fromRGBO(55, 115, 108, 1),
+                                border: Border.all(
+                                    color: Color.fromRGBO(22, 57, 26, 100),
+                                    width: 2), // 컨테이너 테두리
+                                borderRadius:
+                                    BorderRadius.circular(20), // 컨테이너 박스 둥글게
+                              ),
+                            ),
                           ),
                           flex: 4),
                       Flexible(
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Image.asset('assets/pig.png'),
+                            child: Image.asset('assets/pig.png'), // 돼지 사진
                           ),
                           flex: 2),
                       // 로그아웃 버튼
                       TextButton(
                           onPressed: () {
                             FirebaseAuth.instance.signOut();
-                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => MyApp()),
+                            );
                           },
                           child: Text(
                             'LogOut',
                             style: TextStyle(
                                 fontFamily: 'LilitaOne',
                                 fontSize: 18,
-                                fontWeight: FontWeight.w700,
+                                fontWeight: FontWeight.w500,
                                 color: Color.fromRGBO(255, 255, 255, 50)),
                           ))
                     ],
@@ -132,22 +148,10 @@ class profilePage extends StatelessWidget {
                 ),
               ),
               flex: 9,
-            )
+            ),
           ],
         ),
         backgroundColor: Color.fromRGBO(55, 115, 108, 1),
-
-        // IconButton(
-        //   onPressed: () {
-        //     //로그아웃 버튼
-        //     FirebaseAuth.instance.signOut();
-        //     Navigator.pop(context);
-        //   },
-
-        //   icon: Icon(Icons.exit_to_app_sharp,
-        //       color: const Color.fromARGB(255, 8, 8, 8)),
-        // ),
-
         bottomNavigationBar: Container(
           child: BottomNavigationBar(
             backgroundColor: Color.fromRGBO(55, 115, 108, 1),
