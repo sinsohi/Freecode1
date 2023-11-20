@@ -24,8 +24,11 @@ class _calendarPageState extends State<calendarPage> {
   DateTime today = DateTime.now();
   Map<DateTime, List<Event>> events = {
     DateTime.utc(2023, 11, 08): [
-      Event('음식'),
+      Event('식비'),
       Event('교통'),
+      Event('쇼핑'),
+      Event('여가비'),
+      Event('기타'),
     ],
     DateTime.utc(2023, 11, 20): [Event('쇼핑')],
     DateTime.utc(2023, 11, 25): [Event('교통')],
@@ -163,8 +166,8 @@ class _calendarPageState extends State<calendarPage> {
                   ),
                   padding: EdgeInsets.all(16.0),
                   width: 480,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  height: 200.0, // 높이를 유동적으로 조절하거나 필요에 따라 설정하세요.
+                  child: ListView(
                     children: _buildEventContainers(eventsForSelectedDay),
                   ),
                 ),
