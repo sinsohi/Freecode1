@@ -20,25 +20,23 @@ class _HomePageState extends State<HomePage> {
   final DatabaseReference expenseRef =
       FirebaseDatabase.instance.reference().child('expenses');
   final DatabaseReference incomeRef =
-    FirebaseDatabase.instance.reference().child('incomes');
+      FirebaseDatabase.instance.reference().child('incomes');
   double totalExpenses = 0.0;
   double totalincomes = 0.0;
   List<Map<String, dynamic>> expensesList = [];
   List<Map<String, dynamic>> incomesList = [];
   Future<List<Map<String, dynamic>>>? expensesFuture;
   late Future<List<Map<String, dynamic>>> incomesFuture;
-  
- 
 
   @override
   void initState() {
     super.initState();
     expensesFuture = _loadExpenses();
     incomesFuture = _loadIncomes();
-    
   }
 
-  Future<void> addExpense(String type, DateTime date, String category, String itemName, double amount) async {
+  Future<void> addExpense(String type, DateTime date, String category,
+      String itemName, double amount) async {
     await expenseRef.push().set({
       'type': type,
       'date': DateFormat('yyyy-MM-dd').format(date),
@@ -61,130 +59,128 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  Future<List<Map<String, dynamic>>> _loadExpenses() async {
+    List<Map<String, dynamic>> loadedExpenses = [];
+    String today = DateFormat('yyyy-MM-dd')
+        .format(DateTime.now()); // 오늘 날짜를 yyyy-MM-dd 형식의 문자열로 변환
 
-Future<List<Map<String, dynamic>>> _loadExpenses() async {
-  List<Map<String, dynamic>> loadedExpenses = [];
-  String today = DateFormat('yyyy-MM-dd').format(DateTime.now()); // 오늘 날짜를 yyyy-MM-dd 형식의 문자열로 변환
+    DataSnapshot snapshot =
+        await expenseRef.orderByChild('date').equalTo(today).get();
 
-  DataSnapshot snapshot = await expenseRef.orderByChild('date').equalTo(today).get();
+    if (snapshot.value != null) {
+      Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
 
-  if (snapshot.value != null) {
-    Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
-
-    if (values != null) {
-      values.forEach((key, value) {
-        loadedExpenses.add({
-          'type': value['type'],
-          'amount': value['amount'],
-          'date': value['date'],
-          'category': value['category'], 
+      if (values != null) {
+        values.forEach((key, value) {
+          loadedExpenses.add({
+            'type': value['type'],
+            'amount': value['amount'],
+            'date': value['date'],
+            'category': value['category'],
+          });
         });
-      });
+      }
     }
+
+    return loadedExpenses;
   }
 
-  return loadedExpenses;
-}
+  Future<List<Map<String, dynamic>>> _loadIncomes() async {
+    List<Map<String, dynamic>> loadedIncomes = [];
 
-Future<List<Map<String, dynamic>>> _loadIncomes() async {
-  List<Map<String, dynamic>> loadedIncomes = [];
-  
+    DataSnapshot snapshot = await incomeRef.get();
 
-  DataSnapshot snapshot = await incomeRef.get();
+    if (snapshot.value != null) {
+      Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
 
-  if (snapshot.value != null) {
-    Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
-
-    if (values != null) {
-      values.forEach((key, value) {
-        loadedIncomes.add({
-          'amount': value['amount'],
-          'date': value['date'],
+      if (values != null) {
+        values.forEach((key, value) {
+          loadedIncomes.add({
+            'amount': value['amount'],
+            'date': value['date'],
+          });
         });
-      });
+      }
     }
+
+    return loadedIncomes;
   }
 
-  return loadedIncomes;
-}
+  Future<List<Map<String, dynamic>>> _loadAllExpenses() async {
+    List<Map<String, dynamic>> loadedExpenses = [];
 
+    DataSnapshot snapshot = await expenseRef.get();
 
-Future<List<Map<String, dynamic>>> _loadAllExpenses() async {
-  List<Map<String, dynamic>> loadedExpenses = [];
+    if (snapshot.value != null) {
+      Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
 
-  DataSnapshot snapshot = await expenseRef.get();
-
-  if (snapshot.value != null) {
-    Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
-
-    if (values != null) {
-      values.forEach((key, value) {
-        loadedExpenses.add({
-          'type': value['type'],
-          'amount': value['amount'],
-          'date': value['date'],
-          'category': value['category'], 
+      if (values != null) {
+        values.forEach((key, value) {
+          loadedExpenses.add({
+            'type': value['type'],
+            'amount': value['amount'],
+            'date': value['date'],
+            'category': value['category'],
+          });
         });
-      });
+      }
     }
+
+    return loadedExpenses;
   }
 
-  return loadedExpenses;
-}
+  Future<List<Map<String, dynamic>>> _loadAllIncomes() async {
+    List<Map<String, dynamic>> loadedIncomes = [];
 
-Future<List<Map<String, dynamic>>> _loadAllIncomes() async {
-  List<Map<String, dynamic>> loadedIncomes = [];
+    DataSnapshot snapshot = await incomeRef.get();
 
-  DataSnapshot snapshot = await incomeRef.get();
+    if (snapshot.value != null) {
+      Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
 
-  if (snapshot.value != null) {
-    Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
-
-    if (values != null) {
-      values.forEach((key, value) {
-        loadedIncomes.add({
-          'amount': value['amount'],
-          'date': value['date'],
+      if (values != null) {
+        values.forEach((key, value) {
+          loadedIncomes.add({
+            'amount': value['amount'],
+            'date': value['date'],
+          });
         });
-      });
+      }
     }
+
+    return loadedIncomes;
   }
 
-  return loadedIncomes;
-}
+  static const category = ['음식', '교통', '여가', '쇼핑', '기타'];
 
-static const category = ['음식', '교통', '여가', '쇼핑', '기타'];
+  Map<String, List<Map<String, dynamic>>> groupExpensesByCategory(
+      List<Map<String, dynamic>> expenses) {
+    Map<String, List<Map<String, dynamic>>> groupedExpenses = {
+      for (var category in category.where((c) => c != '기타'))
+        category: expenses.where((e) => e['category'] == category).toList(),
+    };
 
-Map<String, List<Map<String, dynamic>>> groupExpensesByCategory(List<Map<String, dynamic>> expenses) {
-  Map<String, List<Map<String, dynamic>>> groupedExpenses = {
-    for (var category in category.where((c) => c != '기타'))
-      category: expenses.where((e) => e['category'] == category).toList(),
-  };
+    groupedExpenses['기타'] = expenses
+        .where((e) => !category.where((c) => c != '기타').contains(e['category']))
+        .toList();
 
-  groupedExpenses['기타'] = expenses.where((e) => !category.where((c) => c != '기타').contains(e['category'])).toList();
+    return groupedExpenses;
+  }
 
-  return groupedExpenses;
-}
+  Map<String, double> calculateCategoryExpenses(
+      List<Map<String, dynamic>> expenses) {
+    var groupedExpenses = groupExpensesByCategory(expenses);
 
+    Map<String, double> categoryExpenses = {};
+    groupedExpenses.forEach((category, expenses) {
+      double total = 0.0;
+      for (var expense in expenses) {
+        total += (expense['amount'] as num).toDouble();
+      }
+      categoryExpenses[category] = total;
+    });
 
-
-Map<String, double> calculateCategoryExpenses(List<Map<String, dynamic>> expenses) {
-  var groupedExpenses = groupExpensesByCategory(expenses);
-  
-  Map<String, double> categoryExpenses = {};
-  groupedExpenses.forEach((category, expenses) {
-    double total = 0.0;
-    for (var expense in expenses) {
-      total += (expense['amount'] as num).toDouble();
-    }
-    categoryExpenses[category] = total;
-  });
-
-  return categoryExpenses;
-}
-
-
-
+    return categoryExpenses;
+  }
 
   double _calculateTotalExpenses(List<Map<String, dynamic>> expenses) {
     double total = 0.0;
@@ -194,26 +190,21 @@ Map<String, double> calculateCategoryExpenses(List<Map<String, dynamic>> expense
     return total;
   }
 
- // ignore: unused_element
- double _calculateTotalIncomes(List<Map<String, dynamic>> incomes) {
-  double total = 0.0;
-  for (var income in incomes) {
-    total += (income['amount'] as num).toDouble();
+  // ignore: unused_element
+  double _calculateTotalIncomes(List<Map<String, dynamic>> incomes) {
+    double total = 0.0;
+    for (var income in incomes) {
+      total += (income['amount'] as num).toDouble();
+    }
+    return total;
   }
-  return total;
-}
 
-double _calculateCurrentAsset(List<Map<String, dynamic>> incomes, List<Map<String, dynamic>> expenses) {
-  double totalIncome = _calculateTotalIncomes(incomes);
-  double totalExpense = _calculateTotalExpenses(expenses);
-  return totalIncome - totalExpense;
-}
-
-
-
-
-
-
+  double _calculateCurrentAsset(
+      List<Map<String, dynamic>> incomes, List<Map<String, dynamic>> expenses) {
+    double totalIncome = _calculateTotalIncomes(incomes);
+    double totalExpense = _calculateTotalExpenses(expenses);
+    return totalIncome - totalExpense;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -224,7 +215,11 @@ double _calculateCurrentAsset(List<Map<String, dynamic>> incomes, List<Map<Strin
           title: Container(
             child: Row(
               children: const [
-                Icon(Icons.account_circle, color: Color.fromRGBO(248, 246, 232, 1), size: 50,),
+                Icon(
+                  Icons.account_circle,
+                  color: Color.fromRGBO(248, 246, 232, 1),
+                  size: 50,
+                ),
                 SizedBox(width: 10),
                 Text(
                   'welcome!',
@@ -244,11 +239,20 @@ double _calculateCurrentAsset(List<Map<String, dynamic>> incomes, List<Map<Strin
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(width: double.infinity, height: 30,),
-              Container(color: Color.fromRGBO(55, 115, 108, 1), width: double.infinity, height: 300,
+              SizedBox(
+                width: double.infinity,
+                height: 30,
+              ),
+              Container(
+                color: Color.fromRGBO(55, 115, 108, 1),
+                width: double.infinity,
+                height: 300,
                 child: Column(
                   children: [
-                    Container(color: Color.fromRGBO(100, 115, 108, 1), width: double.infinity, height: 100,
+                    Container(
+                      color: Color.fromRGBO(100, 115, 108, 1),
+                      width: double.infinity,
+                      height: 100,
                       child: Row(
                         children: [
                           ElevatedButton(
@@ -265,84 +269,80 @@ double _calculateCurrentAsset(List<Map<String, dynamic>> incomes, List<Map<Strin
                   ],
                 ),
               ),
-              
+
               Text('category expense'),
               // ...
 
-FutureBuilder<List<Map<String, dynamic>>>(
-          future: expensesFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              double total = _calculateTotalExpenses(snapshot.data ?? []);
-              return Text('today expense total: $total');
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else {
-              return CircularProgressIndicator();
-            }
-          },
-        ),
+              FutureBuilder<List<Map<String, dynamic>>>(
+                future: expensesFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    double total = _calculateTotalExpenses(snapshot.data ?? []);
+                    return Text('today expense total: $total');
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                },
+              ),
 
-        FutureBuilder<List<Map<String, dynamic>>>(
-  future: incomesFuture,
-  builder: (context, snapshot) {
-    if (snapshot.connectionState == ConnectionState.done) {
-      double total = _calculateTotalExpenses(snapshot.data ?? []);
-      return Text('오늘의 수입 합계: $total');
-    } else if (snapshot.hasError) {
-      return Text('Error: ${snapshot.error}');
-    } else {
-      return CircularProgressIndicator();
-    }
-  },
-),
+              FutureBuilder<List<Map<String, dynamic>>>(
+                future: incomesFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    double total = _calculateTotalExpenses(snapshot.data ?? []);
+                    return Text('오늘의 수입 합계: $total');
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                },
+              ),
 
-FutureBuilder<List<List<Map<String, dynamic>>>>(
-  future: Future.wait([_loadAllIncomes(), _loadAllExpenses()]),
-  builder: (context, snapshot) {
-    if (snapshot.connectionState == ConnectionState.done) {
-      List<Map<String, dynamic>> incomes = snapshot.data?[0] ?? [];
-      List<Map<String, dynamic>> expenses = snapshot.data?[1] ?? [];
-      double currentAsset = _calculateCurrentAsset(incomes, expenses);
-      return Text('현재 자산 현황: $currentAsset');
-    } else if (snapshot.hasError) {
-      return Text('Error: ${snapshot.error}');
-    } else {
-      return CircularProgressIndicator();
-    }
-  },
-),
+              FutureBuilder<List<List<Map<String, dynamic>>>>(
+                future: Future.wait([_loadAllIncomes(), _loadAllExpenses()]),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    List<Map<String, dynamic>> incomes =
+                        snapshot.data?[0] ?? [];
+                    List<Map<String, dynamic>> expenses =
+                        snapshot.data?[1] ?? [];
+                    double currentAsset =
+                        _calculateCurrentAsset(incomes, expenses);
+                    return Text('현재 자산 현황: $currentAsset');
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                },
+              ),
 
 // 위의 함수를 사용해 지출을 카테고리별로 분류하고, 각 카테고리의 총 지출을 계산
-FutureBuilder<List<Map<String, dynamic>>>(
-  future: expensesFuture,
-  builder: (context, snapshot) {
-    if (snapshot.connectionState == ConnectionState.done) {
-      if (snapshot.hasError) {
-        return Text('Error: ${snapshot.error}');
-      }
+              FutureBuilder<List<Map<String, dynamic>>>(
+                future: expensesFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    }
 
-      Map<String, double> categoryExpenses = calculateCategoryExpenses(snapshot.data ?? []);
-      return Column(
-        children: categoryExpenses.entries.map((entry) {
-          return Text('${entry.key}: ${entry.value}');
-        }).toList(),
-      );
-    } else {
-      return CircularProgressIndicator();
-    }
-  },
-),
-
-
-
-
-
-
-
+                    Map<String, double> categoryExpenses =
+                        calculateCategoryExpenses(snapshot.data ?? []);
+                    return Column(
+                      children: categoryExpenses.entries.map((entry) {
+                        return Text('${entry.key}: ${entry.value}');
+                      }).toList(),
+                    );
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                },
+              ),
 
 // ...
-
             ],
           ),
         ),
@@ -360,8 +360,10 @@ FutureBuilder<List<Map<String, dynamic>>>(
             type: BottomNavigationBarType.fixed,
             selectedItemColor: Color.fromRGBO(248, 246, 232, 1),
             unselectedItemColor: Color.fromRGBO(248, 246, 232, 1),
-            selectedLabelStyle: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-            unselectedLabelStyle: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+            selectedLabelStyle:
+                TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+            unselectedLabelStyle:
+                TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
             showSelectedLabels: true,
             showUnselectedLabels: false,
             items: const <BottomNavigationBarItem>[
@@ -442,8 +444,10 @@ FutureBuilder<List<Map<String, dynamic>>>(
                           data: ThemeData.light().copyWith(
                             primaryColor: Color.fromRGBO(55, 115, 108, 1),
                             hintColor: Color.fromRGBO(55, 115, 108, 1),
-                            colorScheme: ColorScheme.light(primary: Color.fromRGBO(55, 115, 108, 1)),
-                            buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
+                            colorScheme: ColorScheme.light(
+                                primary: Color.fromRGBO(55, 115, 108, 1)),
+                            buttonTheme: ButtonThemeData(
+                                textTheme: ButtonTextTheme.primary),
                           ),
                           child: child!,
                         );
@@ -516,13 +520,11 @@ FutureBuilder<List<Map<String, dynamic>>>(
             ),
           ],
         );
-      }, 
+      },
     );
   }
 
-
-
-   Future<void> _showIncomeDialog(BuildContext context) async {
+  Future<void> _showIncomeDialog(BuildContext context) async {
     DateTime selectedDate = DateTime.now();
     double amount = 0.0;
 
@@ -578,22 +580,19 @@ FutureBuilder<List<Map<String, dynamic>>>(
               },
               child: Text('cancel'),
             ),
-           TextButton(
-            onPressed: () {
-               addIncome(
-               selectedDate,
-                amount,
-    );
-    Navigator.of(context).pop();
-  },
-  child: Text('add'),
-),
-
+            TextButton(
+              onPressed: () {
+                addIncome(
+                  selectedDate,
+                  amount,
+                );
+                Navigator.of(context).pop();
+              },
+              child: Text('add'),
+            ),
           ],
         );
       },
     );
   }
-
-
-  }
+}
