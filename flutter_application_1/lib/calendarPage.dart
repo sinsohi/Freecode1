@@ -53,7 +53,7 @@ class _calendarPageState extends State<calendarPage> {
   }
 
   Widget content() {
-    return Column(
+    return ListView(
       children: [
         Container(
           child: TableCalendar(
@@ -101,7 +101,7 @@ class _calendarPageState extends State<calendarPage> {
                 fontSize: 16.0,
               ),
               todayDecoration: const BoxDecoration(
-                color: const Color(0xff37736c),
+                color: const Color(0xff82a282),
                 shape: BoxShape.circle,
               ),
               selectedDecoration: const BoxDecoration(
@@ -139,9 +139,9 @@ class _calendarPageState extends State<calendarPage> {
     if (eventsForSelectedDay.isNotEmpty) {
       return Column(
         children: [
-          _buildEventList('소비 내역 1', eventsForSelectedDay),
+          _buildEventList('수입', eventsForSelectedDay),
           SizedBox(height: 20),
-          _buildEventList('소비 내역 2', eventsForSelectedDay),
+          _buildEventList('지출', eventsForSelectedDay),
         ],
       );
     } else {
