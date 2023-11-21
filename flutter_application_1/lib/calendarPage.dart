@@ -139,41 +139,9 @@ class _calendarPageState extends State<calendarPage> {
     if (eventsForSelectedDay.isNotEmpty) {
       return Column(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              color: const Color(0xff37736c),
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            padding: EdgeInsets.all(16.0),
-            width: 480,
-            height: 270.0,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '소비 내역',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: const Color(0xfff8f6e8),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 8.0),
-                Container(
-                  decoration: BoxDecoration(
-                    color: const Color(0xff82a282),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  padding: EdgeInsets.all(16.0),
-                  width: 480,
-                  height: 200.0, // 높이를 유동적으로 조절하거나 필요에 따라 설정하세요.
-                  child: ListView(
-                    children: _buildEventContainers(eventsForSelectedDay),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          _buildEventList('소비 내역 1', eventsForSelectedDay),
+          SizedBox(height: 20),
+          _buildEventList('소비 내역 2', eventsForSelectedDay),
         ],
       );
     } else {
@@ -181,29 +149,57 @@ class _calendarPageState extends State<calendarPage> {
     }
   }
 
-  List<Widget> _buildEventContainers(List<Event> events) {
-    List<Widget> containers = [];
-
-    for (Event event in events) {
-      containers.add(
-        Container(
-          margin: EdgeInsets.only(bottom: 8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                event.name,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: const Color(0xfff8f6e8),
-                ),
-              ),
-              SizedBox(height: 8.0),
-            ],
+  Widget _buildEventList(String title, List<Event> events) {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xff37736c),
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      padding: EdgeInsets.all(16.0),
+      width: 480,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 18,
+              color: const Color(0xfff8f6e8),
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-      );
-    }
-    return containers;
+          SizedBox(height: 8.0),
+          Container(
+            height: 150.0,
+            decoration: BoxDecoration(
+              color: const Color(0xff82a282),
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            padding: EdgeInsets.all(16.0),
+            child: ListView.builder(
+              itemCount: events.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                  margin: EdgeInsets.only(bottom: 8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        events[index].name,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: const Color(0xfff8f6e8),
+                        ),
+                      ),
+                      SizedBox(height: 8.0),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
