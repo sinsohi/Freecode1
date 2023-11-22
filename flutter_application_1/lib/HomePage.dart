@@ -1,7 +1,6 @@
 // ignore_for_file: unused_local_variable, duplicate_ignore, file_names, library_private_types_in_public_api, deprecated_member_use, avoid_unnecessary_containers
 
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'calendarPage.dart';
 import 'graph.dart';
@@ -180,17 +179,17 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
     return loadedIncomes;
   }
 
-  static const category = ['음식', '교통', '여가', '쇼핑', '기타'];
+  static const category = ['food', 'traffic', 'leisure', 'shopping', 'etc'];
 
   Map<String, List<Map<String, dynamic>>> groupExpensesByCategory(
       List<Map<String, dynamic>> expenses) {
     Map<String, List<Map<String, dynamic>>> groupedExpenses = {
-      for (var category in category.where((c) => c != '기타'))
+      for (var category in category.where((c) => c != 'etc'))
         category: expenses.where((e) => e['category'] == category).toList(),
     };
 
-    groupedExpenses['기타'] = expenses
-        .where((e) => !category.where((c) => c != '기타').contains(e['category']))
+    groupedExpenses['etc'] = expenses
+        .where((e) => !category.where((c) => c != 'etc').contains(e['category']))
         .toList();
 
     return groupedExpenses;
@@ -451,7 +450,7 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
 
  Future<void> _showExpenseDialog(BuildContext context) async {
     DateTime selectedDate = DateTime.now();
-     List<String> categories = ['category', '음식', '교통', '여가', '쇼핑', '기타'];
+     List<String> categories = ['category', 'food', 'traffic', 'leisure', 'shopping', 'etc'];
     String category = categories[0];
     String itemName = '';
     double amount = 0.0;
@@ -530,6 +529,7 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
                     ),
                     TextField(
                       decoration: InputDecoration(labelText: 'detail'),
+                
                       onChanged: (text) {
                         itemName = text;
                       },
@@ -661,3 +661,4 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
     );
   }
 }
+ 
