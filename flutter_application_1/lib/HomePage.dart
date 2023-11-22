@@ -85,26 +85,28 @@ class _HomePageState extends State<HomePage> {
     return loadedExpenses;
   }
 
-  Future<List<Map<String, dynamic>>> _loadIncomes() async {
-    List<Map<String, dynamic>> loadedIncomes = [];
+Future<List<Map<String, dynamic>>> _loadIncomes() async {
+  List<Map<String, dynamic>> loadedIncomes = [];
+  String today = DateFormat('yyyy-MM-dd').format(DateTime.now()); // 오늘 날짜를 yyyy-MM-dd 형식의 문자열로 변환
 
-    DataSnapshot snapshot = await incomeRef.get();
+  DataSnapshot snapshot = await incomeRef.orderByChild('date').equalTo(today).get();
 
-    if (snapshot.value != null) {
-      Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
+  if (snapshot.value != null) {
+    Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
 
-      if (values != null) {
-        values.forEach((key, value) {
-          loadedIncomes.add({
-            'amount': value['amount'],
-            'date': value['date'],
-          });
+    if (values != null) {
+      values.forEach((key, value) {
+        loadedIncomes.add({
+          'amount': value['amount'],
+          'date': value['date'],
         });
-      }
+      });
     }
-
-    return loadedIncomes;
   }
+
+  return loadedIncomes;
+}
+
 
   Future<List<Map<String, dynamic>>> _loadAllExpenses() async {
     List<Map<String, dynamic>> loadedExpenses = [];
