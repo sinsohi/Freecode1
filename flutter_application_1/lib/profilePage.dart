@@ -10,8 +10,16 @@ FirebaseAuth auth = FirebaseAuth.instance;
 User? user = auth.currentUser;
 String? userId = user?.email;
 
-class profilePage extends StatelessWidget {
+class profilePage extends StatefulWidget {
   const profilePage({super.key});
+
+  @override
+  State<profilePage> createState() => _profilePageState();
+}
+
+class _profilePageState extends State<profilePage> {
+  List<TextEditingController> wishList = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,7 +74,7 @@ class profilePage extends StatelessWidget {
                               children: [
                                 SizedBox(
                                   child: Icon(
-                                    Icons.account_circle,
+                                    Icons.account_circle, // 사용자 아이콘
                                     color: Color.fromRGBO(248, 246, 232, 50),
                                     size: 50,
                                   ),
@@ -109,6 +117,24 @@ class profilePage extends StatelessWidget {
                           child: Padding(
                             padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
                             child: Container(
+                              child: ListView.builder(
+                                itemCount: wishList.length,
+                                itemBuilder: (context, index) {
+                                  return ListTile(
+                                    leading: Image.asset(
+                                        'assets/Dollar Coin.png'), // 동전 코인
+                                    title: TextField(
+                                      controller: wishList[index],
+                                      style: TextStyle(
+                                          fontFamily: 'LilitaOne',
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w200,
+                                          color: Color.fromRGBO(
+                                              255, 255, 255, 50)),
+                                    ),
+                                  );
+                                },
+                              ),
                               decoration: BoxDecoration(
                                 color: Color.fromRGBO(55, 115, 108, 1),
                                 border: Border.all(
@@ -123,9 +149,17 @@ class profilePage extends StatelessWidget {
                       Flexible(
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Image.asset('assets/pig.png'), // 돼지 사진
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  wishList.add(TextEditingController());
+                                });
+                              },
+                              child: Image.asset('assets/pig.png'), // 돼지 사진
+                            ),
                           ),
                           flex: 2),
+
                       // 로그아웃 버튼
                       TextButton(
                           onPressed: () {
