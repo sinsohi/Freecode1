@@ -451,7 +451,8 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
 
  Future<void> _showExpenseDialog(BuildContext context) async {
     DateTime selectedDate = DateTime.now();
-    String category = '';
+     List<String> categories = ['category', '음식', '교통', '여가', '쇼핑', '기타'];
+    String category = categories[0];
     String itemName = '';
     double amount = 0.0;
 
@@ -505,11 +506,27 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
                         ],
                       ),
                     ),
-                    TextField(
-                      decoration: InputDecoration(labelText: 'category'),
-                      onChanged: (text) {
-                        category = text;
+                    DropdownButton<String>(
+                      value: category,
+                      
+                      iconSize: 24,
+                      elevation: 16,
+                      style: TextStyle(color: Colors.deepPurple),
+                      underline: Container(
+                        height: 2,
+                        color: Colors.deepPurpleAccent,
+                      ),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          category = newValue!;
+                        });
                       },
+                      items: categories.map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
                     ),
                     TextField(
                       decoration: InputDecoration(labelText: 'detail'),
