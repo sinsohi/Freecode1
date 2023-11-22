@@ -31,6 +31,7 @@ class profilePage extends StatefulWidget {
 
 class _profilePageState extends State<profilePage> {
   List<TextEditingController> wishList = [];
+  List<String> wishListKeys = [];
 
   @override
   void initState() {
@@ -41,12 +42,20 @@ class _profilePageState extends State<profilePage> {
       var snapshot = event.snapshot;
       Map<dynamic, dynamic> values =
           (snapshot.value as Map<dynamic, dynamic>) ?? {};
-      wishList.clear(); // 기존 리스트를 비웁니다.
+      wishList.clear();
+      wishListKeys.clear();
       values.forEach((key, value) {
         wishList.add(TextEditingController(text: value['itemName']));
+        wishListKeys.add(key);
       });
-      setState(() {}); // 화면 갱신
+      setState(() {});
     });
+  }
+
+  void deleteFromDatabase(int index) {
+    DatabaseReference _ref =
+        FirebaseDatabase.instance.reference().child('wishList');
+    _ref.child(wishListKeys[index]).remove();
   }
 
   @override
@@ -150,26 +159,31 @@ class _profilePageState extends State<profilePage> {
                                 itemCount: wishList.length,
                                 itemBuilder: (context, index) {
                                   return ListTile(
-                                    leading: Image.asset(
-                                        'assets/Dollar Coin.png'), // 동전 코인
-                                    title: TextField(
-                                      controller: wishList[index],
-                                      onSubmitted: (value) {
-                                        saveToDatabase(
-                                            value); // 텍스트 입력이 완료되면 데이터베이스에 저장합니다.
-                                      },
-                                      style: TextStyle(
-                                          fontFamily: 'LilitaOne',
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w200,
-                                          color: Color.fromRGBO(
-                                              255, 255, 255, 50)),
-                                    ),
-                                  );
+                                      leading: Image.asset(
+                                          'assets/Dollar Coin.png'), // 동전 코인
+                                      title: TextField(
+                                        controller: wishList[index],
+                                        onSubmitted: (value) {
+                                          saveToDatabase(
+                                              value); // 텍스트 입력이 완료되면 데이터베이스에 저장
+                                        },
+                                        style: TextStyle(
+                                            fontFamily: 'LilitaOne',
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w200,
+                                            color: Color.fromRGBO(
+                                                255, 255, 255, 50)),
+                                      ),
+                                      trailing: IconButton(
+                                        icon: Icon(Icons.delete),
+                                        onPressed: () {
+                                          deleteFromDatabase(index);
+                                        },
+                                      ));
                                 },
                               ),
                               decoration: BoxDecoration(
-                                color: Color.fromRGBO(55, 115, 108, 1),
+                                color: Color.fromRGBO(84, 130, 125, 1),
                                 border: Border.all(
                                     color: Color.fromRGBO(22, 57, 26, 100),
                                     width: 2), // 컨테이너 테두리
