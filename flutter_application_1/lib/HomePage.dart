@@ -351,26 +351,40 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
               ),
 
 // 위의 함수를 사용해 지출을 카테고리별로 분류하고, 각 카테고리의 총 지출을 계산
-              FutureBuilder<List<Map<String, dynamic>>>(
-                future: expensesFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    }
+             Container(
+  color: Color.fromRGBO(156, 40, 40, 1),
+  child: FutureBuilder<List<Map<String, dynamic>>>(
+    future: expensesFuture,
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.done) {
+        if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        }
 
-                    Map<String, double> categoryExpenses =
-                        calculateCategoryExpenses(snapshot.data ?? []);
-                    return Column(
-                      children: categoryExpenses.entries.map((entry) {
-                        return Text('${entry.key}: ${entry.value}');
-                      }).toList(),
-                    );
-                  } else {
-                    return CircularProgressIndicator();
-                  }
-                },
+        Map<String, double> categoryExpenses =
+            calculateCategoryExpenses(snapshot.data ?? []);
+        return Column(
+          children: categoryExpenses.entries.map((entry) {
+            return Container(width: 200, height: 50,
+              margin: const EdgeInsets.all(8.0),  // 여백 추가
+              color: Colors.green,  // 초록색 배경 적용
+              child: Padding(  // 텍스트와 사각형 사이에 여백 추가
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  '${entry.key}: ${entry.value}',
+                  style: TextStyle(color: Colors.white),  // 텍스트 색상 변경
+                ),
               ),
+            );
+          }).toList(),
+        );
+      } else {
+        return CircularProgressIndicator();
+      }
+    },
+  ),
+)
+
 
 // ...
             ],
