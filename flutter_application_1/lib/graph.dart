@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
 //import 'package:fl_chart/fl_chart.dart';
 //import 'package:syncfusion_flutter_charts/charts.dart';
 //import 'package:syncfusion_flutter_charts/sparkcharts.dart';
@@ -11,7 +12,11 @@ import 'dart:math' as math;
 import 'calendarPage.dart'; //바텀네비게이션바
 import 'graph.dart';
 import 'profilePage.dart';
+import 'package:table_calendar/table_calendar.dart'; // 15~16 현재 월 표시
+import 'package:intl/intl.dart';
 
+
+final String currentMonth = DateFormat('MMMM').format(DateTime.now());
 
 class RowItem extends StatelessWidget {
   final Color color;
@@ -57,20 +62,20 @@ class _graphState extends State<graph> {
   @override
   Widget build(BuildContext context) {
     List<PieModel> model = [
-      PieModel(count: 30, color: Color.fromARGB(255, 255, 17, 0).withOpacity(1)),
-      PieModel(count: 5, color: Color.fromARGB(255, 30, 154, 255).withOpacity(1)),
-      PieModel(count: 3, color: const Color.fromARGB(255, 214, 214, 214).withOpacity(1)),
-      PieModel(count: 10, color: Color.fromARGB(255, 255, 233, 65).withOpacity(1)),
-      PieModel(count: 2, color: Color.fromARGB(255, 124, 205, 127).withOpacity(1)),
-      PieModel(count: 30, color: Colors.cyan.withOpacity(1)),
-      PieModel(count: 20, color: Color.fromARGB(255, 255, 143, 238).withOpacity(1)),
+      PieModel(count: 30, color: Color.fromARGB(255, 44, 183, 92).withOpacity(1)),
+      PieModel(count: 10, color: Color.fromARGB(255, 253, 225, 14).withOpacity(1)),
+      PieModel(count: 30, color: Color.fromARGB(255, 255, 199, 44).withOpacity(1)),
+      PieModel(count: 30, color: const Color.fromARGB(255, 214, 214, 214).withOpacity(1)),
     ];
     
 
     
     return Scaffold(
       backgroundColor: Color(0xFFF8F6E8),
-      appBar: AppBar(title: Text('11월 통계')),
+      appBar: AppBar(
+    title: Text('$currentMonth'),
+    backgroundColor: Color(0xFF37736C), 
+    ), //상단
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -95,15 +100,16 @@ class _graphState extends State<graph> {
           alignment: Alignment.centerRight,
           children: [
             Positioned(
-              left: 360.0, //여백 조절
+              left: 400.0, //여백 조절
               top: 20.0, // 여백 및 이동 조절
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
                 children: [
-            RowItem(color: Color.fromARGB(255, 255, 17, 0).withOpacity(1), label: '여가'),
-            RowItem(color: Color.fromARGB(255, 30, 154, 255).withOpacity(1), label: '교통'),
-            RowItem(color: const Color.fromARGB(255, 214, 214, 214).withOpacity(1), label: '식비'), //비율 가장 큰 지출항목 3개 반영할 계획
+            RowItem(color: Color.fromARGB(255, 44, 183, 92).withOpacity(1), label: '식비'),
+            RowItem(color: Color.fromARGB(255, 255, 199, 44).withOpacity(1), label: '교통'),
+            RowItem(color: Color.fromARGB(255, 253, 225, 14).withOpacity(1), label: '쇼핑'),
+            RowItem(color: const Color.fromARGB(255, 214, 214, 214).withOpacity(1), label: '기타'), //비율 가장 큰 지출항목 3개 반영할 계획
             //지출항목에 대한 RowItem 추가
           ],
         ),
@@ -118,11 +124,11 @@ class _graphState extends State<graph> {
             child: Align(
               alignment: Alignment.centerLeft,
               child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
+            scrollDirection: Axis.horizontal,  //123~124 두 줄은 막대그래프 가로 스크롤 위한 것.
               child: Container(
             //막대그래프 코드
             //height: 400, //막대그래프의 높이
-        width: MediaQuery.of(context).size.width * 1.5, //막대그래프 가로 크기(0.8이었는데 1.5로 잠시수정)
+        width: MediaQuery.of(context).size.width * 1.5, //막대그래프 가로 크기(0.8이었는데 1.5로 수정)
         child: SimpleBarChart(
           makeItDouble: true,
           listOfHorizontalBarData: [
@@ -194,6 +200,42 @@ class _graphState extends State<graph> {
               color: const Color(0xFFFBBC05),
               size: 20000,
               sizeTwo: 9600,
+              colorTwo: Color(0xFF37736C),
+            ),
+            HorizontalDetailsModel(
+              name: '11일',
+              color: const Color(0xFFFBBC05),
+              size: 12000,
+              sizeTwo: 10000,
+              colorTwo: Color(0xFF37736C),
+            ),
+            HorizontalDetailsModel(
+              name: '12일',
+              color: const Color(0xFFFBBC05),
+              size: 12000,
+              sizeTwo: 10000,
+              colorTwo: Color(0xFF37736C),
+            ),
+            
+            HorizontalDetailsModel(
+              name: '14일',
+              color: const Color(0xFFFBBC05),
+              size: 12000,
+              sizeTwo: 10000,
+              colorTwo: Color(0xFF37736C),
+            ),
+            HorizontalDetailsModel(
+              name: '15일',
+              color: const Color(0xFFFBBC05),
+              size: 12000,
+              sizeTwo: 10000,
+              colorTwo: Color(0xFF37736C),
+            ),
+            HorizontalDetailsModel(
+              name: '16일',
+              color: const Color(0xFFFBBC05),
+              size: 12000,
+              sizeTwo: 10000,
               colorTwo: Color(0xFF37736C),
             ),
           ],
@@ -287,7 +329,7 @@ class _PieChart extends CustomPainter {
     Paint circlePaint = Paint()..color = Colors.white;
 
     Offset offset = Offset(size.width / 2, size.width / 2);
-    double radius = (size.width / 2) * 0.5; // 반지름 크기 조절. ex: 0.6은 현재 크기의 60%
+    double radius = (size.width / 2) * 0.65; // 파이 차트 반지름 크기 조절. ex: 0.6은 현재 크기의 60%
     canvas.drawCircle(offset, radius, circlePaint);
 
     double _startPoint = 0.0;
@@ -317,4 +359,4 @@ void main() {
   runApp(MaterialApp(
     home: graph(),
   ));
-}   
+}     
