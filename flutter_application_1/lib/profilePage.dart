@@ -5,10 +5,22 @@ import 'calendarPage.dart';
 import 'graph.dart';
 import 'HomePage.dart';
 import 'main.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 FirebaseAuth auth = FirebaseAuth.instance;
 User? user = auth.currentUser;
 String? userId = user?.email;
+
+void saveToDatabase(String itemName) {
+  if (itemName.isNotEmpty) {
+    DatabaseReference _ref =
+        FirebaseDatabase.instance.reference().child('wishList');
+    var id = _ref.push().key;
+    _ref.child(id!).set({
+      'itemName': itemName,
+    });
+  }
+}
 
 class profilePage extends StatefulWidget {
   const profilePage({super.key});
@@ -19,6 +31,23 @@ class profilePage extends StatefulWidget {
 
 class _profilePageState extends State<profilePage> {
   List<TextEditingController> wishList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    DatabaseReference _ref =
+        FirebaseDatabase.instance.reference().child('wishList');
+    _ref.onValue.listen((event) {
+      var snapshot = event.snapshot;
+      Map<dynamic, dynamic> values =
+          (snapshot.value as Map<dynamic, dynamic>) ?? {};
+      wishList.clear(); // 기존 리스트를 비웁니다.
+      values.forEach((key, value) {
+        wishList.add(TextEditingController(text: value['itemName']));
+      });
+      setState(() {}); // 화면 갱신
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -125,6 +154,10 @@ class _profilePageState extends State<profilePage> {
                                         'assets/Dollar Coin.png'), // 동전 코인
                                     title: TextField(
                                       controller: wishList[index],
+                                      onSubmitted: (value) {
+                                        saveToDatabase(
+                                            value); // 텍스트 입력이 완료되면 데이터베이스에 저장합니다.
+                                      },
                                       style: TextStyle(
                                           fontFamily: 'LilitaOne',
                                           fontSize: 15,
