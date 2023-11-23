@@ -34,6 +34,18 @@ class _profilePageState extends State<profilePage> {
   List<TextEditingController> wishList = [];
   List<String> wishListKeys = [];
 
+  // 사용자 정보 업데이트 함수
+  void updateUserData() {
+    // 사용자 인증 상태가 변경될 때마다 호출되는 이벤트 리스너
+    FirebaseAuth.instance.authStateChanges().listen((User? newUser) {
+      // 새로운 사용자 정보로 업데이트
+      user = newUser;
+      userId = user?.email;
+      userKey = user?.uid;
+      print("Updated user email: $userId");
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -205,7 +217,7 @@ class _profilePageState extends State<profilePage> {
                               onTap: () {
                                 setState(() {
                                   wishList.add(TextEditingController());
-                                  print(auth);
+                                  // print(auth);
                                 });
                               },
                               child: Image.asset('assets/pig.png'), // 돼지 사진
@@ -215,8 +227,9 @@ class _profilePageState extends State<profilePage> {
 
                       // 로그아웃 버튼
                       TextButton(
-                          onPressed: () {
-                            FirebaseAuth.instance.signOut();
+                          onPressed: () async {
+                            await FirebaseAuth.instance.signOut();
+                            updateUserData(); // 사용자 정보 업데이트
 
                             Navigator.push(
                               context,
