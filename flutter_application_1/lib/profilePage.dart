@@ -10,11 +10,12 @@ import 'package:firebase_database/firebase_database.dart';
 FirebaseAuth auth = FirebaseAuth.instance;
 User? user = auth.currentUser;
 String? userId = user?.email;
+String? userKey = user?.uid;
 
 void saveToDatabase(String itemName) {
-  if (itemName.isNotEmpty) {
+  if (itemName.isNotEmpty && userKey != null) {
     DatabaseReference _ref =
-        FirebaseDatabase.instance.reference().child('wishList');
+        FirebaseDatabase.instance.reference().child('wishList/$userKey');
     var id = _ref.push().key;
     _ref.child(id!).set({
       'itemName': itemName,
@@ -36,26 +37,30 @@ class _profilePageState extends State<profilePage> {
   @override
   void initState() {
     super.initState();
-    DatabaseReference _ref =
-        FirebaseDatabase.instance.reference().child('wishList');
-    _ref.onValue.listen((event) {
-      var snapshot = event.snapshot;
-      Map<dynamic, dynamic> values =
-          (snapshot.value as Map<dynamic, dynamic>) ?? {};
-      wishList.clear();
-      wishListKeys.clear();
-      values.forEach((key, value) {
-        wishList.add(TextEditingController(text: value['itemName']));
-        wishListKeys.add(key);
+    if (userKey != null) {
+      DatabaseReference _ref =
+          FirebaseDatabase.instance.reference().child('wishList/$userKey');
+      _ref.onValue.listen((event) {
+        var snapshot = event.snapshot;
+        Map<dynamic, dynamic> values =
+            (snapshot.value as Map<dynamic, dynamic>) ?? {};
+        wishList.clear();
+        wishListKeys.clear();
+        values.forEach((key, value) {
+          wishList.add(TextEditingController(text: value['itemName']));
+          wishListKeys.add(key);
+        });
+        setState(() {});
       });
-      setState(() {});
-    });
+    }
   }
 
   void deleteFromDatabase(int index) {
-    DatabaseReference _ref =
-        FirebaseDatabase.instance.reference().child('wishList');
-    _ref.child(wishListKeys[index]).remove();
+    if (userKey != null) {
+      DatabaseReference _ref =
+          FirebaseDatabase.instance.reference().child('wishList/$userKey');
+      _ref.child(wishListKeys[index]).remove();
+    }
   }
 
   @override
@@ -200,6 +205,7 @@ class _profilePageState extends State<profilePage> {
                               onTap: () {
                                 setState(() {
                                   wishList.add(TextEditingController());
+                                  print(auth);
                                 });
                               },
                               child: Image.asset('assets/pig.png'), // 돼지 사진
@@ -211,6 +217,7 @@ class _profilePageState extends State<profilePage> {
                       TextButton(
                           onPressed: () {
                             FirebaseAuth.instance.signOut();
+
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => MyApp()),
