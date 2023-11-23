@@ -19,88 +19,6 @@ import 'package:firebase_database/firebase_database.dart';
 
 
 
-Future<Map<String, dynamic>> getTotalAmountByCategory() async {
-  FirebaseAuth auth = FirebaseAuth.instance;
-  User? user = auth.currentUser;
-
-  if (user == null) {
-    // 사용자가 로그인되어 있지 않은 경우
-    return {'error': 'User not logged in'};
-  }
-
-  String uid = user.uid;
-
-  DatabaseReference expensesRef = FirebaseDatabase.instance.ref().child('expenses');
-
-  DatabaseEvent event = await expensesRef.orderByChild('type').equalTo('expense').once();
-
-  Map<String, double> categoryTotalAmounts = {};
-
-  if (event.snapshot != null) {
-    (event.snapshot!.value as Map).forEach((key, value) {
-      if (value['uid'] == uid) {
-        String category = value['category'];
-        double amount = (value['amount'] ?? 0.0).toDouble();
-
-        categoryTotalAmounts.update(category, (value) => value + amount, ifAbsent: () => amount);
-      }
-    });
-  }
-
-  return {'categoryTotalAmounts': categoryTotalAmounts};
-}
-
-Future<double> getTotalAmountForCurrentMonth() async {
-  FirebaseAuth auth = FirebaseAuth.instance;
-  User? user = auth.currentUser;
-
-  if (user == null) {
-    // 사용자가 로그인되어 있지 않은 경우
-    return 0.0;
-  }
-
-  String uid = user.uid;
-
-  DatabaseReference expensesRef = FirebaseDatabase.instance.ref().child('expenses');
-
-  DateTime now = DateTime.now();
-  String currentMonth = DateFormat('yyyy-MM').format(now);
-
-  DatabaseEvent event = await expensesRef.orderByChild('date').startAt('$currentMonth-01').endAt('$currentMonth-31').once();
-
-  double totalAmount = 0.0;
-
-  if (event.snapshot != null) {
-    (event.snapshot!.value as Map).forEach((key, value) {
-      if (value['uid'] == uid) {
-        double amount = (value['amount'] ?? 0.0).toDouble();
-        totalAmount += amount;
-      }
-    });
-  }
-
-  return totalAmount;
-}
-//이까지 uid,'category' 같은 것들끼리 분류해서 amount를 모두 더한 값 구하는 함수(category, amount 반환),  사용자 이번 달 모든 amount 더한 값 반환 함수
-
-
-Future<void> fetchDataForCurrentUser() async {
-  FirebaseAuth auth = FirebaseAuth.instance;
-  User? user = auth.currentUser;
-
-  if (user != null) {
-    String uid = user.uid;
-
-    // 여기서 uid를 사용하여 데이터베이스에서 사용자별 데이터를 가져올 수 있음
-    print('Current user UID: $uid');
-
-    // 이후에 데이터베이스 관련 작업 수행
-  } else {
-    // 사용자가 로그인되어 있지 않은 경우에 대한 처리
-    print('No user is currently logged in.');
-  }
-}
-
 final String currentMonth = DateFormat('MMMM').format(DateTime.now());
 
 class RowItem extends StatelessWidget {
@@ -144,20 +62,100 @@ class graph extends StatefulWidget {
 }
 
 class _graphState extends State<graph> {
+     final DatabaseReference expenseRef =
+      // ignore: deprecated_member_use
+      FirebaseDatabase.instance.reference().child('expenses');
+  final DatabaseReference incomeRef =
+      // ignore: deprecated_member_use
+      FirebaseDatabase.instance.reference().child('incomes');
+  double totalExpenses = 0.0;
+  double totalincomes = 0.0;
   List<Map<String, dynamic>> expensesList = [];
   List<Map<String, dynamic>> incomesList = [];
   Future<List<Map<String, dynamic>>>? expensesFuture;
-  late Future<List<Map<String, dynamic>>> incomesFuture; //선주언니 페이지에서 가꼬온 코드(데이터베이스 가져오기)
+  late Future<List<Map<String, dynamic>>> incomesFuture;
 
+   @override
+  void initState() {
+    super.initState();
+    expensesFuture = _loadExpenses();
 
+  }
+
+    Future<List<Map<String, dynamic>>> _loadExpenses() async {
+    List<Map<String, dynamic>> loadedExpenses = [];
+    
+
+    DateTime now = DateTime.now(); //여기부터
+DateTime firstDayOfMonth = DateTime(now.year, now.month, 1);
+DateTime lastDayOfMonth = DateTime(now.year, now.month + 1, 0);
+
+String firstDayOfMonthString = DateFormat('yyyy-MM-dd').format(firstDayOfMonth);
+String lastDayOfMonthString = DateFormat('yyyy-MM-dd').format(lastDayOfMonth);
+
+DataSnapshot snapshot = await expenseRef
+    .orderByChild('date')
+    .startAt(firstDayOfMonthString)
+    .endAt(lastDayOfMonthString)
+    .get();     //여기까지 이번달 시작, 끝 날짜 계산 후 문자열 변환해 이번 달 지출 데이터 모두 가져옴
+
+    if (snapshot.value != null) {
+      Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
+
+      if (values != null) {
+        values.forEach((key, value) {
+          loadedExpenses.add({
+            'type': value['type'],
+            'amount': value['amount'],
+            'date': value['date'],
+            'category': value['category'],
+          });
+        });
+      }
+    }
+
+    return loadedExpenses;
+  }
+
+   static const category = ['음식', '교통', '여가', '쇼핑', '기타'];
+
+  Map<String, List<Map<String, dynamic>>> groupExpensesByCategory(
+      List<Map<String, dynamic>> expenses) {
+    Map<String, List<Map<String, dynamic>>> groupedExpenses = {
+      for (var category in category.where((c) => c != '기타'))
+        category: expenses.where((e) => e['category'] == category).toList(),
+    };
+
+    groupedExpenses['기타'] = expenses
+        .where((e) => !category.where((c) => c != '기타').contains(e['category']))
+        .toList();
+
+    return groupedExpenses;
+  }
+
+  Map<String, double> calculateCategoryExpenses(
+      List<Map<String, dynamic>> expenses) {
+    var groupedExpenses = groupExpensesByCategory(expenses);
+
+    Map<String, double> categoryExpenses = {};
+    groupedExpenses.forEach((category, expenses) {
+      double total = 0.0;
+      for (var expense in expenses) {
+        total += (expense['amount'] as num).toDouble();
+      }
+      categoryExpenses[category] = total;
+    });
+
+    return categoryExpenses;
+  }
+  
   @override
   Widget build(BuildContext context) {
-    List<PieModel> model = [   //파이차트 count 설정 여기서
+    List<PieModel> model = [
       PieModel(count: 30, color: Color.fromARGB(255, 44, 183, 92).withOpacity(1)),
       PieModel(count: 10, color: Color.fromARGB(255, 253, 225, 14).withOpacity(1)),
       PieModel(count: 30, color: Color.fromARGB(255, 255, 199, 44).withOpacity(1)),
-      PieModel(count: 10, color: Color.fromARGB(255, 140, 145, 217).withOpacity(1)),
-      PieModel(count: 20, color: const Color.fromARGB(255, 214, 214, 214).withOpacity(1)),
+      PieModel(count: 30, color: const Color.fromARGB(255, 214, 214, 214).withOpacity(1)),
     ];
     
 
@@ -193,7 +191,7 @@ class _graphState extends State<graph> {
           children: [
             Positioned(
               left: 400.0, //여백 조절
-              top: 5.0, // 여백 및 이동 조절. 숫자 작아질수록 위로 가는듯
+              top: 20.0, // 여백 및 이동 조절
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
@@ -201,8 +199,7 @@ class _graphState extends State<graph> {
             RowItem(color: Color.fromARGB(255, 44, 183, 92).withOpacity(1), label: '식비'),
             RowItem(color: Color.fromARGB(255, 255, 199, 44).withOpacity(1), label: '교통'),
             RowItem(color: Color.fromARGB(255, 253, 225, 14).withOpacity(1), label: '쇼핑'),
-            RowItem(color: Color.fromARGB(255, 140, 145, 217).withOpacity(1), label: '또뭐있노'),
-            RowItem(color: Color.fromARGB(255, 214, 214, 214).withOpacity(1), label: '기타'), //카테고리 최대 5개한다네용
+            RowItem(color: const Color.fromARGB(255, 214, 214, 214).withOpacity(1), label: '기타'), //비율 가장 큰 지출항목 3개 반영할 계획
             //지출항목에 대한 RowItem 추가
           ],
         ),
