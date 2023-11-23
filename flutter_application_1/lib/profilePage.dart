@@ -158,7 +158,7 @@ class _profilePageState extends State<profilePage> {
                             child: Container(
                               color: Color.fromRGBO(55, 115, 108, 1),
                               child: Text(
-                                'WishList',
+                                'Shopping List',
                                 style: TextStyle(
                                     fontFamily: 'LilitaOne',
                                     fontSize: 30,
@@ -209,10 +209,10 @@ class _profilePageState extends State<profilePage> {
                               ),
                             ),
                           ),
-                          flex: 4),
+                          flex: 5),
                       Flexible(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                             child: GestureDetector(
                               onTap: () {
                                 setState(() {
@@ -226,24 +226,28 @@ class _profilePageState extends State<profilePage> {
                           flex: 2),
 
                       // 로그아웃 버튼
-                      TextButton(
-                          onPressed: () async {
-                            await FirebaseAuth.instance.signOut();
-                            updateUserData(); // 사용자 정보 업데이트
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 25, 0, 0),
+                        child: TextButton(
+                            onPressed: () async {
+                              await FirebaseAuth.instance.signOut();
+                              updateUserData(); // 사용자 정보 업데이트
 
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => MyApp()),
-                            );
-                          },
-                          child: Text(
-                            'LogOut',
-                            style: TextStyle(
-                                fontFamily: 'LilitaOne',
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500,
-                                color: Color.fromRGBO(255, 255, 255, 50)),
-                          ))
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => MyApp()),
+                              );
+                            },
+                            child: Text(
+                              'LogOut',
+                              style: TextStyle(
+                                  fontFamily: 'LilitaOne',
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                  color: Color.fromRGBO(255, 255, 255, 50)),
+                            )),
+                      )
                     ],
                   ),
                 ),
