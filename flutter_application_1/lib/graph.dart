@@ -135,6 +135,7 @@ DataSnapshot snapshot = await expenseRef
 
   Map<String, double> calculateCategoryExpenses(
       List<Map<String, dynamic>> expenses) {
+        //카테고리별 지출 계산
     var groupedExpenses = groupExpensesByCategory(expenses);
 
     Map<String, double> categoryExpenses = {};
@@ -148,6 +149,15 @@ DataSnapshot snapshot = await expenseRef
 
     return categoryExpenses;
   }
+
+  double calculateTotalExpenses(List<Map<String, dynamic>> expenses) {
+  double total = 0.0;
+  for (var expense in expenses) {
+    total += (expense['amount'] as num).toDouble();
+  }
+  return total;
+} //이번 달 모든 지출 데이터 더하는 함수
+
   
   @override
   Widget build(BuildContext context) {
@@ -155,7 +165,8 @@ DataSnapshot snapshot = await expenseRef
       PieModel(count: 30, color: Color.fromARGB(255, 44, 183, 92).withOpacity(1)),
       PieModel(count: 10, color: Color.fromARGB(255, 253, 225, 14).withOpacity(1)),
       PieModel(count: 30, color: Color.fromARGB(255, 255, 199, 44).withOpacity(1)),
-      PieModel(count: 30, color: const Color.fromARGB(255, 214, 214, 214).withOpacity(1)),
+      PieModel(count: 20, color: Color.fromARGB(255, 130, 199, 255).withOpacity(1)),
+      PieModel(count: 10, color: const Color.fromARGB(255, 214, 214, 214).withOpacity(1)),
     ];
     
 
@@ -196,10 +207,11 @@ DataSnapshot snapshot = await expenseRef
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
                 children: [
-            RowItem(color: Color.fromARGB(255, 44, 183, 92).withOpacity(1), label: '식비'),
+            RowItem(color: Color.fromARGB(255, 44, 183, 92).withOpacity(1), label: '음식'),
             RowItem(color: Color.fromARGB(255, 255, 199, 44).withOpacity(1), label: '교통'),
-            RowItem(color: Color.fromARGB(255, 253, 225, 14).withOpacity(1), label: '쇼핑'),
-            RowItem(color: const Color.fromARGB(255, 214, 214, 214).withOpacity(1), label: '기타'), //비율 가장 큰 지출항목 3개 반영할 계획
+            RowItem(color: Color.fromARGB(255, 253, 225, 14).withOpacity(1), label: '여가'),
+            RowItem(color: Color.fromARGB(255, 130, 199, 255).withOpacity(1), label: '쇼핑'),
+             //Tlqkf 왜 기타가 안나오지? 안나오는 김에 빼버림 ㅅㄱ
             //지출항목에 대한 RowItem 추가
           ],
         ),
