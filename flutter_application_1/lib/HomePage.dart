@@ -1,7 +1,6 @@
 // ignore_for_file: unused_local_variable, duplicate_ignore, file_names, library_private_types_in_public_api, deprecated_member_use, avoid_unnecessary_containers
 
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'calendarPage.dart';
 import 'graph.dart';
@@ -60,30 +59,58 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<List<Map<String, dynamic>>> _loadExpenses() async {
-    List<Map<String, dynamic>> loadedExpenses = [];
-    String today = DateFormat('yyyy-MM-dd')
-        .format(DateTime.now()); // 오늘 날짜를 yyyy-MM-dd 형식의 문자열로 변환
+  List<Map<String, dynamic>> loadedExpenses = [];
+  DateTime now = DateTime.now();
+  DateTime firstDayThisMonth = DateTime(now.year, now.month, 1);
+  DateTime firstDayNextMonth = DateTime(now.year, now.month + 1, 1);
+  
+  String firstDayThisMonthString = DateFormat('yyyy-MM-dd').format(firstDayThisMonth);
+  String firstDayNextMonthString = DateFormat('yyyy-MM-dd').format(firstDayNextMonth);
 
-    DataSnapshot snapshot =
-        await expenseRef.orderByChild('date').equalTo(today).get();
+  DataSnapshot snapshot = await expenseRef.orderByChild('date').startAt(firstDayThisMonthString).endAt(firstDayNextMonthString).get();
 
-    if (snapshot.value != null) {
-      Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
+  if (snapshot.value != null) {
+    Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
 
-      if (values != null) {
-        values.forEach((key, value) {
-          loadedExpenses.add({
-            'type': value['type'],
-            'amount': value['amount'],
-            'date': value['date'],
-            'category': value['category'],
-          });
+    if (values != null) {
+      values.forEach((key, value) {
+        loadedExpenses.add({
+          'type': value['type'],
+          'amount': value['amount'],
+          'date': value['date'],
+          'category': value['category'],
         });
-      }
+      });
     }
-
-    return loadedExpenses;
   }
+
+  return loadedExpenses;
+}
+
+Future<List<Map<String, dynamic>>> _loadExpensesToday() async {
+  List<Map<String, dynamic>> loadedExpenses = [];
+  String today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+  DataSnapshot snapshot = await expenseRef.orderByChild('date').equalTo(today).get();
+
+  if (snapshot.value != null) {
+    Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
+
+    if (values != null) {
+      values.forEach((key, value) {
+        loadedExpenses.add({
+          'type': value['type'],
+          'amount': value['amount'],
+          'date': value['date'],
+          'category': value['category'],
+        });
+      });
+    }
+  }
+
+  return loadedExpenses;
+}
+
 
 Future<List<Map<String, dynamic>>> _loadIncomes() async {
   List<Map<String, dynamic>> loadedIncomes = [];
@@ -152,17 +179,17 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
     return loadedIncomes;
   }
 
-  static const category = ['음식', '교통', '여가', '쇼핑', '기타'];
+  static const category = ['food', 'traffic', 'leisure', 'shopping', 'etc'];
 
   Map<String, List<Map<String, dynamic>>> groupExpensesByCategory(
       List<Map<String, dynamic>> expenses) {
     Map<String, List<Map<String, dynamic>>> groupedExpenses = {
-      for (var category in category.where((c) => c != '기타'))
+      for (var category in category.where((c) => c != 'etc'))
         category: expenses.where((e) => e['category'] == category).toList(),
     };
 
-    groupedExpenses['기타'] = expenses
-        .where((e) => !category.where((c) => c != '기타').contains(e['category']))
+    groupedExpenses['etc'] = expenses
+        .where((e) => !category.where((c) => c != 'etc').contains(e['category']))
         .toList();
 
     return groupedExpenses;
@@ -276,18 +303,19 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
               // ...
 
               FutureBuilder<List<Map<String, dynamic>>>(
-                future: expensesFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    double total = _calculateTotalExpenses(snapshot.data ?? []);
-                    return Text('today expense total: $total');
-                  } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  } else {
-                    return CircularProgressIndicator();
-                  }
-                },
-              ),
+  future: _loadExpensesToday(),
+  builder: (context, snapshot) {
+    if (snapshot.connectionState == ConnectionState.done) {
+      double total = _calculateTotalExpenses(snapshot.data ?? []);
+      return Text('오늘의 지출 합계: $total');
+    } else if (snapshot.hasError) {
+      return Text('에러: ${snapshot.error}');
+    } else {
+      return CircularProgressIndicator();
+    }
+  },
+),
+
 
               FutureBuilder<List<Map<String, dynamic>>>(
                 future: incomesFuture,
@@ -323,26 +351,40 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
               ),
 
 // 위의 함수를 사용해 지출을 카테고리별로 분류하고, 각 카테고리의 총 지출을 계산
-              FutureBuilder<List<Map<String, dynamic>>>(
-                future: expensesFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    }
+             Container(
+  color: Color.fromRGBO(156, 40, 40, 1),
+  child: FutureBuilder<List<Map<String, dynamic>>>(
+    future: expensesFuture,
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.done) {
+        if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        }
 
-                    Map<String, double> categoryExpenses =
-                        calculateCategoryExpenses(snapshot.data ?? []);
-                    return Column(
-                      children: categoryExpenses.entries.map((entry) {
-                        return Text('${entry.key}: ${entry.value}');
-                      }).toList(),
-                    );
-                  } else {
-                    return CircularProgressIndicator();
-                  }
-                },
+        Map<String, double> categoryExpenses =
+            calculateCategoryExpenses(snapshot.data ?? []);
+        return Column(
+          children: categoryExpenses.entries.map((entry) {
+            return Container(width: 200, height: 50,
+              margin: const EdgeInsets.all(8.0),  // 여백 추가
+              color: Colors.green,  // 초록색 배경 적용
+              child: Padding(  // 텍스트와 사각형 사이에 여백 추가
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  '${entry.key}: ${entry.value}',
+                  style: TextStyle(color: Colors.white),  // 텍스트 색상 변경
+                ),
               ),
+            );
+          }).toList(),
+        );
+      } else {
+        return CircularProgressIndicator();
+      }
+    },
+  ),
+)
+
 
 // ...
             ],
@@ -420,107 +462,125 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
     );
   }
 
-  Future<void> _showExpenseDialog(BuildContext context) async {
+ Future<void> _showExpenseDialog(BuildContext context) async {
     DateTime selectedDate = DateTime.now();
-    String category = '';
+     List<String> categories = ['category', 'food', 'traffic', 'leisure', 'shopping', 'etc'];
+    String category = categories[0];
     String itemName = '';
     double amount = 0.0;
 
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('expense'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                InkWell(
-                  onTap: () async {
-                    DateTime? date = await showDatePicker(
-                      context: context,
-                      initialDate: selectedDate,
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2101),
-                      builder: (BuildContext context, Widget? child) {
-                        return Theme(
-                          data: ThemeData.light().copyWith(
-                            primaryColor: Color.fromRGBO(55, 115, 108, 1),
-                            hintColor: Color.fromRGBO(55, 115, 108, 1),
-                            colorScheme: ColorScheme.light(
-                                primary: Color.fromRGBO(55, 115, 108, 1)),
-                            buttonTheme: ButtonThemeData(
-                                textTheme: ButtonTextTheme.primary),
-                          ),
-                          child: child!,
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              title: Text('expense'),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    InkWell(
+                      onTap: () async {
+                        DateTime? date = await showDatePicker(
+                          context: context,
+                          initialDate: selectedDate,
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime(2101),
+                          builder: (BuildContext context, Widget? child) {
+                            return Theme(
+                              data: ThemeData.light().copyWith(
+                                primaryColor: Color.fromRGBO(55, 115, 108, 1),
+                                hintColor: Color.fromRGBO(55, 115, 108, 1),
+                                colorScheme: ColorScheme.light(
+                                  primary: Color.fromRGBO(55, 115, 108, 1)
+                                ),
+                                buttonTheme: ButtonThemeData(
+                                  textTheme: ButtonTextTheme.primary
+                                ),
+                              ),
+                              child: child!,
+                            );
+                          },
                         );
-                      },
-                    );
 
-                    if (date != null && date != selectedDate) {
-                      setState(() {
-                        selectedDate = date;
-                      });
-                    }
-                  },
-                  child: Row(
-                    children: [
-                      Icon(Icons.calendar_today),
-                      SizedBox(width: 10),
-                      Text(
-                        DateFormat('yyyy-MM-dd').format(selectedDate),
+                        if (date != null && date != selectedDate) {
+                          setState(() {
+                            selectedDate = date;
+                          });
+                        }
+                      },
+                      child: Row(
+                        children: [
+                          Icon(Icons.calendar_today),
+                          SizedBox(width: 10),
+                          Text(
+                            DateFormat('yyyy-MM-dd').format(selectedDate),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                    DropdownButton<String>(
+                      value: category,
+                      
+                      iconSize: 24,
+                      elevation: 16,
+                      style: TextStyle(color: Colors.deepPurple),
+                      underline: Container(
+                        height: 2,
+                        color: Colors.deepPurpleAccent,
+                      ),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          category = newValue!;
+                        });
+                      },
+                      items: categories.map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                    TextField(
+                      decoration: InputDecoration(labelText: 'detail'),
+                
+                      onChanged: (text) {
+                        itemName = text;
+                      },
+                    ),
+                    TextField(
+                      decoration: InputDecoration(labelText: 'account'),
+                      keyboardType: TextInputType.number,
+                      onChanged: (text) {
+                        amount = double.parse(text);
+                      },
+                    ),
+                  ],
                 ),
-                TextField(
-                  decoration: InputDecoration(labelText: 'category'),
-                  onChanged: (text) {
-                    setState(() {
-                      category = text;
-                    });
+              ),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
                   },
+                  child: Text('cancel'),
                 ),
-                TextField(
-                  decoration: InputDecoration(labelText: 'detail'),
-                  onChanged: (text) {
-                    setState(() {
-                      itemName = text;
-                    });
+                TextButton(
+                  onPressed: () {
+                    addExpense(
+                      'expense',
+                      selectedDate,
+                      category,
+                      itemName,
+                      amount,
+                    );
+                    Navigator.of(context).pop();
                   },
-                ),
-                TextField(
-                  decoration: InputDecoration(labelText: 'account'),
-                  keyboardType: TextInputType.number,
-                  onChanged: (text) {
-                    setState(() {
-                      amount = double.parse(text);
-                    });
-                  },
+                  child: Text('add'),
                 ),
               ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                addExpense(
-                  'expense',
-                  selectedDate,
-                  category,
-                  itemName,
-                  amount,
-                );
-                Navigator.of(context).pop();
-              },
-              child: Text('add'),
-            ),
-          ],
+            );
+          },
         );
       },
     );
@@ -533,68 +593,86 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('income'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                InkWell(
-                  onTap: () async {
-                    DateTime? date = await showDatePicker(
-                      context: context,
-                      initialDate: selectedDate,
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2101),
-                    );
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              title: Text('income'),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    InkWell(
+                      onTap: () async {
+                        DateTime? date = await showDatePicker(
+                          context: context,
+                          initialDate: selectedDate,
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime(2101),
+                          builder: (BuildContext context, Widget? child) {
+                            return Theme(
+                              data: ThemeData.light().copyWith(
+                                primaryColor: Color.fromRGBO(55, 115, 108, 1),
+                                hintColor: Color.fromRGBO(55, 115, 108, 1),
+                                colorScheme: ColorScheme.light(
+                                  primary: Color.fromRGBO(55, 115, 108, 1)
+                                ),
+                                buttonTheme: ButtonThemeData(
+                                  textTheme: ButtonTextTheme.primary
+                                ),
+                              ),
+                              child: child!,
+                            );
+                          },
+                        );
 
-                    if (date != null && date != selectedDate) {
-                      setState(() {
-                        selectedDate = date;
-                      });
-                    }
-                  },
-                  child: Row(
-                    children: [
-                      Icon(Icons.calendar_today),
-                      SizedBox(width: 10),
-                      Text(
-                        DateFormat('yyyy-MM-dd').format(selectedDate),
+                        if (date != null && date != selectedDate) {
+                          setState(() {
+                            selectedDate = date;
+                          });
+                        }
+                      },
+                      child: Row(
+                        children: [
+                          Icon(Icons.calendar_today),
+                          SizedBox(width: 10),
+                          Text(
+                            DateFormat('yyyy-MM-dd').format(selectedDate),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                    TextField(
+                      decoration: InputDecoration(labelText: 'account'),
+                      keyboardType: TextInputType.number,
+                      onChanged: (text) {
+                        amount = double.parse(text);
+                      },
+                    ),
+                  ],
                 ),
-                TextField(
-                  decoration: InputDecoration(labelText: 'account'),
-                  keyboardType: TextInputType.number,
-                  onChanged: (text) {
-                    setState(() {
-                      amount = double.parse(text);
-                    });
+              ),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
                   },
+                  child: Text('cancel'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    addIncome(
+                      selectedDate,
+                      amount,
+                    );
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('add'),
                 ),
               ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                addIncome(
-                  selectedDate,
-                  amount,
-                );
-                Navigator.of(context).pop();
-              },
-              child: Text('add'),
-            ),
-          ],
+            );
+          },
         );
       },
     );
   }
 }
+ 
