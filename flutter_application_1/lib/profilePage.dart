@@ -5,10 +5,23 @@ import 'calendarPage.dart';
 import 'graph.dart';
 import 'HomePage.dart';
 import 'main.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 FirebaseAuth auth = FirebaseAuth.instance;
 User? user = auth.currentUser;
 String? userId = user?.email;
+String? userKey = user?.uid;
+
+void saveToDatabase(String itemName) {
+  if (itemName.isNotEmpty && userKey != null) {
+    DatabaseReference _ref =
+        FirebaseDatabase.instance.reference().child('wishList/$userKey');
+    var id = _ref.push().key;
+    _ref.child(id!).set({
+      'itemName': itemName,
+    });
+  }
+}
 
 class profilePage extends StatefulWidget {
   const profilePage({super.key});
@@ -19,6 +32,48 @@ class profilePage extends StatefulWidget {
 
 class _profilePageState extends State<profilePage> {
   List<TextEditingController> wishList = [];
+  List<String> wishListKeys = [];
+
+  // 사용자 정보 업데이트 함수
+  void updateUserData() {
+    // 사용자 인증 상태가 변경될 때마다 호출되는 이벤트 리스너
+    FirebaseAuth.instance.authStateChanges().listen((User? newUser) {
+      // 새로운 사용자 정보로 업데이트
+      user = newUser;
+      userId = user?.email;
+      userKey = user?.uid;
+      print("Updated user email: $userId");
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (userKey != null) {
+      DatabaseReference _ref =
+          FirebaseDatabase.instance.reference().child('wishList/$userKey');
+      _ref.onValue.listen((event) {
+        var snapshot = event.snapshot;
+        Map<dynamic, dynamic> values =
+            (snapshot.value as Map<dynamic, dynamic>) ?? {};
+        wishList.clear();
+        wishListKeys.clear();
+        values.forEach((key, value) {
+          wishList.add(TextEditingController(text: value['itemName']));
+          wishListKeys.add(key);
+        });
+        setState(() {});
+      });
+    }
+  }
+
+  void deleteFromDatabase(int index) {
+    if (userKey != null) {
+      DatabaseReference _ref =
+          FirebaseDatabase.instance.reference().child('wishList/$userKey');
+      _ref.child(wishListKeys[index]).remove();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +158,7 @@ class _profilePageState extends State<profilePage> {
                             child: Container(
                               color: Color.fromRGBO(55, 115, 108, 1),
                               child: Text(
-                                'WishList',
+                                'Shopping List',
                                 style: TextStyle(
                                     fontFamily: 'LilitaOne',
                                     fontSize: 30,
@@ -121,22 +176,31 @@ class _profilePageState extends State<profilePage> {
                                 itemCount: wishList.length,
                                 itemBuilder: (context, index) {
                                   return ListTile(
-                                    leading: Image.asset(
-                                        'assets/Dollar Coin.png'), // 동전 코인
-                                    title: TextField(
-                                      controller: wishList[index],
-                                      style: TextStyle(
-                                          fontFamily: 'LilitaOne',
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w200,
-                                          color: Color.fromRGBO(
-                                              255, 255, 255, 50)),
-                                    ),
-                                  );
+                                      leading: Image.asset(
+                                          'assets/Dollar Coin.png'), // 동전 코인
+                                      title: TextField(
+                                        controller: wishList[index],
+                                        onSubmitted: (value) {
+                                          saveToDatabase(
+                                              value); // 텍스트 입력이 완료되면 데이터베이스에 저장
+                                        },
+                                        style: TextStyle(
+                                            fontFamily: 'LilitaOne',
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w200,
+                                            color: Color.fromRGBO(
+                                                255, 255, 255, 50)),
+                                      ),
+                                      trailing: IconButton(
+                                        icon: Icon(Icons.delete),
+                                        onPressed: () {
+                                          deleteFromDatabase(index);
+                                        },
+                                      ));
                                 },
                               ),
                               decoration: BoxDecoration(
-                                color: Color.fromRGBO(55, 115, 108, 1),
+                                color: Color.fromRGBO(84, 130, 125, 1),
                                 border: Border.all(
                                     color: Color.fromRGBO(22, 57, 26, 100),
                                     width: 2), // 컨테이너 테두리
@@ -145,14 +209,15 @@ class _profilePageState extends State<profilePage> {
                               ),
                             ),
                           ),
-                          flex: 4),
+                          flex: 5),
                       Flexible(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                             child: GestureDetector(
                               onTap: () {
                                 setState(() {
                                   wishList.add(TextEditingController());
+                                  // print(auth);
                                 });
                               },
                               child: Image.asset('assets/pig.png'), // 돼지 사진
@@ -161,22 +226,28 @@ class _profilePageState extends State<profilePage> {
                           flex: 2),
 
                       // 로그아웃 버튼
-                      TextButton(
-                          onPressed: () {
-                            FirebaseAuth.instance.signOut();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => MyApp()),
-                            );
-                          },
-                          child: Text(
-                            'LogOut',
-                            style: TextStyle(
-                                fontFamily: 'LilitaOne',
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500,
-                                color: Color.fromRGBO(255, 255, 255, 50)),
-                          ))
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 25, 0, 0),
+                        child: TextButton(
+                            onPressed: () async {
+                              await FirebaseAuth.instance.signOut();
+                              updateUserData(); // 사용자 정보 업데이트
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => MyApp()),
+                              );
+                            },
+                            child: Text(
+                              'LogOut',
+                              style: TextStyle(
+                                  fontFamily: 'LilitaOne',
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                  color: Color.fromRGBO(255, 255, 255, 50)),
+                            )),
+                      )
                     ],
                   ),
                 ),
