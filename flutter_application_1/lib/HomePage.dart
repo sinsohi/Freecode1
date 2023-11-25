@@ -311,6 +311,19 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
                                 onPressed: () => _showIncomeDialog(context),
                                 child: Text('Income'),
                               ),
+                              Container(width: 200 , height: 90,
+                                child: ListView(
+                                  scrollDirection: Axis.horizontal,
+                                  // ignore: prefer_const_literals_to_create_immutables
+                                  children: <Widget>[
+                                    Container(),
+                                    Container(),
+                                    Container(),
+
+                                  ],
+                                ),
+
+                              ),
                             ],
                           ),
                         ),
