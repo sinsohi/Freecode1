@@ -280,142 +280,159 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
             ),
           ),
         ),
-        body: Container(color: Color.fromRGBO(207, 185, 24, 1), width: double.infinity, height: double.infinity,
-          child: SingleChildScrollView(
-            child: Container(
-              color: Color.fromRGBO(248, 246, 232, 1),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: double.infinity,
-                    height: 30,
-                  ),
-                  Container(
-                    color: Color.fromRGBO(55, 115, 108, 1),
-                    width: double.infinity,
-                    height: 300,
-                    child: Column(
-                      children: [
-                        Container(
-                          color: Color.fromRGBO(100, 115, 108, 1),
-                          width: double.infinity,
-                          height: 100,
-                          child: Row(
-                            children: [
-                              ElevatedButton(
-                                onPressed: () => _showExpenseDialog(context),
-                                child: Text('Expense'),
-                              ),
-                              ElevatedButton(
-                                onPressed: () => _showIncomeDialog(context),
-                                child: Text('Income'),
-                              ),
-                              Container(width: 200 , height: 90,
-                                child: ListView(
-                                  scrollDirection: Axis.horizontal,
-                                  // ignore: prefer_const_literals_to_create_immutables
-                                  children: <Widget>[
-                                    Container(),
-                                    Container(),
-                                    Container(),
-
-                                  ],
-                                ),
-
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-          
-                  Text('category expense'),
-                  // ...
-          
-                  FutureBuilder<List<Map<String, dynamic>>>(
-            future: _loadExpensesToday(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                double total = _calculateTotalExpenses(snapshot.data ?? []);
-                return Text('오늘의 지출 합계: $total');
-              } else if (snapshot.hasError) {
-                return Text('에러: ${snapshot.error}');
-              } else {
-                return CircularProgressIndicator();
-              }
-            },
+        body: Container(color: Color.fromRGBO(207, 185, 24, 1), width: double.infinity, height: double.infinity, //body를 꽉채우는 container
+          child: SingleChildScrollView(//화면 해상도에 따라 오류 발생하는 경우를 해결하기 위한 scrollview
+            child: Column(//큰 배경들 구간 나누기 위한 세로 정렬
+              children: [
+                Container( //기능 구현 부분 큰 배경 container
+                  color: Color.fromRGBO(248, 246, 232, 1), width: double.infinity, height: 350,
+                  child: Column(//공간 분할 container들을 세로로 정렬
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(//추가 디자인을 위한 공간
+                        width: double.infinity,
+                        height: 30,
+                      ),
+                      Container(//기능 구현 작은 배경 container
+                        color: Color.fromRGBO(55, 115, 108, 1),
+                        width: double.infinity,
+                        height: 300,
+                        child: Column(//작은 배경 안 디자인들 정렬
+                          children: [
+                            Container(//여러 기능 구현하기 위한 리스트 디자인
+                              color: Color.fromRGBO(100, 115, 108, 1),
+                              width: double.infinity,
+                              height: 100,
+                              child: Row(
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () => _showExpenseDialog(context),
+                                    child: Text('Expense'),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () => _showIncomeDialog(context),
+                                    child: Text('Income'),
+                                  ),
+                                  // ignore: sized_box_for_whitespace
+                                  Container(width: 200 , height: 90,
+                                    child: ListView(
+                                      scrollDirection: Axis.horizontal,
+                                      // ignore: prefer_const_literals_to_create_immutables
+                                      children: <Widget>[
+                                        Container(
+                                          child:   FutureBuilder<List<Map<String, dynamic>>>(
+                future: _loadExpensesToday(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    double total = _calculateTotalExpenses(snapshot.data ?? []);
+                    return Text('오늘의 지출 합계: $total');
+                  } else if (snapshot.hasError) {
+                    return Text('에러: ${snapshot.error}');
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                },
           ),
+                                        ),
+                                        Container(),
+                                        Container(),
+
+                                      ],
+                                    ),
+
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              color: Color.fromRGBO(84, 55, 126, 1),
+                              width: double.infinity, height: 100,
+                            ),
+                          ],
+                        ),
+                      ),
+          
+                      
+          
+                    
           
           
-                  FutureBuilder<List<Map<String, dynamic>>>(
-              future: incomesFuture, // incomesFuture를 nullable로 변경
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting || snapshot.data == null) {
-                  return CircularProgressIndicator();
-                } else {
-                  double total = _calculateTotalExpenses(snapshot.data ?? []);
-                  return Text('오늘의 수입 합계: $total');
-                }
-              },
-            ),
+                      FutureBuilder<List<Map<String, dynamic>>>(
+                  future: incomesFuture, // incomesFuture를 nullable로 변경
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting || snapshot.data == null) {
+                      return CircularProgressIndicator();
+                    } else {
+                      double total = _calculateTotalExpenses(snapshot.data ?? []);
+                      return Text('오늘의 수입 합계: $total');
+                    }
+                  },
+                ),
           
-                  FutureBuilder<List<List<Map<String, dynamic>>>>(
-                    future: Future.wait([_loadAllIncomes(), _loadAllExpenses()]),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        List<Map<String, dynamic>> incomes =
-                            snapshot.data?[0] ?? [];
-                        List<Map<String, dynamic>> expenses =
-                            snapshot.data?[1] ?? [];
-                        double currentAsset =
-                            _calculateCurrentAsset(incomes, expenses);
-                        return Text('현재 자산 현황: $currentAsset');
-                      } else if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      } else {
-                        return CircularProgressIndicator();
-                      }
-                    },
-                  ),
+                      FutureBuilder<List<List<Map<String, dynamic>>>>(
+                        future: Future.wait([_loadAllIncomes(), _loadAllExpenses()]),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.done) {
+                            List<Map<String, dynamic>> incomes =
+                                snapshot.data?[0] ?? [];
+                            List<Map<String, dynamic>> expenses =
+                                snapshot.data?[1] ?? [];
+                            double currentAsset =
+                                _calculateCurrentAsset(incomes, expenses);
+                            return Text('현재 자산 현황: $currentAsset');
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else {
+                            return CircularProgressIndicator();
+                          }
+                        },
+                      ),
           
           // 위의 함수를 사용해 지출을 카테고리별로 분류하고, 각 카테고리의 총 지출을 계산
-                 Container(
-            color: Color.fromRGBO(156, 40, 40, 1),
-            child: FutureBuilder<List<Map<String, dynamic>>>(
-              future: expensesFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            }
-          
-            Map<String, double> categoryExpenses =
-                calculateCategoryExpenses(snapshot.data ?? []);
-            return Column(
-              children: categoryExpenses.entries.map((entry) {
-                return Container(width: 200, height: 50,
-                  margin: const EdgeInsets.all(8.0),  // 여백 추가
-                  color: Colors.green,  // 초록색 배경 적용
-                  child: Padding(  // 텍스트와 사각형 사이에 여백 추가
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      '${entry.key}: ${entry.value}',
-                      style: TextStyle(color: Colors.white),  // 텍스트 색상 변경
-                    ),
+                     
+                    ],
                   ),
-                );
-              }).toList(),
-            );
-                } else {
-            return CircularProgressIndicator();
+                ),
+                Container(color: Color.fromRGBO(155, 189, 160, 1),
+                width: double.infinity, height: 350,
+                child: Container(
+                color: Color.fromRGBO(156, 40, 40, 1),
+                child: FutureBuilder<List<Map<String, dynamic>>>(
+                  future: expensesFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
                 }
-              },
-            ),
-          )
-                ],
-              ),
+          
+                Map<String, double> categoryExpenses =
+                    calculateCategoryExpenses(snapshot.data ?? []);
+                return Column(
+                  children: categoryExpenses.entries.map((entry) {
+                    return Container(width: 200, height: 50,
+                      margin: const EdgeInsets.all(8.0),  // 여백 추가
+                      color: Colors.green,  // 초록색 배경 적용
+                      child: Padding(  // 텍스트와 사각형 사이에 여백 추가
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          '${entry.key}: ${entry.value}',
+                          style: TextStyle(color: Colors.white),  // 텍스트 색상 변경
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                );
+                    } else {
+                return CircularProgressIndicator();
+                    }
+                  },
+                ),
+          ),
+                ), // 카테고리 별 지출 구역 큰 배경
+                Container(color: Color.fromRGBO(173, 145, 149, 1),
+                width: double.infinity, height: 350,
+                ), // 광고 배너 구역 큰 배경
+              ],
             ),
           ),
         ),
