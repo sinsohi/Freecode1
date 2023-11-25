@@ -7,6 +7,8 @@ import 'graph.dart';
 import 'profilePage.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:intl/intl.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -16,22 +18,37 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final DatabaseReference expenseRef =
-      FirebaseDatabase.instance.reference().child('expenses');
-  final DatabaseReference incomeRef =
-      FirebaseDatabase.instance.reference().child('incomes');
+  late User? user;
+  late String uid;
+  late DatabaseReference expenseRef;
+  late DatabaseReference incomeRef;
+  
+
+  Future<void> initialize() async {
+    user = FirebaseAuth.instance.currentUser;
+    uid = user?.uid ?? 'default';
+    expenseRef = FirebaseDatabase.instance.reference().child('expenses').child(uid);
+    incomeRef = FirebaseDatabase.instance.reference().child('incomes').child(uid);
+  }
+  
+  
   double totalExpenses = 0.0;
   double totalincomes = 0.0;
   List<Map<String, dynamic>> expensesList = [];
   List<Map<String, dynamic>> incomesList = [];
   Future<List<Map<String, dynamic>>>? expensesFuture;
-  late Future<List<Map<String, dynamic>>> incomesFuture;
+  Future<List<Map<String, dynamic>>>? incomesFuture;
 
-  @override
+   @override
   void initState() {
     super.initState();
-    expensesFuture = _loadExpenses();
-    incomesFuture = _loadIncomes();
+    
+    initialize().then((_) {
+      setState(() {
+        expensesFuture = _loadExpenses();
+        incomesFuture = _loadIncomes();
+      });
+    });
   }
 
   Future<void> addExpense(String type, DateTime date, String category,
@@ -318,18 +335,16 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
 
 
               FutureBuilder<List<Map<String, dynamic>>>(
-                future: incomesFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    double total = _calculateTotalExpenses(snapshot.data ?? []);
-                    return Text('오늘의 수입 합계: $total');
-                  } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  } else {
-                    return CircularProgressIndicator();
-                  }
-                },
-              ),
+          future: incomesFuture, // incomesFuture를 nullable로 변경
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting || snapshot.data == null) {
+              return CircularProgressIndicator();
+            } else {
+              double total = _calculateTotalExpenses(snapshot.data ?? []);
+              return Text('오늘의 수입 합계: $total');
+            }
+          },
+        ),
 
               FutureBuilder<List<List<Map<String, dynamic>>>>(
                 future: Future.wait([_loadAllIncomes(), _loadAllExpenses()]),
