@@ -314,7 +314,7 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
                                     child: Text('Income'),
                                   ),
                                   // ignore: sized_box_for_whitespace
-                                  Container(width: 200 , height: 90,
+                                  Container(width: 200 , height: 90, color: Color.fromRGBO(172, 238, 40, 1),
                                     child: ListView(
                                       scrollDirection: Axis.horizontal,
                                       // ignore: prefer_const_literals_to_create_immutables
@@ -334,8 +334,43 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
                 },
           ),
                                         ),
-                                        Container(),
-                                        Container(),
+                                        Container(
+                                          child: 
+                      FutureBuilder<List<Map<String, dynamic>>>(
+                  future: incomesFuture, // incomesFuture를 nullable로 변경
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting || snapshot.data == null) {
+                      return CircularProgressIndicator();
+                    } else {
+                      double total = _calculateTotalExpenses(snapshot.data ?? []);
+                      return Text('오늘의 수입 합계: $total');
+                    }
+                  },
+                ),
+          
+                                        ),
+                                        Container(
+                                          child: 
+          
+                      FutureBuilder<List<List<Map<String, dynamic>>>>(
+                        future: Future.wait([_loadAllIncomes(), _loadAllExpenses()]),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.done) {
+                            List<Map<String, dynamic>> incomes =
+                                snapshot.data?[0] ?? [];
+                            List<Map<String, dynamic>> expenses =
+                                snapshot.data?[1] ?? [];
+                            double currentAsset =
+                                _calculateCurrentAsset(incomes, expenses);
+                            return Text('현재 자산 현황: $currentAsset');
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else {
+                            return CircularProgressIndicator();
+                          }
+                        },
+                      ),
+                                        ),
 
                                       ],
                                     ),
@@ -356,37 +391,6 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
           
                     
           
-          
-                      FutureBuilder<List<Map<String, dynamic>>>(
-                  future: incomesFuture, // incomesFuture를 nullable로 변경
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting || snapshot.data == null) {
-                      return CircularProgressIndicator();
-                    } else {
-                      double total = _calculateTotalExpenses(snapshot.data ?? []);
-                      return Text('오늘의 수입 합계: $total');
-                    }
-                  },
-                ),
-          
-                      FutureBuilder<List<List<Map<String, dynamic>>>>(
-                        future: Future.wait([_loadAllIncomes(), _loadAllExpenses()]),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.done) {
-                            List<Map<String, dynamic>> incomes =
-                                snapshot.data?[0] ?? [];
-                            List<Map<String, dynamic>> expenses =
-                                snapshot.data?[1] ?? [];
-                            double currentAsset =
-                                _calculateCurrentAsset(incomes, expenses);
-                            return Text('현재 자산 현황: $currentAsset');
-                          } else if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          } else {
-                            return CircularProgressIndicator();
-                          }
-                        },
-                      ),
           
           // 위의 함수를 사용해 지출을 카테고리별로 분류하고, 각 카테고리의 총 지출을 계산
                      
