@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
   List<Map<String, dynamic>> expensesList = [];
   List<Map<String, dynamic>> incomesList = [];
   Future<List<Map<String, dynamic>>>? expensesFuture;
-  late Future<List<Map<String, dynamic>>> incomesFuture;
+  Future<List<Map<String, dynamic>>>? incomesFuture;
 
    @override
   void initState() {
@@ -335,18 +335,16 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
 
 
               FutureBuilder<List<Map<String, dynamic>>>(
-                future: incomesFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    double total = _calculateTotalExpenses(snapshot.data ?? []);
-                    return Text('오늘의 수입 합계: $total');
-                  } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  } else {
-                    return CircularProgressIndicator();
-                  }
-                },
-              ),
+          future: incomesFuture, // incomesFuture를 nullable로 변경
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting || snapshot.data == null) {
+              return CircularProgressIndicator();
+            } else {
+              double total = _calculateTotalExpenses(snapshot.data ?? []);
+              return Text('오늘의 수입 합계: $total');
+            }
+          },
+        ),
 
               FutureBuilder<List<List<Map<String, dynamic>>>>(
                 future: Future.wait([_loadAllIncomes(), _loadAllExpenses()]),
