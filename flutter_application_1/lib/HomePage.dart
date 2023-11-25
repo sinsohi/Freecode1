@@ -302,6 +302,19 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
                             Container(
                               color: Color.fromRGBO(211, 223, 187, 1),
                               width: double.infinity, height: 50,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: const <Widget>[
+                                Padding(
+                                 padding: EdgeInsets.only(left: 10.0),  // 왼쪽 아이콘에 왼쪽 여백 추가
+                                 child: Icon(Icons.circle, size: 15,),
+                                  ),
+                                Padding(
+                                 padding: EdgeInsets.only(right: 10.0),  // 오른쪽 아이콘에 오른쪽 여백 추가
+                                 child: Icon(Icons.circle, size: 15,),
+                                  ),
+                                   ],
+                                ),
                             ),
                             Container(//여러 기능 구현하기 위한 리스트 디자인
                               color: Color.fromRGBO(100, 115, 108, 1),
@@ -469,8 +482,8 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
                 TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
             unselectedLabelStyle:
                 TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-            showSelectedLabels: true,
-            showUnselectedLabels: false,
+                
+            
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
@@ -492,8 +505,12 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
             onTap: (int index) {
               switch (index) {
                 case 0:
-                  // 홈 페이지로 이동 (아직 구현되지 않음)
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                  );
                   break;
+                  
                 case 1:
                   // 캘린더 페이지로 이동
                   Navigator.push(
