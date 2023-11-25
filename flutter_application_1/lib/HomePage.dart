@@ -299,27 +299,24 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
                         height: 300,
                         child: Column(//작은 배경 안 디자인들 정렬
                           children: [
+                            Container(
+                              color: Color.fromRGBO(211, 223, 187, 1),
+                              width: double.infinity, height: 50,
+                            ),
                             Container(//여러 기능 구현하기 위한 리스트 디자인
                               color: Color.fromRGBO(100, 115, 108, 1),
                               width: double.infinity,
                               height: 100,
                               child: Row(
                                 children: [
-                                  ElevatedButton(
-                                    onPressed: () => _showExpenseDialog(context),
-                                    child: Text('Expense'),
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: () => _showIncomeDialog(context),
-                                    child: Text('Income'),
-                                  ),
+                                  
                                   // ignore: sized_box_for_whitespace
                                   Container(width: 200 , height: 90, color: Color.fromRGBO(172, 238, 40, 1),
                                     child: ListView(
                                       scrollDirection: Axis.horizontal,
                                       // ignore: prefer_const_literals_to_create_immutables
                                       children: <Widget>[
-                                        Container(
+                                        Container(color: Color.fromRGBO(40, 86, 238, 1),
                                           child:   FutureBuilder<List<Map<String, dynamic>>>(
                 future: _loadExpensesToday(),
                 builder: (context, snapshot) {
@@ -334,7 +331,7 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
                 },
           ),
                                         ),
-                                        Container(
+                                        Container(color: Color.fromRGBO(238, 40, 149, 1),
                                           child: 
                       FutureBuilder<List<Map<String, dynamic>>>(
                   future: incomesFuture, // incomesFuture를 nullable로 변경
@@ -349,7 +346,7 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
                 ),
           
                                         ),
-                                        Container(
+                                        Container(color: Color.fromRGBO(40, 238, 202, 1),
                                           child: 
           
                       FutureBuilder<List<List<Map<String, dynamic>>>>(
@@ -362,7 +359,12 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
                                 snapshot.data?[1] ?? [];
                             double currentAsset =
                                 _calculateCurrentAsset(incomes, expenses);
-                            return Text('현재 자산 현황: $currentAsset');
+                            return Column(
+                              children: [
+                                Text('현재 자산 상황'),
+                                Text('$currentAsset'),
+                              ],
+                            );
                           } else if (snapshot.hasError) {
                             return Text('Error: ${snapshot.error}');
                           } else {
@@ -371,10 +373,8 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
                         },
                       ),
                                         ),
-
                                       ],
                                     ),
-
                                   ),
                                 ],
                               ),
@@ -382,6 +382,16 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
                             Container(
                               color: Color.fromRGBO(84, 55, 126, 1),
                               width: double.infinity, height: 100,
+                              child: Row(children: [
+                                ElevatedButton(
+                                    onPressed: () => _showExpenseDialog(context),
+                                    child: Text('Expense'),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () => _showIncomeDialog(context),
+                                    child: Text('Income'),
+                                  ),
+                              ]),
                             ),
                           ],
                         ),
