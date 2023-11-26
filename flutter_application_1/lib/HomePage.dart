@@ -9,7 +9,6 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -22,16 +21,16 @@ class _HomePageState extends State<HomePage> {
   late String uid;
   late DatabaseReference expenseRef;
   late DatabaseReference incomeRef;
-  
 
   Future<void> initialize() async {
     user = FirebaseAuth.instance.currentUser;
     uid = user?.uid ?? 'default';
-    expenseRef = FirebaseDatabase.instance.reference().child('expenses').child(uid);
-    incomeRef = FirebaseDatabase.instance.reference().child('incomes').child(uid);
+    expenseRef =
+        FirebaseDatabase.instance.reference().child('expenses').child(uid);
+    incomeRef =
+        FirebaseDatabase.instance.reference().child('incomes').child(uid);
   }
-  
-  
+
   double totalExpenses = 0.0;
   double totalincomes = 0.0;
   List<Map<String, dynamic>> expensesList = [];
@@ -39,10 +38,10 @@ class _HomePageState extends State<HomePage> {
   Future<List<Map<String, dynamic>>>? expensesFuture;
   Future<List<Map<String, dynamic>>>? incomesFuture;
 
-   @override
+  @override
   void initState() {
     super.initState();
-    
+
     initialize().then((_) {
       setState(() {
         expensesFuture = _loadExpenses();
@@ -76,81 +75,88 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<List<Map<String, dynamic>>> _loadExpenses() async {
-  List<Map<String, dynamic>> loadedExpenses = [];
-  DateTime now = DateTime.now();
-  DateTime firstDayThisMonth = DateTime(now.year, now.month, 1);
-  DateTime firstDayNextMonth = DateTime(now.year, now.month + 1, 1);
-  
-  String firstDayThisMonthString = DateFormat('yyyy-MM-dd').format(firstDayThisMonth);
-  String firstDayNextMonthString = DateFormat('yyyy-MM-dd').format(firstDayNextMonth);
+    List<Map<String, dynamic>> loadedExpenses = [];
+    DateTime now = DateTime.now();
+    DateTime firstDayThisMonth = DateTime(now.year, now.month, 1);
+    DateTime firstDayNextMonth = DateTime(now.year, now.month + 1, 1);
 
-  DataSnapshot snapshot = await expenseRef.orderByChild('date').startAt(firstDayThisMonthString).endAt(firstDayNextMonthString).get();
+    String firstDayThisMonthString =
+        DateFormat('yyyy-MM-dd').format(firstDayThisMonth);
+    String firstDayNextMonthString =
+        DateFormat('yyyy-MM-dd').format(firstDayNextMonth);
 
-  if (snapshot.value != null) {
-    Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
+    DataSnapshot snapshot = await expenseRef
+        .orderByChild('date')
+        .startAt(firstDayThisMonthString)
+        .endAt(firstDayNextMonthString)
+        .get();
 
-    if (values != null) {
-      values.forEach((key, value) {
-        loadedExpenses.add({
-          'type': value['type'],
-          'amount': value['amount'],
-          'date': value['date'],
-          'category': value['category'],
+    if (snapshot.value != null) {
+      Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
+
+      if (values != null) {
+        values.forEach((key, value) {
+          loadedExpenses.add({
+            'type': value['type'],
+            'amount': value['amount'],
+            'date': value['date'],
+            'category': value['category'],
+          });
         });
-      });
+      }
     }
+
+    return loadedExpenses;
   }
 
-  return loadedExpenses;
-}
+  Future<List<Map<String, dynamic>>> _loadExpensesToday() async {
+    List<Map<String, dynamic>> loadedExpenses = [];
+    String today = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
-Future<List<Map<String, dynamic>>> _loadExpensesToday() async {
-  List<Map<String, dynamic>> loadedExpenses = [];
-  String today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    DataSnapshot snapshot =
+        await expenseRef.orderByChild('date').equalTo(today).get();
 
-  DataSnapshot snapshot = await expenseRef.orderByChild('date').equalTo(today).get();
+    if (snapshot.value != null) {
+      Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
 
-  if (snapshot.value != null) {
-    Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
-
-    if (values != null) {
-      values.forEach((key, value) {
-        loadedExpenses.add({
-          'type': value['type'],
-          'amount': value['amount'],
-          'date': value['date'],
-          'category': value['category'],
+      if (values != null) {
+        values.forEach((key, value) {
+          loadedExpenses.add({
+            'type': value['type'],
+            'amount': value['amount'],
+            'date': value['date'],
+            'category': value['category'],
+          });
         });
-      });
+      }
     }
+
+    return loadedExpenses;
   }
 
-  return loadedExpenses;
-}
+  Future<List<Map<String, dynamic>>> _loadIncomes() async {
+    List<Map<String, dynamic>> loadedIncomes = [];
+    String today = DateFormat('yyyy-MM-dd')
+        .format(DateTime.now()); // 오늘 날짜를 yyyy-MM-dd 형식의 문자열로 변환
 
+    DataSnapshot snapshot =
+        await incomeRef.orderByChild('date').equalTo(today).get();
 
-Future<List<Map<String, dynamic>>> _loadIncomes() async {
-  List<Map<String, dynamic>> loadedIncomes = [];
-  String today = DateFormat('yyyy-MM-dd').format(DateTime.now()); // 오늘 날짜를 yyyy-MM-dd 형식의 문자열로 변환
+    if (snapshot.value != null) {
+      Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
 
-  DataSnapshot snapshot = await incomeRef.orderByChild('date').equalTo(today).get();
-
-  if (snapshot.value != null) {
-    Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
-
-    if (values != null) {
-      values.forEach((key, value) {
-        loadedIncomes.add({
-          'amount': value['amount'],
-          'date': value['date'],
+      if (values != null) {
+        values.forEach((key, value) {
+          loadedIncomes.add({
+            'amount': value['amount'],
+            'date': value['date'],
+          });
         });
-      });
+      }
     }
+
+    return loadedIncomes;
   }
-
-  return loadedIncomes;
-}
-
 
   Future<List<Map<String, dynamic>>> _loadAllExpenses() async {
     List<Map<String, dynamic>> loadedExpenses = [];
@@ -206,7 +212,8 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
     };
 
     groupedExpenses['etc'] = expenses
-        .where((e) => !category.where((c) => c != 'etc').contains(e['category']))
+        .where(
+            (e) => !category.where((c) => c != 'etc').contains(e['category']))
         .toList();
 
     return groupedExpenses;
@@ -280,131 +287,264 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
             ),
           ),
         ),
-        body: SingleChildScrollView(
-          child: Container(
-            color: Color.fromRGBO(248, 246, 232, 1),
+        body: Container(
+          color: Color.fromRGBO(207, 185, 24, 1), width: double.infinity,
+          height: double.infinity, //body를 꽉채우는 container
+          child: SingleChildScrollView(
+            //화면 해상도에 따라 오류 발생하는 경우를 해결하기 위한 scrollview
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              //큰 배경들 구간 나누기 위한 세로 정렬
               children: [
-                SizedBox(
-                  width: double.infinity,
-                  height: 30,
-                ),
                 Container(
-                  color: Color.fromRGBO(55, 115, 108, 1),
-                  width: double.infinity,
-                  height: 300,
+                  //기능 구현 부분 큰 배경 container
+                  color: Color.fromRGBO(248, 246, 232, 1),
+                  width: double.infinity, height: 350,
                   child: Column(
+                    //공간 분할 container들을 세로로 정렬
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Container(
-                        color: Color.fromRGBO(100, 115, 108, 1),
+                      SizedBox(
+                        //추가 디자인을 위한 공간
                         width: double.infinity,
-                        height: 100,
-                        child: Row(
+                        height: 30,
+                      ),
+                      Container(
+                        //기능 구현 작은 배경 container
+                        decoration: BoxDecoration(
+                          color: Color.fromRGBO(55, 115, 108, 1),
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(
+                            color: Colors.black,
+                            width: 3
+                          ),
+                          boxShadow:[
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 5,
+                              blurRadius: 7,
+                              offset: Offset(0, 3),
+                            )
+                          ]
+                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 16.0),
+                        margin: EdgeInsets.symmetric(horizontal: 16.0),
+
+                        width: double.infinity,
+                        height: 300,
+                        child: Column(
+                          //작은 배경 안 디자인들 정렬
                           children: [
-                            ElevatedButton(
-                              onPressed: () => _showExpenseDialog(context),
-                              child: Text('Expense'),
+                            Container(
+                              color: Color.fromRGBO(211, 223, 187, 1),
+                              width: double.infinity,
+                              height: 50,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: const <Widget>[
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        left: 10.0), // 왼쪽 아이콘에 왼쪽 여백 추가
+                                    child: Icon(
+                                      Icons.circle,
+                                      size: 15,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        right: 10.0), // 오른쪽 아이콘에 오른쪽 여백 추가
+                                    child: Icon(
+                                      Icons.circle,
+                                      size: 15,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                            ElevatedButton(
-                              onPressed: () => _showIncomeDialog(context),
-                              child: Text('Income'),
+                            Container(
+                              //기능 구현 배경 container
+                              color: Color.fromRGBO(100, 115, 108, 1),
+                              width: double.infinity,
+                              height: 100,
+                              child: PageView(
+                                scrollDirection: Axis.horizontal,
+                                children: <Widget>[
+                                  Container(
+                                    width: 200,
+                                    height: 90,
+                                    color: Color.fromRGBO(172, 238, 40, 1),
+                                    child: FutureBuilder<
+                                        List<Map<String, dynamic>>>(
+                                      future: _loadExpensesToday(),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.done) {
+                                          double total =
+                                              _calculateTotalExpenses(
+                                                  snapshot.data ?? []);
+                                          return Center(
+                                              child: Column(
+                                            children: [
+                                              Text('today total expenses', style: TextStyle(fontSize: 20,),),
+                                              Text('$total',style: TextStyle(fontSize: 20,)),
+                                            ],
+                                          ));
+                                        } else if (snapshot.hasError) {
+                                          return Center(
+                                              child: Text(
+                                                  '에러: ${snapshot.error}'));
+                                        } else {
+                                          return Center(
+                                              child:
+                                                  CircularProgressIndicator());
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 200,
+                                    height: 90,
+                                    color: Color.fromRGBO(238, 40, 149, 1),
+                                    child: FutureBuilder<
+                                        List<Map<String, dynamic>>>(
+                                      future: incomesFuture,
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                                ConnectionState.waiting ||
+                                            snapshot.data == null) {
+                                          return Center(
+                                              child:
+                                                  CircularProgressIndicator());
+                                        } else {
+                                          double total =
+                                              _calculateTotalExpenses(
+                                                  snapshot.data ?? []);
+                                          return Center(
+                                              child: Column(
+                                            children: [
+                                              Text('today total incomes'),
+                                              Text('$total'),
+                                            ],
+                                          ));
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 200,
+                                    height: 90,
+                                    color: Color.fromRGBO(40, 238, 202, 1),
+                                    child: FutureBuilder<
+                                        List<List<Map<String, dynamic>>>>(
+                                      future: Future.wait([
+                                        _loadAllIncomes(),
+                                        _loadAllExpenses()
+                                      ]),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.done) {
+                                          List<Map<String, dynamic>> incomes =
+                                              snapshot.data?[0] ?? [];
+                                          List<Map<String, dynamic>> expenses =
+                                              snapshot.data?[1] ?? [];
+                                          double currentAsset =
+                                              _calculateCurrentAsset(
+                                                  incomes, expenses);
+                                          return Center(
+                                              child: Column(
+                                            children: [
+                                              Text('my current assets'),
+                                              Text('$currentAsset'),
+                                            ],
+                                          ));
+                                        } else if (snapshot.hasError) {
+                                          return Center(
+                                              child: Text(
+                                                  'Error: ${snapshot.error}'));
+                                        } else {
+                                          return Center(
+                                              child:
+                                                  CircularProgressIndicator());
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              color: Color.fromRGBO(84, 55, 126, 1),
+                              width: double.infinity,
+                              height: 100,
+                              child: Row(children: [
+                                ElevatedButton(
+                                  onPressed: () => _showExpenseDialog(context),
+                                  child: Text('Expense'),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () => _showIncomeDialog(context),
+                                  child: Text('Income'),
+                                ),
+                              ]),
                             ),
                           ],
                         ),
                       ),
+
+                      // 위의 함수를 사용해 지출을 카테고리별로 분류하고, 각 카테고리의 총 지출을 계산
                     ],
                   ),
                 ),
-        
-                Text('category expense'),
-                // ...
-        
-                FutureBuilder<List<Map<String, dynamic>>>(
-          future: _loadExpensesToday(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              double total = _calculateTotalExpenses(snapshot.data ?? []);
-              return Text('오늘의 지출 합계: $total');
-            } else if (snapshot.hasError) {
-              return Text('에러: ${snapshot.error}');
-            } else {
-              return CircularProgressIndicator();
-            }
-          },
-        ),
-        
-        
-                FutureBuilder<List<Map<String, dynamic>>>(
-            future: incomesFuture, // incomesFuture를 nullable로 변경
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting || snapshot.data == null) {
-                return CircularProgressIndicator();
-              } else {
-                double total = _calculateTotalExpenses(snapshot.data ?? []);
-                return Text('오늘의 수입 합계: $total');
-              }
-            },
-          ),
-        
-                FutureBuilder<List<List<Map<String, dynamic>>>>(
-                  future: Future.wait([_loadAllIncomes(), _loadAllExpenses()]),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      List<Map<String, dynamic>> incomes =
-                          snapshot.data?[0] ?? [];
-                      List<Map<String, dynamic>> expenses =
-                          snapshot.data?[1] ?? [];
-                      double currentAsset =
-                          _calculateCurrentAsset(incomes, expenses);
-                      return Text('현재 자산 현황: $currentAsset');
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else {
-                      return CircularProgressIndicator();
-                    }
-                  },
-                ),
-        
-        // 위의 함수를 사용해 지출을 카테고리별로 분류하고, 각 카테고리의 총 지출을 계산
-               Container(
-          color: Color.fromRGBO(156, 40, 40, 1),
-          child: FutureBuilder<List<Map<String, dynamic>>>(
-            future: expensesFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          }
-        
-          Map<String, double> categoryExpenses =
-              calculateCategoryExpenses(snapshot.data ?? []);
-          return Column(
-            children: categoryExpenses.entries.map((entry) {
-              return Container(width: 200, height: 50,
-                margin: const EdgeInsets.all(8.0),  // 여백 추가
-                color: Colors.green,  // 초록색 배경 적용
-                child: Padding(  // 텍스트와 사각형 사이에 여백 추가
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    '${entry.key}: ${entry.value}',
-                    style: TextStyle(color: Colors.white),  // 텍스트 색상 변경
+                Container(
+                  color: Color.fromRGBO(155, 189, 160, 1),
+                  width: double.infinity,
+                  height: 350,
+                  child: Container(
+                    color: Color.fromRGBO(156, 40, 40, 1),
+                    child: FutureBuilder<List<Map<String, dynamic>>>(
+                      future: expensesFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          }
+
+                          Map<String, double> categoryExpenses =
+                              calculateCategoryExpenses(snapshot.data ?? []);
+                          return Column(
+                            children: categoryExpenses.entries.map((entry) {
+                              return Container(
+                                width: 200, height: 50,
+                                margin: const EdgeInsets.all(8.0), // 여백 추가
+                                color: Colors.green, // 초록색 배경 적용
+                                child: Padding(
+                                  // 텍스트와 사각형 사이에 여백 추가
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Text(
+                                    '${entry.key}: ${entry.value}',
+                                    style: TextStyle(
+                                        color: Colors.white), // 텍스트 색상 변경
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          );
+                        } else {
+                          return CircularProgressIndicator();
+                        }
+                      },
+                    ),
                   ),
-                ),
-              );
-            }).toList(),
-          );
-              } else {
-          return CircularProgressIndicator();
-              }
-            },
-          ),
-        )
+                ), // 카테고리 별 지출 구역 큰 배경
+                Container(
+                  color: Color.fromRGBO(173, 145, 149, 1),
+                  width: double.infinity,
+                  height: 350,
+                ), // 광고 배너 구역 큰 배경
               ],
             ),
           ),
         ),
-
         bottomNavigationBar: Container(
           decoration: BoxDecoration(
             boxShadow: const <BoxShadow>[
@@ -423,8 +563,6 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
                 TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
             unselectedLabelStyle:
                 TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-            showSelectedLabels: true,
-            showUnselectedLabels: false,
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
@@ -446,8 +584,12 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
             onTap: (int index) {
               switch (index) {
                 case 0:
-                  // 홈 페이지로 이동 (아직 구현되지 않음)
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                  );
                   break;
+
                 case 1:
                   // 캘린더 페이지로 이동
                   Navigator.push(
@@ -477,9 +619,16 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
     );
   }
 
- Future<void> _showExpenseDialog(BuildContext context) async {
+  Future<void> _showExpenseDialog(BuildContext context) async {
     DateTime selectedDate = DateTime.now();
-     List<String> categories = ['category', 'food', 'traffic', 'leisure', 'shopping', 'etc'];
+    List<String> categories = [
+      'category',
+      'food',
+      'traffic',
+      'leisure',
+      'shopping',
+      'etc'
+    ];
     String category = categories[0];
     String itemName = '';
     double amount = 0.0;
@@ -507,11 +656,9 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
                                 primaryColor: Color.fromRGBO(55, 115, 108, 1),
                                 hintColor: Color.fromRGBO(55, 115, 108, 1),
                                 colorScheme: ColorScheme.light(
-                                  primary: Color.fromRGBO(55, 115, 108, 1)
-                                ),
+                                    primary: Color.fromRGBO(55, 115, 108, 1)),
                                 buttonTheme: ButtonThemeData(
-                                  textTheme: ButtonTextTheme.primary
-                                ),
+                                    textTheme: ButtonTextTheme.primary),
                               ),
                               child: child!,
                             );
@@ -536,7 +683,6 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
                     ),
                     DropdownButton<String>(
                       value: category,
-                      
                       iconSize: 24,
                       elevation: 16,
                       style: TextStyle(color: Colors.deepPurple),
@@ -549,7 +695,8 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
                           category = newValue!;
                         });
                       },
-                      items: categories.map<DropdownMenuItem<String>>((String value) {
+                      items: categories
+                          .map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(value),
@@ -558,7 +705,6 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
                     ),
                     TextField(
                       decoration: InputDecoration(labelText: 'detail'),
-                
                       onChanged: (text) {
                         itemName = text;
                       },
@@ -628,11 +774,9 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
                                 primaryColor: Color.fromRGBO(55, 115, 108, 1),
                                 hintColor: Color.fromRGBO(55, 115, 108, 1),
                                 colorScheme: ColorScheme.light(
-                                  primary: Color.fromRGBO(55, 115, 108, 1)
-                                ),
+                                    primary: Color.fromRGBO(55, 115, 108, 1)),
                                 buttonTheme: ButtonThemeData(
-                                  textTheme: ButtonTextTheme.primary
-                                ),
+                                    textTheme: ButtonTextTheme.primary),
                               ),
                               child: child!,
                             );
@@ -690,4 +834,3 @@ Future<List<Map<String, dynamic>>> _loadIncomes() async {
     );
   }
 }
- 
