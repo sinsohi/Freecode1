@@ -281,6 +281,7 @@ class _HomePageState extends State<HomePage> {
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1.5,
+                    fontFamily: 'IAM'
                   ),
                 ),
               ],
@@ -311,21 +312,17 @@ class _HomePageState extends State<HomePage> {
                       Container(
                         //기능 구현 작은 배경 container
                         decoration: BoxDecoration(
-                          color: Color.fromRGBO(55, 115, 108, 1),
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(
-                            color: Colors.black,
-                            width: 3
-                          ),
-                          boxShadow:[
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 5,
-                              blurRadius: 7,
-                              offset: Offset(0, 3),
-                            )
-                          ]
-                        ),
+                            color: Color.fromRGBO(55, 115, 108, 1),
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(color: Colors.black, width: 3),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 5,
+                                blurRadius: 7,
+                                offset: Offset(0, 3),
+                              )
+                            ]),
                         padding: EdgeInsets.symmetric(horizontal: 16.0),
                         margin: EdgeInsets.symmetric(horizontal: 16.0),
 
@@ -385,8 +382,17 @@ class _HomePageState extends State<HomePage> {
                                           return Center(
                                               child: Column(
                                             children: [
-                                              Text('today total expenses', style: TextStyle(fontSize: 20,),),
-                                              Text('$total',style: TextStyle(fontSize: 20,)),
+                                              Text(
+                                                'Today Total Expenses',
+                                                style: TextStyle(
+                                                    fontSize: 25,
+                                                    fontFamily: 'JAL'),
+                                              ),
+                                              SizedBox(width: double.infinity, height: 5,),
+                                              Text('$total',
+                                                  style: TextStyle(
+                                                      fontSize: 25,
+                                                      fontFamily: 'JAL')),
                                             ],
                                           ));
                                         } else if (snapshot.hasError) {
@@ -422,8 +428,19 @@ class _HomePageState extends State<HomePage> {
                                           return Center(
                                               child: Column(
                                             children: [
-                                              Text('today total incomes'),
-                                              Text('$total'),
+                                              Text(
+                                                'Today Total Incomes',
+                                                style: TextStyle(
+                                                    fontSize: 25,
+                                                    fontFamily: 'JAL'),
+                                              ),
+                                              SizedBox(width: double.infinity, height: 5,),
+                                              Text(
+                                                '$total',
+                                                style: TextStyle(
+                                                    fontSize: 25,
+                                                    fontFamily: 'JAL'),
+                                              ),
                                             ],
                                           ));
                                         }
@@ -453,8 +470,19 @@ class _HomePageState extends State<HomePage> {
                                           return Center(
                                               child: Column(
                                             children: [
-                                              Text('my current assets'),
-                                              Text('$currentAsset'),
+                                              Text(
+                                                'My Current Assets',
+                                                style: TextStyle(
+                                                    fontSize: 25,
+                                                    fontFamily: 'JAL'),
+                                              ),
+                                              SizedBox(width: double.infinity, height: 5,),
+                                              Text(
+                                                '$currentAsset',
+                                                style: TextStyle(
+                                                    fontSize: 25,
+                                                    fontFamily: 'JAL'),
+                                              ),
                                             ],
                                           ));
                                         } else if (snapshot.hasError) {
@@ -472,18 +500,62 @@ class _HomePageState extends State<HomePage> {
                                 ],
                               ),
                             ),
+                            SizedBox(width: double.infinity, height: 10,),
                             Container(
                               color: Color.fromRGBO(84, 55, 126, 1),
                               width: double.infinity,
                               height: 100,
-                              child: Row(children: [
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+                                children: [
                                 ElevatedButton(
                                   onPressed: () => _showExpenseDialog(context),
-                                  child: Text('Expense'),
+                                  // ignore: sort_child_properties_last
+                                  child: Text(
+                                    'Expense',
+                                    style: TextStyle(
+                                      color: Colors.black, // 글자 색상을 검정색으로 변경
+                                      fontFamily: 'JAL',
+                                    ),
+                                  ),
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            Colors.green), // 버튼 색상을 초록색으로 변경
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(5.0),
+                                        side: BorderSide(color: Colors.black, width: 2.0),  // 테두리 색상 설정
+                                      ),
+                                    ),
+                                  ),
                                 ),
                                 ElevatedButton(
                                   onPressed: () => _showIncomeDialog(context),
-                                  child: Text('Income'),
+                                  // ignore: sort_child_properties_last
+                                  child: Text(
+                                    'Income',
+                                    style: TextStyle(
+                                      color: Colors.black, // 글자 색상을 검정색으로 변경
+                                      fontFamily: 'JAL',
+                                    ),
+                                  ),
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            Colors.green), // 버튼 색상을 초록색으로 변경
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(5.0),
+                                        side: BorderSide(color: Colors.black, width: 2.0),  // 테두리 색상 설정
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ]),
                             ),
@@ -523,7 +595,9 @@ class _HomePageState extends State<HomePage> {
                                   child: Text(
                                     '${entry.key}: ${entry.value}',
                                     style: TextStyle(
-                                        color: Colors.white), // 텍스트 색상 변경
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                        fontFamily: 'JAL'),
                                   ),
                                 ),
                               );
