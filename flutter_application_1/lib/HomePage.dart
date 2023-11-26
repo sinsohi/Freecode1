@@ -505,59 +505,67 @@ class _HomePageState extends State<HomePage> {
                               color: Color.fromRGBO(55, 115, 108, 1),
                               width: double.infinity,
                               height: 100,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
+                              child: Column(
                                 children: [
-                                ElevatedButton(
-                                  onPressed: () => _showExpenseDialog(context),
-                                  // ignore: sort_child_properties_last
-                                  child: Text(
-                                    'Expense',
-                                    style: TextStyle(
-                                      color: Colors.black, // 글자 색상을 검정색으로 변경
-                                      fontFamily: 'JAL',
-                                    ),
-                                  ),
-                                  style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                            Color.fromRGBO(55, 115, 108, 1),), // 버튼 색상을 초록색으로 변경
-                                    shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(5.0),
-                                        side: BorderSide(color: Colors.black, width: 2.0),  // 테두리 색상 설정
+                                  Container(width: double.infinity, height: 50,
+                                  color: Color.fromRGBO(100, 0, 115, 1),
+                                  child: Align(alignment: Alignment(-1.0, -1.0),
+                                    child: Image.asset('assets/piggy.png', height: 50,)),),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+                                    children: [
+                                    ElevatedButton(
+                                      onPressed: () => _showExpenseDialog(context),
+                                      // ignore: sort_child_properties_last
+                                      child: Text(
+                                        'Expense',
+                                        style: TextStyle(
+                                          color: Colors.black, // 글자 색상을 검정색으로 변경
+                                          fontFamily: 'JAL',
+                                        ),
+                                      ),
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                Color.fromRGBO(55, 115, 108, 1),), // 버튼 색상을 초록색으로 변경
+                                        shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5.0),
+                                            side: BorderSide(color: Colors.black, width: 2.0),  // 테두리 색상 설정
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ),
-                                ElevatedButton(
-                                  onPressed: () => _showIncomeDialog(context),
-                                  // ignore: sort_child_properties_last
-                                  child: Text(
-                                    'Income',
-                                    style: TextStyle(
-                                      color: Colors.black, // 글자 색상을 검정색으로 변경
-                                      fontFamily: 'JAL',
-                                    ),
-                                  ),
-                                  style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                            Color.fromRGBO(55, 115, 108, 1),), // 버튼 색상을 초록색으로 변경
-                                    shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(5.0),
-                                        side: BorderSide(color: Colors.black, width: 2.0),  // 테두리 색상 설정
+                                    ElevatedButton(
+                                      onPressed: () => _showIncomeDialog(context),
+                                      // ignore: sort_child_properties_last
+                                      child: Text(
+                                        'Income',
+                                        style: TextStyle(
+                                          color: Colors.black, // 글자 색상을 검정색으로 변경
+                                          fontFamily: 'JAL',
+                                        ),
+                                      ),
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                Color.fromRGBO(55, 115, 108, 1),), // 버튼 색상을 초록색으로 변경
+                                        shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5.0),
+                                            side: BorderSide(color: Colors.black, width: 2.0),  // 테두리 색상 설정
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ),
-                              ]),
+                                  ]),
+                                ],
+                              ),
                             ),
                           ],
                         ),
