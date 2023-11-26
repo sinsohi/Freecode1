@@ -27,6 +27,7 @@ class RowItem extends StatelessWidget {
 
   RowItem({required this.color, required this.label});
 
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -72,8 +73,29 @@ class _graphState extends State<graph> {
   double totalincomes = 0.0;
   List<Map<String, dynamic>> expensesList = [];
   List<Map<String, dynamic>> incomesList = [];
+  List<Map<String, dynamic>> expenses = []; //이거 추가한건데 별일없겠지? ㅈㅂ요
+  List<HorizontalDetailsModel> generateBarChartDataWrapper() {
+    List<HorizontalDetailsModel> barChartData = generateBarChartData(expenses);
+    return barChartData;
+  } //expenses 다른 메서드로 전달하려고 추가한 세 줄...
   Future<List<Map<String, dynamic>>>? expensesFuture;
   late Future<List<Map<String, dynamic>>> incomesFuture;
+
+ Map<String, double> calculateDailyExpenses(List<Map<String, dynamic>> expenses) {
+    Map<String, double> dailyExpenses = {};
+
+    for (var expense in expenses) {
+      String date = expense['date']; // 날짜 가져옴
+      double amount = (expense['amount'] as num).toDouble(); 
+
+      // 날짜별로 지출 합계를 더함
+      dailyExpenses.update(date, (value) => value + amount, ifAbsent: () => amount);
+    }
+
+    return dailyExpenses;
+  } //일별 지출합계 더하는 함수
+
+  
 
    @override
   void initState() {
@@ -81,11 +103,11 @@ class _graphState extends State<graph> {
     expensesFuture = _loadExpenses();
 
   }
+  
 
     Future<List<Map<String, dynamic>>> _loadExpenses() async {
     List<Map<String, dynamic>> loadedExpenses = [];
-    
-
+    // _loadExpenses() 함수에서 가져온 expenses 리스트가 있다고 가정합니다.
     DateTime now = DateTime.now(); //여기부터
 DateTime firstDayOfMonth = DateTime(now.year, now.month, 1);
 DateTime lastDayOfMonth = DateTime(now.year, now.month + 1, 0);
@@ -158,6 +180,38 @@ DataSnapshot snapshot = await expenseRef
   return total;
 } //이번 달 모든 지출 데이터 더하는 함수
 
+List<HorizontalDetailsModel> generateBarChartData(List<Map<String, dynamic>> expenses) {
+  Map<String, double> dailyExpenses = calculateDailyExpenses(expenses);
+
+  List<HorizontalDetailsModel> barChartData = [];
+  DateTime now = DateTime.now();
+  int lastDayOfMonth = DateTime(now.year, now.month + 1, 0).day;
+
+  for (int day = 1; day <= lastDayOfMonth; day++) {
+    // '20XX-XX-XX' 형식의 날짜에서 월 정보 추출
+    String currentDate = '${now.year}-${now.month.toString().padLeft(2, '0')}-$day';
+    
+    double expenseAmount = dailyExpenses.containsKey(currentDate)
+        ? dailyExpenses[currentDate]!
+        : 0.0;
+
+    if (expenseAmount > 0) {
+      // 지출이 있는 경우에만 Bar를 생성
+      barChartData.add(
+        HorizontalDetailsModel(
+          name: '$day일',
+          color: Color(0xFF37736C),
+          size: expenseAmount,
+          sizeTwo: expenseAmount,
+          colorTwo: Color(0xFF37736C),
+        ),
+      );
+    }
+  }
+
+  return barChartData;
+}
+
   
   @override
   Widget build(BuildContext context) {
@@ -166,7 +220,7 @@ DataSnapshot snapshot = await expenseRef
       PieModel(count: 10, color: Color.fromARGB(255, 253, 225, 14).withOpacity(1)),
       PieModel(count: 30, color: Color.fromARGB(255, 255, 199, 44).withOpacity(1)),
       PieModel(count: 20, color: Color.fromARGB(255, 130, 199, 255).withOpacity(1)),
-      PieModel(count: 10, color: const Color.fromARGB(255, 214, 214, 214).withOpacity(1)),
+      PieModel(count: 10, color: const Color.fromARGB(255, 214, 214, 214).withOpacity(1)), //기타
     ];
     
 
@@ -233,115 +287,8 @@ DataSnapshot snapshot = await expenseRef
         width: MediaQuery.of(context).size.width * 1.5, //막대그래프 가로 크기(0.8이었는데 1.5로 수정)
         child: SimpleBarChart(
           makeItDouble: true,
-          listOfHorizontalBarData: [
-            HorizontalDetailsModel(
-              name: '1일',
-              color: const Color(0xFFFBBC05),
-              size: 7300,
-              sizeTwo: 4000,
-              colorTwo: Color(0xFF37736C),
-            ),
-            HorizontalDetailsModel(
-              name: '2일',
-              color: const Color(0xFFFBBC05),
-              size: 9200,
-              sizeTwo: 8500,
-              colorTwo: Color(0xFF37736C),
-            ),
-            HorizontalDetailsModel(
-              name: '3일',
-              color: const Color(0xFFFBBC05),
-              size: 12000,
-              sizeTwo: 10000,
-              colorTwo: Color(0xFF37736C),
-            ),
-            HorizontalDetailsModel(
-              name: '4일',
-              color: const Color(0xFFFBBC05),
-              size: 8600,
-              sizeTwo: 22000,
-              colorTwo: Color(0xFF37736C),
-            ),
-            HorizontalDetailsModel(
-              name: '5일',
-              color: const Color(0xFFFBBC05),
-              size: 6400,
-              sizeTwo: 17000,
-              colorTwo: Color(0xFF37736C),
-            ),
-            HorizontalDetailsModel(
-              name: '6일',
-              color: const Color(0xFFFBBC05),
-              size: 15500,
-              sizeTwo: 12000,
-              colorTwo: Color(0xFF37736C),
-            ),
-            HorizontalDetailsModel(
-              name: '7일',
-              color: const Color(0xFFFBBC05),
-              size: 20000,
-              sizeTwo: 9600,
-              colorTwo: Color(0xFF37736C),
-            ),
-             HorizontalDetailsModel(
-              name: '8일',
-              color: const Color(0xFFFBBC05),
-              size: 20000,
-              sizeTwo: 9600,
-              colorTwo: Color(0xFF37736C),
-            ),
-             HorizontalDetailsModel(
-              name: '9일',
-              color: const Color(0xFFFBBC05),
-              size: 20000,
-              sizeTwo: 9600,
-              colorTwo: Color(0xFF37736C),
-            ),
-            HorizontalDetailsModel(
-              name: '10일',
-              color: const Color(0xFFFBBC05),
-              size: 20000,
-              sizeTwo: 9600,
-              colorTwo: Color(0xFF37736C),
-            ),
-            HorizontalDetailsModel(
-              name: '11일',
-              color: const Color(0xFFFBBC05),
-              size: 12000,
-              sizeTwo: 10000,
-              colorTwo: Color(0xFF37736C),
-            ),
-            HorizontalDetailsModel(
-              name: '12일',
-              color: const Color(0xFFFBBC05),
-              size: 12000,
-              sizeTwo: 10000,
-              colorTwo: Color(0xFF37736C),
-            ),
-            
-            HorizontalDetailsModel(
-              name: '14일',
-              color: const Color(0xFFFBBC05),
-              size: 12000,
-              sizeTwo: 10000,
-              colorTwo: Color(0xFF37736C),
-            ),
-            HorizontalDetailsModel(
-              name: '15일',
-              color: const Color(0xFFFBBC05),
-              size: 12000,
-              sizeTwo: 10000,
-              colorTwo: Color(0xFF37736C),
-            ),
-            HorizontalDetailsModel(
-              name: '16일',
-              color: const Color(0xFFFBBC05),
-              size: 12000,
-              sizeTwo: 10000,
-              colorTwo: Color(0xFF37736C),
-            ),
-          ],
-          verticalInterval: 10000, //세로축 눈금 간격
+          listOfHorizontalBarData: generateBarChartData(expenses),
+          verticalInterval: 50000, //세로축 눈금 간격
           horizontalBarPadding: 20, //각 막대 사이의 간격 조절
           )
       )
