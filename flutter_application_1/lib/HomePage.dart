@@ -281,7 +281,7 @@ class _HomePageState extends State<HomePage> {
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1.5,
-                    fontFamily: 'IAM'
+                    fontFamily: 'JAL'
                   ),
                 ),
               ],
@@ -289,7 +289,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         body: Container(
-          color: Color.fromRGBO(207, 185, 24, 1), width: double.infinity,
+          color: Color.fromRGBO(248, 246, 232, 1), width: double.infinity,
           height: double.infinity, //body를 꽉채우는 container
           child: SingleChildScrollView(
             //화면 해상도에 따라 오류 발생하는 경우를 해결하기 위한 scrollview
@@ -323,7 +323,7 @@ class _HomePageState extends State<HomePage> {
                                 offset: Offset(0, 3),
                               )
                             ]),
-                        padding: EdgeInsets.symmetric(horizontal: 16.0),
+                        padding: EdgeInsets.symmetric(horizontal: 10.0),
                         margin: EdgeInsets.symmetric(horizontal: 16.0),
 
                         width: double.infinity,
@@ -332,7 +332,7 @@ class _HomePageState extends State<HomePage> {
                           //작은 배경 안 디자인들 정렬
                           children: [
                             Container(
-                              color: Color.fromRGBO(211, 223, 187, 1),
+                              color: Color.fromRGBO(55, 115, 108, 1),
                               width: double.infinity,
                               height: 50,
                               child: Row(
@@ -360,7 +360,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                             Container(
                               //기능 구현 배경 container
-                              color: Color.fromRGBO(100, 115, 108, 1),
+                              color: Color.fromRGBO(55, 115, 108, 1),
                               width: double.infinity,
                               height: 100,
                               child: PageView(
@@ -369,7 +369,7 @@ class _HomePageState extends State<HomePage> {
                                   Container(
                                     width: 200,
                                     height: 90,
-                                    color: Color.fromRGBO(172, 238, 40, 1),
+                                    color: Color.fromRGBO(55, 115, 108, 1),
                                     child: FutureBuilder<
                                         List<Map<String, dynamic>>>(
                                       future: _loadExpensesToday(),
@@ -383,13 +383,13 @@ class _HomePageState extends State<HomePage> {
                                               child: Column(
                                             children: [
                                               Text(
-                                                'Today Total Expenses',
+                                                '< Today Total Expenses >',
                                                 style: TextStyle(
                                                     fontSize: 25,
                                                     fontFamily: 'JAL'),
                                               ),
-                                              SizedBox(width: double.infinity, height: 5,),
-                                              Text('$total',
+                                              SizedBox(width: double.infinity, height: 20,),
+                                              Text('$total won',
                                                   style: TextStyle(
                                                       fontSize: 25,
                                                       fontFamily: 'JAL')),
@@ -410,7 +410,7 @@ class _HomePageState extends State<HomePage> {
                                   Container(
                                     width: 200,
                                     height: 90,
-                                    color: Color.fromRGBO(238, 40, 149, 1),
+                                    color: Color.fromRGBO(55, 115, 108, 1),
                                     child: FutureBuilder<
                                         List<Map<String, dynamic>>>(
                                       future: incomesFuture,
@@ -429,14 +429,14 @@ class _HomePageState extends State<HomePage> {
                                               child: Column(
                                             children: [
                                               Text(
-                                                'Today Total Incomes',
+                                                '< Today Total Incomes >',
                                                 style: TextStyle(
                                                     fontSize: 25,
                                                     fontFamily: 'JAL'),
                                               ),
-                                              SizedBox(width: double.infinity, height: 5,),
+                                              SizedBox(width: double.infinity, height: 20,),
                                               Text(
-                                                '$total',
+                                                '$total won',
                                                 style: TextStyle(
                                                     fontSize: 25,
                                                     fontFamily: 'JAL'),
@@ -450,7 +450,7 @@ class _HomePageState extends State<HomePage> {
                                   Container(
                                     width: 200,
                                     height: 90,
-                                    color: Color.fromRGBO(40, 238, 202, 1),
+                                    color: Color.fromRGBO(55, 115, 108, 1),
                                     child: FutureBuilder<
                                         List<List<Map<String, dynamic>>>>(
                                       future: Future.wait([
@@ -471,14 +471,14 @@ class _HomePageState extends State<HomePage> {
                                               child: Column(
                                             children: [
                                               Text(
-                                                'My Current Assets',
+                                                '< My Current Assets >',
                                                 style: TextStyle(
                                                     fontSize: 25,
                                                     fontFamily: 'JAL'),
                                               ),
-                                              SizedBox(width: double.infinity, height: 5,),
+                                              SizedBox(width: double.infinity, height: 20,),
                                               Text(
-                                                '$currentAsset',
+                                                '$currentAsset won',
                                                 style: TextStyle(
                                                     fontSize: 25,
                                                     fontFamily: 'JAL'),
@@ -500,9 +500,9 @@ class _HomePageState extends State<HomePage> {
                                 ],
                               ),
                             ),
-                            SizedBox(width: double.infinity, height: 10,),
+                            SizedBox(width: double.infinity, height: 20,),
                             Container(
-                              color: Color.fromRGBO(84, 55, 126, 1),
+                              color: Color.fromRGBO(55, 115, 108, 1),
                               width: double.infinity,
                               height: 100,
                               child: Row(
@@ -522,7 +522,7 @@ class _HomePageState extends State<HomePage> {
                                   style: ButtonStyle(
                                     backgroundColor:
                                         MaterialStateProperty.all<Color>(
-                                            Colors.green), // 버튼 색상을 초록색으로 변경
+                                            Color.fromRGBO(55, 115, 108, 1),), // 버튼 색상을 초록색으로 변경
                                     shape: MaterialStateProperty.all<
                                         RoundedRectangleBorder>(
                                       RoundedRectangleBorder(
@@ -546,7 +546,7 @@ class _HomePageState extends State<HomePage> {
                                   style: ButtonStyle(
                                     backgroundColor:
                                         MaterialStateProperty.all<Color>(
-                                            Colors.green), // 버튼 색상을 초록색으로 변경
+                                            Color.fromRGBO(55, 115, 108, 1),), // 버튼 색상을 초록색으로 변경
                                     shape: MaterialStateProperty.all<
                                         RoundedRectangleBorder>(
                                       RoundedRectangleBorder(
