@@ -27,7 +27,6 @@ class RowItem extends StatelessWidget {
 
   RowItem({required this.color, required this.label});
 
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -45,7 +44,7 @@ class RowItem extends StatelessWidget {
 }
 
 class PieModel {
-  final int count;
+  final double count;
   final Color color;
 
   PieModel({
@@ -73,15 +72,10 @@ class _graphState extends State<graph> {
   double totalincomes = 0.0;
   List<Map<String, dynamic>> expensesList = [];
   List<Map<String, dynamic>> incomesList = [];
-  List<Map<String, dynamic>> expenses = []; //이거 추가한건데 별일없겠지? ㅈㅂ요
-  List<HorizontalDetailsModel> generateBarChartDataWrapper() {
-    List<HorizontalDetailsModel> barChartData = generateBarChartData(expenses);
-    return barChartData;
-  } //expenses 다른 메서드로 전달하려고 추가한 세 줄...
   Future<List<Map<String, dynamic>>>? expensesFuture;
   late Future<List<Map<String, dynamic>>> incomesFuture;
-
- Map<String, double> calculateDailyExpenses(List<Map<String, dynamic>> expenses) {
+  
+   Map<String, double> calculateDailyExpenses(List<Map<String, dynamic>> expenses) {
     Map<String, double> dailyExpenses = {};
 
     for (var expense in expenses) {
@@ -91,11 +85,10 @@ class _graphState extends State<graph> {
       // 날짜별로 지출 합계를 더함
       dailyExpenses.update(date, (value) => value + amount, ifAbsent: () => amount);
     }
-
     return dailyExpenses;
-  } //일별 지출합계 더하는 함수
-
+  } //일별 지출합계 더하는 함수.
   
+
 
    @override
   void initState() {
@@ -103,23 +96,21 @@ class _graphState extends State<graph> {
     expensesFuture = _loadExpenses();
 
   }
-  
 
     Future<List<Map<String, dynamic>>> _loadExpenses() async {
     List<Map<String, dynamic>> loadedExpenses = [];
-    // _loadExpenses() 함수에서 가져온 expenses 리스트가 있다고 가정합니다.
-    DateTime now = DateTime.now(); //여기부터
+     DateTime now = DateTime.now();
 DateTime firstDayOfMonth = DateTime(now.year, now.month, 1);
 DateTime lastDayOfMonth = DateTime(now.year, now.month + 1, 0);
 
-String firstDayOfMonthString = DateFormat('yyyy-MM-dd').format(firstDayOfMonth);
+    String firstDayOfMonthString = DateFormat('yyyy-MM-dd').format(firstDayOfMonth);
 String lastDayOfMonthString = DateFormat('yyyy-MM-dd').format(lastDayOfMonth);
 
 DataSnapshot snapshot = await expenseRef
     .orderByChild('date')
     .startAt(firstDayOfMonthString)
     .endAt(lastDayOfMonthString)
-    .get();     //여기까지 이번달 시작, 끝 날짜 계산 후 문자열 변환해 이번 달 지출 데이터 모두 가져옴
+    .get(); //이번달 시작, 끝 날짜 계산 후 문자열 변환해 이번 달 지출데이터 모두 가져옴
 
     if (snapshot.value != null) {
       Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
@@ -136,8 +127,52 @@ DataSnapshot snapshot = await expenseRef
       }
     }
 
-    return loadedExpenses;
+    return loadedExpenses; //지출 데이터 맵 형태로 가져옴.
   }
+
+  double calculateTotalExpensesForCurrentMonth(List<Map<String, dynamic>> expenses) {
+  double total = 0.0;
+  for (var expense in expenses) {
+    total += (expense['amount'] as num).toDouble();
+  }
+  return total;
+} //현재 월의 모든 지출 합계를 계산
+
+  List<PieModel> generatePieChartData(List<Map<String, dynamic>> expenses) {
+  double totalExpenses = calculateTotalExpensesForCurrentMonth(expenses);
+
+  // 이제 totalExpenses와 expenses를 활용하여 동적으로 PieModel을 생성합니다.
+  List<PieModel> model = [];
+
+  Map<String, double> categoryExpenses = calculateCategoryExpenses(expenses);
+
+  for (var entry in categoryExpenses.entries) {
+    double percentage = (entry.value / totalExpenses) * 100;
+    model.add(PieModel(count: percentage, color: getCategoryColor(entry.key)));
+  }
+
+  return model;
+}
+
+Color getCategoryColor(String category) {
+  // 각 카테고리에 대한 색상을 정의하여 반환하는 함수
+  switch (category) {
+    case '음식':
+      return Colors.red; // 음식 카테고리의 색상을 빨강으로 지정
+    case '교통':
+      return Colors.orange; // 교통 카테고리의 색상을 주황으로 지정
+    case '여가':
+      return Colors.yellow; // 여가 카테고리의 색상을 노랑으로 지정
+    case '쇼핑':
+      return Colors.green; // 쇼핑 카테고리의 색상을 초록으로 지정
+    case '기타':
+      return Colors.grey; // 기타 카테고리의 색상을 회색으로 지정
+    default:
+      return const Color.fromARGB(255, 0, 0, 0); // 기본적으로는 검정 색상을 반환
+  }
+}
+
+
 
    static const category = ['음식', '교통', '여가', '쇼핑', '기타'];
 
@@ -157,7 +192,7 @@ DataSnapshot snapshot = await expenseRef
 
   Map<String, double> calculateCategoryExpenses(
       List<Map<String, dynamic>> expenses) {
-        //카테고리별 지출 계산
+        //카테고리별 지출
     var groupedExpenses = groupExpensesByCategory(expenses);
 
     Map<String, double> categoryExpenses = {};
@@ -171,57 +206,10 @@ DataSnapshot snapshot = await expenseRef
 
     return categoryExpenses;
   }
-
-  double calculateTotalExpenses(List<Map<String, dynamic>> expenses) {
-  double total = 0.0;
-  for (var expense in expenses) {
-    total += (expense['amount'] as num).toDouble();
-  }
-  return total;
-} //이번 달 모든 지출 데이터 더하는 함수
-
-List<HorizontalDetailsModel> generateBarChartData(List<Map<String, dynamic>> expenses) {
-  Map<String, double> dailyExpenses = calculateDailyExpenses(expenses);
-
-  List<HorizontalDetailsModel> barChartData = [];
-  DateTime now = DateTime.now();
-  int lastDayOfMonth = DateTime(now.year, now.month + 1, 0).day;
-
-  for (int day = 1; day <= lastDayOfMonth; day++) {
-    // '20XX-XX-XX' 형식의 날짜에서 월 정보 추출
-    String currentDate = '${now.year}-${now.month.toString().padLeft(2, '0')}-$day';
-    
-    double expenseAmount = dailyExpenses.containsKey(currentDate)
-        ? dailyExpenses[currentDate]!
-        : 0.0;
-
-    if (expenseAmount > 0) {
-      // 지출이 있는 경우에만 Bar를 생성
-      barChartData.add(
-        HorizontalDetailsModel(
-          name: '$day일',
-          color: Color(0xFF37736C),
-          size: expenseAmount,
-          sizeTwo: expenseAmount,
-          colorTwo: Color(0xFF37736C),
-        ),
-      );
-    }
-  }
-
-  return barChartData;
-}
-
   
   @override
   Widget build(BuildContext context) {
-    List<PieModel> model = [
-      PieModel(count: 30, color: Color.fromARGB(255, 44, 183, 92).withOpacity(1)),
-      PieModel(count: 10, color: Color.fromARGB(255, 253, 225, 14).withOpacity(1)),
-      PieModel(count: 30, color: Color.fromARGB(255, 255, 199, 44).withOpacity(1)),
-      PieModel(count: 20, color: Color.fromARGB(255, 130, 199, 255).withOpacity(1)),
-      PieModel(count: 10, color: const Color.fromARGB(255, 214, 214, 214).withOpacity(1)), //기타
-    ];
+  List<PieModel> model = generatePieChartData(expensesList);
     
 
     
@@ -234,6 +222,26 @@ List<HorizontalDetailsModel> generateBarChartData(List<Map<String, dynamic>> exp
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
+           FutureBuilder<List<Map<String, dynamic>>>(
+                future: expensesFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    }
+
+                    Map<String, double> categoryExpenses =
+                        calculateCategoryExpenses(snapshot.data ?? []);
+                    return Column(
+                      children: categoryExpenses.entries.map((entry) {
+                        return Text('${entry.key}: ${entry.value}');
+                      }).toList(),
+                    );
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                },
+              ),
           Expanded(
             flex: 2,
             child: Align(
@@ -262,10 +270,10 @@ List<HorizontalDetailsModel> generateBarChartData(List<Map<String, dynamic>> exp
                 crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
                 children: [
             RowItem(color: Color.fromARGB(255, 44, 183, 92).withOpacity(1), label: '음식'),
-            RowItem(color: Color.fromARGB(255, 255, 199, 44).withOpacity(1), label: '교통'),
-            RowItem(color: Color.fromARGB(255, 253, 225, 14).withOpacity(1), label: '여가'),
-            RowItem(color: Color.fromARGB(255, 130, 199, 255).withOpacity(1), label: '쇼핑'),
-             //Tlqkf 왜 기타가 안나오지? 안나오는 김에 빼버림 ㅅㄱ
+            RowItem(color: Color.fromARGB(255, 255, 199, 44).withOpacity(1), label: '여가'),
+            RowItem(color: Color.fromARGB(255, 253, 225, 14).withOpacity(1), label: '교통'),
+            RowItem(color: Color.fromARGB(255, 44, 183, 92).withOpacity(1), label: '쇼핑'),
+            RowItem(color: const Color.fromARGB(255, 214, 214, 214).withOpacity(1), label: '기타'), //비율 가장 큰 지출항목 3개 반영할 계획
             //지출항목에 대한 RowItem 추가
           ],
         ),
@@ -287,8 +295,115 @@ List<HorizontalDetailsModel> generateBarChartData(List<Map<String, dynamic>> exp
         width: MediaQuery.of(context).size.width * 1.5, //막대그래프 가로 크기(0.8이었는데 1.5로 수정)
         child: SimpleBarChart(
           makeItDouble: true,
-          listOfHorizontalBarData: generateBarChartData(expenses),
-          verticalInterval: 50000, //세로축 눈금 간격
+          listOfHorizontalBarData: [
+            HorizontalDetailsModel(
+              name: '1일',
+              color: const Color(0xFFFBBC05),
+              size: 7300,
+              sizeTwo: 4000,
+              colorTwo: Color(0xFF37736C),
+            ),
+            HorizontalDetailsModel(
+              name: '2일',
+              color: const Color(0xFFFBBC05),
+              size: 9200,
+              sizeTwo: 8500,
+              colorTwo: Color(0xFF37736C),
+            ),
+            HorizontalDetailsModel(
+              name: '3일',
+              color: const Color(0xFFFBBC05),
+              size: 12000,
+              sizeTwo: 10000,
+              colorTwo: Color(0xFF37736C),
+            ),
+            HorizontalDetailsModel(
+              name: '4일',
+              color: const Color(0xFFFBBC05),
+              size: 8600,
+              sizeTwo: 22000,
+              colorTwo: Color(0xFF37736C),
+            ),
+            HorizontalDetailsModel(
+              name: '5일',
+              color: const Color(0xFFFBBC05),
+              size: 6400,
+              sizeTwo: 17000,
+              colorTwo: Color(0xFF37736C),
+            ),
+            HorizontalDetailsModel(
+              name: '6일',
+              color: const Color(0xFFFBBC05),
+              size: 15500,
+              sizeTwo: 12000,
+              colorTwo: Color(0xFF37736C),
+            ),
+            HorizontalDetailsModel(
+              name: '7일',
+              color: const Color(0xFFFBBC05),
+              size: 20000,
+              sizeTwo: 9600,
+              colorTwo: Color(0xFF37736C),
+            ),
+             HorizontalDetailsModel(
+              name: '8일',
+              color: const Color(0xFFFBBC05),
+              size: 20000,
+              sizeTwo: 9600,
+              colorTwo: Color(0xFF37736C),
+            ),
+             HorizontalDetailsModel(
+              name: '9일',
+              color: const Color(0xFFFBBC05),
+              size: 20000,
+              sizeTwo: 9600,
+              colorTwo: Color(0xFF37736C),
+            ),
+            HorizontalDetailsModel(
+              name: '10일',
+              color: const Color(0xFFFBBC05),
+              size: 20000,
+              sizeTwo: 9600,
+              colorTwo: Color(0xFF37736C),
+            ),
+            HorizontalDetailsModel(
+              name: '11일',
+              color: const Color(0xFFFBBC05),
+              size: 12000,
+              sizeTwo: 10000,
+              colorTwo: Color(0xFF37736C),
+            ),
+            HorizontalDetailsModel(
+              name: '12일',
+              color: const Color(0xFFFBBC05),
+              size: 12000,
+              sizeTwo: 10000,
+              colorTwo: Color(0xFF37736C),
+            ),
+            
+            HorizontalDetailsModel(
+              name: '14일',
+              color: const Color(0xFFFBBC05),
+              size: 12000,
+              sizeTwo: 10000,
+              colorTwo: Color(0xFF37736C),
+            ),
+            HorizontalDetailsModel(
+              name: '15일',
+              color: const Color(0xFFFBBC05),
+              size: 12000,
+              sizeTwo: 10000,
+              colorTwo: Color(0xFF37736C),
+            ),
+            HorizontalDetailsModel(
+              name: '16일',
+              color: const Color(0xFFFBBC05),
+              size: 12000,
+              sizeTwo: 10000,
+              colorTwo: Color(0xFF37736C),
+            ),
+          ],
+          verticalInterval: 10000, //세로축 눈금 간격
           horizontalBarPadding: 20, //각 막대 사이의 간격 조절
           )
       )
@@ -376,15 +491,15 @@ class _PieChart extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     Paint circlePaint = Paint()..color = Colors.white;
-
     Offset offset = Offset(size.width / 2, size.width / 2);
-    double radius = (size.width / 2) * 0.65; // 파이 차트 반지름 크기 조절. ex: 0.6은 현재 크기의 60%
+    double radius = (size.width / 2) * 0.65;
     canvas.drawCircle(offset, radius, circlePaint);
 
     double _startPoint = 0.0;
     for (int i = 0; i < data.length; i++) {
       double _startAngle = 2 * math.pi * (data[i].count / 100);
-      double _nextAngle = 2 * math.pi * (data[i].count / 100);
+      double _nextAngle = 2 * math.pi * (data[i].count / 100); // 여기를 수정
+
       circlePaint.color = data[i].color;
 
       canvas.drawArc(
@@ -401,7 +516,6 @@ class _PieChart extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
-
 
 
 void main()  {
