@@ -281,6 +281,7 @@ class _HomePageState extends State<HomePage> {
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1.5,
+                    fontFamily: 'JAL'
                   ),
                 ),
               ],
@@ -288,7 +289,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         body: Container(
-          color: Color.fromRGBO(207, 185, 24, 1), width: double.infinity,
+          color: Color.fromRGBO(248, 246, 232, 1), width: double.infinity,
           height: double.infinity, //body를 꽉채우는 container
           child: SingleChildScrollView(
             //화면 해상도에 따라 오류 발생하는 경우를 해결하기 위한 scrollview
@@ -311,22 +312,18 @@ class _HomePageState extends State<HomePage> {
                       Container(
                         //기능 구현 작은 배경 container
                         decoration: BoxDecoration(
-                          color: Color.fromRGBO(55, 115, 108, 1),
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(
-                            color: Colors.black,
-                            width: 3
-                          ),
-                          boxShadow:[
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 5,
-                              blurRadius: 7,
-                              offset: Offset(0, 3),
-                            )
-                          ]
-                        ),
-                        padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            color: Color.fromRGBO(55, 115, 108, 1),
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(color: Colors.black, width: 3),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 5,
+                                blurRadius: 7,
+                                offset: Offset(0, 3),
+                              )
+                            ]),
+                        padding: EdgeInsets.symmetric(horizontal: 10.0),
                         margin: EdgeInsets.symmetric(horizontal: 16.0),
 
                         width: double.infinity,
@@ -335,7 +332,7 @@ class _HomePageState extends State<HomePage> {
                           //작은 배경 안 디자인들 정렬
                           children: [
                             Container(
-                              color: Color.fromRGBO(211, 223, 187, 1),
+                              color: Color.fromRGBO(55, 115, 108, 1),
                               width: double.infinity,
                               height: 50,
                               child: Row(
@@ -363,7 +360,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                             Container(
                               //기능 구현 배경 container
-                              color: Color.fromRGBO(100, 115, 108, 1),
+                              color: Color.fromRGBO(55, 115, 108, 1),
                               width: double.infinity,
                               height: 100,
                               child: PageView(
@@ -372,7 +369,7 @@ class _HomePageState extends State<HomePage> {
                                   Container(
                                     width: 200,
                                     height: 90,
-                                    color: Color.fromRGBO(172, 238, 40, 1),
+                                    color: Color.fromRGBO(55, 115, 108, 1),
                                     child: FutureBuilder<
                                         List<Map<String, dynamic>>>(
                                       future: _loadExpensesToday(),
@@ -385,8 +382,17 @@ class _HomePageState extends State<HomePage> {
                                           return Center(
                                               child: Column(
                                             children: [
-                                              Text('today total expenses', style: TextStyle(fontSize: 20,),),
-                                              Text('$total',style: TextStyle(fontSize: 20,)),
+                                              Text(
+                                                '< Today Total Expenses >',
+                                                style: TextStyle(
+                                                    fontSize: 25,
+                                                    fontFamily: 'JAL'),
+                                              ),
+                                              SizedBox(width: double.infinity, height: 20,),
+                                              Text('$total won',
+                                                  style: TextStyle(
+                                                      fontSize: 25,
+                                                      fontFamily: 'JAL')),
                                             ],
                                           ));
                                         } else if (snapshot.hasError) {
@@ -404,7 +410,7 @@ class _HomePageState extends State<HomePage> {
                                   Container(
                                     width: 200,
                                     height: 90,
-                                    color: Color.fromRGBO(238, 40, 149, 1),
+                                    color: Color.fromRGBO(55, 115, 108, 1),
                                     child: FutureBuilder<
                                         List<Map<String, dynamic>>>(
                                       future: incomesFuture,
@@ -422,8 +428,19 @@ class _HomePageState extends State<HomePage> {
                                           return Center(
                                               child: Column(
                                             children: [
-                                              Text('today total incomes'),
-                                              Text('$total'),
+                                              Text(
+                                                '< Today Total Incomes >',
+                                                style: TextStyle(
+                                                    fontSize: 25,
+                                                    fontFamily: 'JAL'),
+                                              ),
+                                              SizedBox(width: double.infinity, height: 20,),
+                                              Text(
+                                                '$total won',
+                                                style: TextStyle(
+                                                    fontSize: 25,
+                                                    fontFamily: 'JAL'),
+                                              ),
                                             ],
                                           ));
                                         }
@@ -433,7 +450,7 @@ class _HomePageState extends State<HomePage> {
                                   Container(
                                     width: 200,
                                     height: 90,
-                                    color: Color.fromRGBO(40, 238, 202, 1),
+                                    color: Color.fromRGBO(55, 115, 108, 1),
                                     child: FutureBuilder<
                                         List<List<Map<String, dynamic>>>>(
                                       future: Future.wait([
@@ -453,8 +470,19 @@ class _HomePageState extends State<HomePage> {
                                           return Center(
                                               child: Column(
                                             children: [
-                                              Text('my current assets'),
-                                              Text('$currentAsset'),
+                                              Text(
+                                                '< My Current Assets >',
+                                                style: TextStyle(
+                                                    fontSize: 25,
+                                                    fontFamily: 'JAL'),
+                                              ),
+                                              SizedBox(width: double.infinity, height: 20,),
+                                              Text(
+                                                '$currentAsset won',
+                                                style: TextStyle(
+                                                    fontSize: 25,
+                                                    fontFamily: 'JAL'),
+                                              ),
                                             ],
                                           ));
                                         } else if (snapshot.hasError) {
@@ -472,20 +500,72 @@ class _HomePageState extends State<HomePage> {
                                 ],
                               ),
                             ),
+                            SizedBox(width: double.infinity, height: 20,),
                             Container(
-                              color: Color.fromRGBO(84, 55, 126, 1),
+                              color: Color.fromRGBO(55, 115, 108, 1),
                               width: double.infinity,
                               height: 100,
-                              child: Row(children: [
-                                ElevatedButton(
-                                  onPressed: () => _showExpenseDialog(context),
-                                  child: Text('Expense'),
-                                ),
-                                ElevatedButton(
-                                  onPressed: () => _showIncomeDialog(context),
-                                  child: Text('Income'),
-                                ),
-                              ]),
+                              child: Column(
+                                children: [
+                                  Container(width: double.infinity, height: 50,
+                                  color: Color.fromRGBO(100, 0, 115, 1),
+                                  child: Align(alignment: Alignment(0.4, -1.0),
+                                    child: Image.asset('assets/piggy.png', height: 50,)),),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+                                    children: [
+                                    ElevatedButton(
+                                      onPressed: () => _showExpenseDialog(context),
+                                      // ignore: sort_child_properties_last
+                                      child: Text(
+                                        'Expense',
+                                        style: TextStyle(
+                                          color: Colors.black, // 글자 색상을 검정색으로 변경
+                                          fontFamily: 'JAL',
+                                        ),
+                                      ),
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                Color.fromRGBO(55, 115, 108, 1),), // 버튼 색상을 초록색으로 변경
+                                        shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5.0),
+                                            side: BorderSide(color: Colors.black, width: 2.0),  // 테두리 색상 설정
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () => _showIncomeDialog(context),
+                                      // ignore: sort_child_properties_last
+                                      child: Text(
+                                        'Income',
+                                        style: TextStyle(
+                                          color: Colors.black, // 글자 색상을 검정색으로 변경
+                                          fontFamily: 'JAL',
+                                        ),
+                                      ),
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                Color.fromRGBO(55, 115, 108, 1),), // 버튼 색상을 초록색으로 변경
+                                        shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5.0),
+                                            side: BorderSide(color: Colors.black, width: 2.0),  // 테두리 색상 설정
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ]),
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -523,7 +603,9 @@ class _HomePageState extends State<HomePage> {
                                   child: Text(
                                     '${entry.key}: ${entry.value}',
                                     style: TextStyle(
-                                        color: Colors.white), // 텍스트 색상 변경
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                        fontFamily: 'JAL'),
                                   ),
                                 ),
                               );

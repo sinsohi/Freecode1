@@ -76,6 +76,20 @@ flutter:
     - family: LilitaOne
       fonts:
         - asset: fonts/LilitaOne-Regular.ttf
+    - family: NPS
+      fonts:
+        - asset: fonts/NPSfont_extrabold.ttf
+    - family: IAM
+      fonts:
+        - asset: fonts/I AM A PLAYER.ttf
+    - family: DON
+      fonts:
+        - asset: fonts/DNFBitBitv2.ttf
+    - family: JAL
+      fonts:
+        - asset: fonts/Jalnan.ttf
+    
+        
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
