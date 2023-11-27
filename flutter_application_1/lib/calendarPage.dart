@@ -57,7 +57,7 @@ class _calendarPageState extends State<calendarPage> {
 
     initialize().then((_) {
       setState(() {
-        expensesFuture = _loadExpenses();
+        expensesFuture = _loadExpensesForDay(DateTime.now());
         incomesFuture = _loadIncomes();
       });
     });
@@ -68,6 +68,7 @@ class _calendarPageState extends State<calendarPage> {
   void _onDaySelected(DateTime day, DateTime focusedDay) {
     setState(() {
       today = day;
+      expensesFuture = _loadExpensesForDay(day);
     });
   }
 
@@ -84,21 +85,13 @@ class _calendarPageState extends State<calendarPage> {
     );
   }
 
-  Future<List<Map<String, dynamic>>> _loadExpenses() async {
+  Future<List<Map<String, dynamic>>> _loadExpensesForDay(DateTime day) async {
     List<Map<String, dynamic>> loadedExpenses = [];
-    DateTime now = DateTime.now();
-    DateTime firstDayThisMonth = DateTime(now.year, now.month, 1);
-    DateTime firstDayNextMonth = DateTime(now.year, now.month + 1, 1);
-
-    String firstDayThisMonthString =
-        DateFormat('yyyy-MM-dd').format(firstDayThisMonth);
-    String firstDayNextMonthString =
-        DateFormat('yyyy-MM-dd').format(firstDayNextMonth);
+    String dayString = DateFormat('yyyy-MM-dd').format(day);
 
     DataSnapshot snapshot = await expenseRef
         .orderByChild('date')
-        .startAt(firstDayThisMonthString)
-        .endAt(firstDayNextMonthString)
+        .equalTo(dayString) // 선택한 날짜에 대해 일치하는 지출만 가져옴
         .get();
 
     if (snapshot.value != null) {
