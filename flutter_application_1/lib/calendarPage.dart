@@ -1,5 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'dart:async';
+import 'calendarPage.dart';
+import 'graph.dart';
+import 'profilePage.dart';
+import 'HomePage.dart';
+import 'package:intl/intl.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -21,18 +30,41 @@ class Event {
 }
 
 class _calendarPageState extends State<calendarPage> {
+  late User? user;
+  late String uid;
+  late DatabaseReference expenseRef;
+  late DatabaseReference incomeRef;
+
+  Future<void> initialize() async {
+    user = FirebaseAuth.instance.currentUser;
+    uid = user?.uid ?? 'default';
+    expenseRef =
+        FirebaseDatabase.instance.reference().child('expenses').child(uid);
+    incomeRef =
+        FirebaseDatabase.instance.reference().child('incomes').child(uid);
+  }
+
+  double totalExpenses = 0.0;
+  double totalincomes = 0.0;
+  List<Map<String, dynamic>> expensesList = [];
+  List<Map<String, dynamic>> incomesList = [];
+  Future<List<Map<String, dynamic>>>? expensesFuture;
+  Future<List<Map<String, dynamic>>>? incomesFuture;
+
+  @override
+  void initState() {
+    super.initState();
+
+    initialize().then((_) {
+      setState(() {
+        expensesFuture = _loadExpenses();
+        incomesFuture = _loadIncomes();
+      });
+    });
+  }
+
   DateTime today = DateTime.now();
-  Map<DateTime, List<Event>> events = {
-    DateTime.utc(2023, 11, 08): [
-      Event('식비'),
-      Event('교통'),
-      Event('쇼핑'),
-      Event('여가비'),
-      Event('기타'),
-    ],
-    DateTime.utc(2023, 11, 20): [Event('쇼핑')],
-    DateTime.utc(2023, 11, 25): [Event('교통')],
-  };
+  Map<DateTime, List<Event>> events = {};
   void _onDaySelected(DateTime day, DateTime focusedDay) {
     setState(() {
       today = day;
@@ -50,6 +82,98 @@ class _calendarPageState extends State<calendarPage> {
       body: content(),
       backgroundColor: Color(0xfff8f6e8),
     );
+  }
+
+  Future<List<Map<String, dynamic>>> _loadExpenses() async {
+    List<Map<String, dynamic>> loadedExpenses = [];
+    DateTime now = DateTime.now();
+    DateTime firstDayThisMonth = DateTime(now.year, now.month, 1);
+    DateTime firstDayNextMonth = DateTime(now.year, now.month + 1, 1);
+
+    String firstDayThisMonthString =
+        DateFormat('yyyy-MM-dd').format(firstDayThisMonth);
+    String firstDayNextMonthString =
+        DateFormat('yyyy-MM-dd').format(firstDayNextMonth);
+
+    DataSnapshot snapshot = await expenseRef
+        .orderByChild('date')
+        .startAt(firstDayThisMonthString)
+        .endAt(firstDayNextMonthString)
+        .get();
+
+    if (snapshot.value != null) {
+      Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
+
+      if (values != null) {
+        values.forEach((key, value) {
+          loadedExpenses.add({
+            'type': value['type'],
+            'amount': value['amount'],
+            'date': value['date'],
+            'category': value['category'],
+          });
+        });
+      }
+    }
+
+    return loadedExpenses;
+  }
+
+  Future<List<Map<String, dynamic>>> _loadIncomes() async {
+    List<Map<String, dynamic>> loadedIncomes = [];
+    String today = DateFormat('yyyy-MM-dd')
+        .format(DateTime.now()); // 오늘 날짜를 yyyy-MM-dd 형식의 문자열로 변환
+
+    DataSnapshot snapshot =
+        await incomeRef.orderByChild('date').equalTo(today).get();
+
+    if (snapshot.value != null) {
+      Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
+
+      if (values != null) {
+        values.forEach((key, value) {
+          loadedIncomes.add({
+            'amount': value['amount'],
+            'date': value['date'],
+          });
+        });
+      }
+    }
+
+    return loadedIncomes;
+  }
+
+  static const category = ['food', 'traffic', 'leisure', 'shopping', 'etc'];
+
+  Map<String, List<Map<String, dynamic>>> groupExpensesByCategory(
+      List<Map<String, dynamic>> expenses) {
+    Map<String, List<Map<String, dynamic>>> groupedExpenses = {
+      for (var category in category.where((c) => c != 'etc'))
+        category: expenses.where((e) => e['category'] == category).toList(),
+    };
+
+    groupedExpenses['etc'] = expenses
+        .where(
+            (e) => !category.where((c) => c != 'etc').contains(e['category']))
+        .toList();
+
+    return groupedExpenses;
+  }
+
+  Map<String, double> calculateCategoryExpenses(
+      List<Map<String, dynamic>> expenses) {
+    var groupedExpenses = groupExpensesByCategory(expenses);
+
+    Map<String, double> categoryExpenses = {};
+    groupedExpenses.forEach((category, expenses) {
+      double total = 0.0;
+      for (var expense in expenses) {
+        total += (expense['amount'] as num).toDouble();
+      }
+      categoryExpenses[category] = total;
+    });
+
+    return categoryExpenses;
   }
 
   Widget content() {
@@ -127,8 +251,53 @@ class _calendarPageState extends State<calendarPage> {
             ),
           ),
         ),
+
         SizedBox(height: 20),
         _buildEventBanner(),
+
+        Container(
+          color: Color.fromRGBO(155, 189, 160, 1),
+          width: double.infinity,
+          height: 350,
+          child: Container(
+            color: Color.fromRGBO(156, 40, 40, 1),
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+              future: expensesFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  }
+
+                  Map<String, double> categoryExpenses =
+                      calculateCategoryExpenses(snapshot.data ?? []);
+                  return Column(
+                    children: categoryExpenses.entries.map((entry) {
+                      return Container(
+                        width: 200, height: 50,
+                        margin: const EdgeInsets.all(8.0), // 여백 추가
+                        color: Colors.green, // 초록색 배경 적용
+                        child: Padding(
+                          // 텍스트와 사각형 사이에 여백 추가
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text(
+                            '${entry.key}: ${entry.value}',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontFamily: 'JAL'),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  );
+                } else {
+                  return CircularProgressIndicator();
+                }
+              },
+            ),
+          ),
+        ), // 카테고리 별 지출 구역 큰 배경
       ],
     );
   }
