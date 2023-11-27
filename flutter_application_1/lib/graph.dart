@@ -169,10 +169,10 @@ DataSnapshot snapshot = await expenseRef
 
   List<PieModel> generatePieChartData(List<Map<String, dynamic>> expenses) {
   double totalExpenses = calculateTotalExpensesForCurrentMonth(expenses);
+  
 
   //totalExpenses와 expenses를 활용하여 동적으로 PieModel을 생성
-  List<PieModel> model = [];
-
+  List<PieModel> model =  []; 
   Map<String, double> categoryExpenses = calculateCategoryExpenses(expenses);
 
   for (var entry in categoryExpenses.entries) {
@@ -187,23 +187,22 @@ Color getCategoryColor(String category) {
   // 각 카테고리에 대한 색상을 정의하여 반환하는 함수
   switch (category) {
     case 'food':
-      return Colors.red; // 음식 카테고리의 색상을 빨강으로 지정
+      return Color.fromARGB(255, 44, 183, 92).withOpacity(1); // 음식 카테고리의 색상을 빨강으로 지정
     case 'traffic':
-      return Colors.orange; // 교통 카테고리의 색상을 주황으로 지정
+      return Color.fromARGB(255, 253, 225, 14).withOpacity(1); // 교통 카테고리의 색상을 주황으로 지정
     case 'leisure':
-      return Colors.yellow; // 여가 카테고리의 색상을 노랑으로 지정
+      return Color.fromARGB(255, 112, 245, 255).withOpacity(1); // 여가 카테고리의 색상을 노랑으로 지정
     case 'shopping':
-      return Colors.green; // 쇼핑 카테고리의 색상을 초록으로 지정
+      return  Color.fromARGB(255, 255, 199, 44).withOpacity(1); // 쇼핑 카테고리의 색상을 초록으로 지정
     case 'etc':
-      return Colors.grey; // 기타 카테고리의 색상을 회색으로 지정
+      return  Color.fromARGB(255, 214, 214, 214).withOpacity(1); // 기타 카테고리의 색상을 회색으로 지정
     default:
       return const Color.fromARGB(255, 0, 0, 0); // 기본적으로는 검정 색상을 반환
   }
 }
 
 
-
-   static const category = ['food', 'traffic', 'leisure', 'shopping', 'etc'];
+    static const category = ['food', 'traffic', 'leisure', 'shopping', 'etc'];
 
   Map<String, List<Map<String, dynamic>>> groupExpensesByCategory(
       List<Map<String, dynamic>> expenses) {
@@ -221,7 +220,6 @@ Color getCategoryColor(String category) {
 
   Map<String, double> calculateCategoryExpenses(
       List<Map<String, dynamic>> expenses) {
-        //카테고리별 지출
     var groupedExpenses = groupExpensesByCategory(expenses);
 
     Map<String, double> categoryExpenses = {};
@@ -235,12 +233,11 @@ Color getCategoryColor(String category) {
 
     return categoryExpenses;
   }
-  
+
   @override
   Widget build(BuildContext context) {
   List<PieModel> model = generatePieChartData(expensesList);
-    
-
+  
     
     return Scaffold(
       backgroundColor: Color(0xFFF8F6E8),
@@ -250,7 +247,7 @@ Color getCategoryColor(String category) {
     ), //상단
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [ //여기부터는 디버깅(출력) 위한 파트
+        children: [  //여기부터는 디버깅(출력) 위한 파트
           FutureBuilder<List<Map<String, dynamic>>>(
   future: expensesFuture,
   builder: (context, snapshot) {
@@ -260,11 +257,22 @@ Color getCategoryColor(String category) {
       }
 
       List<Map<String, dynamic>> expenses = snapshot.data ?? [];
+List<Widget> expenseTextWidgets = [];
+Map<String, double> categoryTotalExpenses = {};
 
-      // 1. 출력할 지출 데이터의 텍스트 표시
-      List<Widget> expenseTextWidgets = expenses.map((expense) {
-        return Text('${expense['category']}: ${expense['amount']}');
-      }).toList();
+for (var expense in expenses) {
+  String category = expense['category'];
+  double amount = (expense['amount'] as num).toDouble();
+
+  // 카테고리별 합계 계산
+  categoryTotalExpenses[category] =
+      (categoryTotalExpenses[category] ?? 0.0) + amount;
+}
+
+// 카테고리별 합계를 텍스트로 추가
+categoryTotalExpenses.forEach((category, total) {
+  expenseTextWidgets.add(Text('Total $category Expenses: $total'));
+});
 
       // 2. Total Expenses를 출력
       double totalExpenses = calculateTotalExpensesForCurrentMonth(expenses);
@@ -273,8 +281,12 @@ Color getCategoryColor(String category) {
       // 3. 카테고리별 지출 비율을 계산하고 출력
       List<PieModel> pieChartData = generatePieChartData(expenses);
       for (var data in pieChartData) {
-        expenseTextWidgets.add(Text('${data.category}: ${data.count}%'));
-      }
+      double percentage = data.count; // PieModel에서 백분율 계산
+      //expenseTextWidgets.add(Text('${data.category}: $percentage'));
+       double angle = calculateAngle(percentage); // 각도 계산
+        expenseTextWidgets.add(Text('${data.category}: $percentage% (Angle: $angle radians)'));
+} 
+
 
       // 4. 위젯 반환
       return Column(
@@ -284,9 +296,7 @@ Color getCategoryColor(String category) {
       return CircularProgressIndicator();
     }
   },
-),
-
-
+),  
           Expanded(
             flex: 2,
             child: Align(
@@ -326,7 +336,6 @@ Color getCategoryColor(String category) {
           ],
         ),
       ),
-   
           //여기에 막대그래프 추가
           Expanded(
             flex: 3,
@@ -374,77 +383,6 @@ Color getCategoryColor(String category) {
               color: const Color(0xFFFBBC05),
               size: 6400,
               sizeTwo: 17000,
-              colorTwo: Color(0xFF37736C),
-            ),
-            HorizontalDetailsModel(
-              name: '6일',
-              color: const Color(0xFFFBBC05),
-              size: 15500,
-              sizeTwo: 12000,
-              colorTwo: Color(0xFF37736C),
-            ),
-            HorizontalDetailsModel(
-              name: '7일',
-              color: const Color(0xFFFBBC05),
-              size: 20000,
-              sizeTwo: 9600,
-              colorTwo: Color(0xFF37736C),
-            ),
-             HorizontalDetailsModel(
-              name: '8일',
-              color: const Color(0xFFFBBC05),
-              size: 20000,
-              sizeTwo: 9600,
-              colorTwo: Color(0xFF37736C),
-            ),
-             HorizontalDetailsModel(
-              name: '9일',
-              color: const Color(0xFFFBBC05),
-              size: 20000,
-              sizeTwo: 9600,
-              colorTwo: Color(0xFF37736C),
-            ),
-            HorizontalDetailsModel(
-              name: '10일',
-              color: const Color(0xFFFBBC05),
-              size: 20000,
-              sizeTwo: 9600,
-              colorTwo: Color(0xFF37736C),
-            ),
-            HorizontalDetailsModel(
-              name: '11일',
-              color: const Color(0xFFFBBC05),
-              size: 12000,
-              sizeTwo: 10000,
-              colorTwo: Color(0xFF37736C),
-            ),
-            HorizontalDetailsModel(
-              name: '12일',
-              color: const Color(0xFFFBBC05),
-              size: 12000,
-              sizeTwo: 10000,
-              colorTwo: Color(0xFF37736C),
-            ),
-            
-            HorizontalDetailsModel(
-              name: '14일',
-              color: const Color(0xFFFBBC05),
-              size: 12000,
-              sizeTwo: 10000,
-              colorTwo: Color(0xFF37736C),
-            ),
-            HorizontalDetailsModel(
-              name: '15일',
-              color: const Color(0xFFFBBC05),
-              size: 12000,
-              sizeTwo: 10000,
-              colorTwo: Color(0xFF37736C),
-            ),
-            HorizontalDetailsModel(
-              name: '16일',
-              color: const Color(0xFFFBBC05),
-              size: 12000,
-              sizeTwo: 10000,
               colorTwo: Color(0xFF37736C),
             ),
           ],
@@ -525,33 +463,44 @@ Color getCategoryColor(String category) {
     )
     );
     
-  }
+  } //widget build
 }
-
 class _PieChart extends CustomPainter {
   final List<PieModel> data;
 
   _PieChart(this.data);
+
+  // 라디안을 각도로 변환하는 함수
+double radiansToDegrees(double radians) {
+  return radians * (180 / math.pi);
+}
   
   @override
   void paint(Canvas canvas, Size size) {
     Paint circlePaint = Paint()..color = Colors.white;
     Offset offset = Offset(size.width / 2, size.width / 2);
-    double radius = (size.width / 2) * 0.65;
+    double radius = (size.width / 2) * 0.65; // 파이차트 크기. 원래 크기의 0.65배 함
     canvas.drawCircle(offset, radius, circlePaint);
 
     double _startPoint = 0.0;
+    
     for (int i = 0; i < data.length; i++) {
-      double _startAngle = 2 * math.pi * (data[i].count / 100);
-      double _nextAngle = 2 * math.pi * ((data[i].count + data[(i + 1) % data.length].count) / 100).toDouble(); //count의 소수점 고려(수정)
+  double _startAngle = 2 * math.pi * (data[i].count / 100); //오지게 바꿔도 뭐 안됨..
+  double _nextAngle = _startPoint + _startAngle;
 
+   if (_nextAngle > 360) {
+     _nextAngle -= 360;
+     //여기도 있으나마나
+  }
 
       circlePaint.color = data[i].color;
 
       canvas.drawArc(
-          Rect.fromCircle(
-              center: Offset(size.width / 2, size.width / 2), radius: radius),
-          -math.pi / 2 + _startPoint,
+        Rect.fromCircle(
+          center: Offset(size.width / 2, size.width / 2),
+          radius: radius,
+        ),
+         -math.pi / 2 + _startPoint,
           _nextAngle,
           true,
           circlePaint);
@@ -559,10 +508,20 @@ class _PieChart extends CustomPainter {
     }
   }
 
+
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
+double calculateAngle(double percentage) {
+  // Percentage를 각도로 변환
+  double angle = 360 * (percentage / 100); //아니 이거 맞는데
+
+   //각도를 라디안으로 변환
+  double radians = angle * (math.pi / 180);
+
+  return radians;
+}
 
 void main()  {
   runApp(MaterialApp(
