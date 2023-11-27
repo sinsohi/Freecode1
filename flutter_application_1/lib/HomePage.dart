@@ -509,7 +509,7 @@ class _HomePageState extends State<HomePage> {
                                 children: [
                                   Container(width: double.infinity, height: 50,
                                   color: Color.fromRGBO(100, 0, 115, 1),
-                                  child: Align(alignment: Alignment(-1.0, -1.0),
+                                  child: Align(alignment: Alignment(0.4, -1.0),
                                     child: Image.asset('assets/piggy.png', height: 50,)),),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
