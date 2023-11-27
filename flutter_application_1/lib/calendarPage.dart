@@ -82,6 +82,74 @@ class _calendarPageState extends State<calendarPage> {
       appBar: AppBar(),
       body: content(),
       backgroundColor: Color(0xfff8f6e8),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          boxShadow: const <BoxShadow>[
+            BoxShadow(
+              color: Colors.grey,
+              blurRadius: 15,
+            ),
+          ],
+        ),
+        child: BottomNavigationBar(
+          backgroundColor: Color.fromRGBO(55, 115, 108, 1),
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: Color.fromRGBO(248, 246, 232, 1),
+          unselectedItemColor: Color.fromRGBO(248, 246, 232, 1),
+          selectedLabelStyle:
+              TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+          unselectedLabelStyle:
+              TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+          showSelectedLabels: true,
+          showUnselectedLabels: false,
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: '홈',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.calendar_month),
+              label: '캘린더',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.bar_chart_sharp),
+              label: '통계자료',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.people),
+              label: '마이페이지',
+            ),
+          ],
+          onTap: (int index) {
+            switch (index) {
+              case 0:
+                // 홈 페이지로 이동
+                break;
+              case 1:
+                // 캘린더 페이지로 이동
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => calendarPage()),
+                );
+                break;
+              case 2:
+                // 통계자료 페이지로 이동
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => graph()),
+                );
+                break;
+              case 3:
+                // 마이페이지로 이동
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => profilePage()),
+                );
+                break;
+            }
+          },
+        ),
+      ),
     );
   }
 
