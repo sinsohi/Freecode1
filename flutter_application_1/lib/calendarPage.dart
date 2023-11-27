@@ -264,10 +264,12 @@ class _calendarPageState extends State<calendarPage> {
 
                   Map<String, double> categoryExpenses =
                       calculateCategoryExpenses(snapshot.data ?? []);
-                  return Column(
-                    children: categoryExpenses.entries.map((entry) {
+                  return ListView.builder(
+                    itemCount: categoryExpenses.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      var entry = categoryExpenses.entries.elementAt(index);
                       return Container(
-                        width: 200, height: 50,
+                        width: 200, height: 55,
                         margin: const EdgeInsets.all(8.0), // 여백 추가
                         color: Colors.green, // 초록색 배경 적용
                         child: Padding(
@@ -282,7 +284,7 @@ class _calendarPageState extends State<calendarPage> {
                           ),
                         ),
                       );
-                    }).toList(),
+                    },
                   );
                 } else {
                   return CircularProgressIndicator();
@@ -290,7 +292,9 @@ class _calendarPageState extends State<calendarPage> {
               },
             ),
           ),
-        ), // 카테고리 별 지출 구역 큰 배경
+        ),
+
+        // 카테고리 별 지출 구역 큰 배경
       ],
     );
   }
