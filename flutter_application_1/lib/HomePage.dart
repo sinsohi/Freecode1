@@ -409,17 +409,23 @@ class _HomePageState extends State<HomePage> {
                                                     children: [
                                                       Icon(
                                                         Icons.brightness_1,
-                                                        size: 12, color: Color.fromRGBO(0, 0, 0, 0.5),
+                                                        size: 12,
+                                                        color: Color.fromRGBO(
+                                                            0, 0, 0, 0.5),
                                                       ),
                                                       Icon(
                                                         Icons
                                                             .brightness_1_outlined,
-                                                        size: 12, color: Color.fromRGBO(0, 0, 0, 0.5),
+                                                        size: 12,
+                                                        color: Color.fromRGBO(
+                                                            0, 0, 0, 0.5),
                                                       ),
                                                       Icon(
                                                         Icons
                                                             .brightness_1_outlined,
-                                                        size: 12, color: Color.fromRGBO(0, 0, 0, 0.5),
+                                                        size: 12,
+                                                        color: Color.fromRGBO(
+                                                            0, 0, 0, 0.5),
                                                       ),
                                                     ],
                                                   )),
@@ -486,24 +492,28 @@ class _HomePageState extends State<HomePage> {
                                                         MainAxisAlignment
                                                             .center,
                                                     children: [
-                                                      
                                                       Icon(
                                                         Icons
                                                             .brightness_1_outlined,
-                                                        size: 12, color: Color.fromRGBO(0, 0, 0, 0.5),
+                                                        size: 12,
+                                                        color: Color.fromRGBO(
+                                                            0, 0, 0, 0.5),
                                                       ),
                                                       Icon(
                                                         Icons.brightness_1,
-                                                        size: 12, color: Color.fromRGBO(0, 0, 0, 0.5),
+                                                        size: 12,
+                                                        color: Color.fromRGBO(
+                                                            0, 0, 0, 0.5),
                                                       ),
                                                       Icon(
                                                         Icons
                                                             .brightness_1_outlined,
-                                                        size: 12, color: Color.fromRGBO(0, 0, 0, 0.5),
+                                                        size: 12,
+                                                        color: Color.fromRGBO(
+                                                            0, 0, 0, 0.5),
                                                       ),
                                                     ],
                                                   )),
-                                              
                                             ],
                                           ));
                                         }
@@ -561,20 +571,25 @@ class _HomePageState extends State<HomePage> {
                                                         MainAxisAlignment
                                                             .center,
                                                     children: [
-                                                     
                                                       Icon(
                                                         Icons
                                                             .brightness_1_outlined,
-                                                        size: 12, color: Color.fromRGBO(0, 0, 0, 0.5),
+                                                        size: 12,
+                                                        color: Color.fromRGBO(
+                                                            0, 0, 0, 0.5),
                                                       ),
                                                       Icon(
                                                         Icons
                                                             .brightness_1_outlined,
-                                                        size: 12, color: Color.fromRGBO(0, 0, 0, 0.5),
+                                                        size: 12,
+                                                        color: Color.fromRGBO(
+                                                            0, 0, 0, 0.5),
                                                       ),
-                                                       Icon(
+                                                      Icon(
                                                         Icons.brightness_1,
-                                                        size: 12, color: Color.fromRGBO(0, 0, 0, 0.5),
+                                                        size: 12,
+                                                        color: Color.fromRGBO(
+                                                            0, 0, 0, 0.5),
                                                       ),
                                                     ],
                                                   )),
@@ -728,44 +743,103 @@ class _HomePageState extends State<HomePage> {
                 Container(
                   color: Color.fromRGBO(155, 189, 160, 1),
                   width: double.infinity,
-                  height: 350,
-                  child: Container(
-                    color: Color.fromRGBO(156, 40, 40, 1),
-                    child: FutureBuilder<List<Map<String, dynamic>>>(
-                      future: expensesFuture,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done) {
-                          if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          }
+                  height: 400,
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 200,
+                        height: double.infinity,
+                        color: Colors.amber,
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 50,
+                              width: 100,
+                            ),
+                            Container(
+                                height: 100,
+                                width: 150,
+                                child: Stack(
+                                  children: [
+                                    Image.asset(
+                                      'assets/mal.png',
+                                      fit: BoxFit.fill,
+                                    ),
+                                    Container(width: 150, height: 50, color: const Color.fromARGB(255, 102, 49, 49),
+                                        child: Center(
+                                          child: Text(
+                                                                              'category',
+                                                                              style: TextStyle(
+                                            fontSize: 15, fontFamily: 'JAL'),
+                                                                            ),
+                                        )),
+                                  ],
+                                )),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                  height: 200,
+                                  width: 150,
+                                  child: Image.asset(
+                                    'assets/coolpiggy.png',
+                                    height: 50,
+                                    fit: BoxFit.fill,
+                                  )),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        width: 200,
+                        height: 350,
+                        color: Color.fromRGBO(156, 40, 40, 1),
+                        child: Container(
+                          width: 200,
+                          height: double.infinity,
+                          child: Center(
+                            child: FutureBuilder<List<Map<String, dynamic>>>(
+                              future: expensesFuture,
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.done) {
+                                  if (snapshot.hasError) {
+                                    return Text('Error: ${snapshot.error}');
+                                  }
 
-                          Map<String, double> categoryExpenses =
-                              calculateCategoryExpenses(snapshot.data ?? []);
-                          return Column(
-                            children: categoryExpenses.entries.map((entry) {
-                              return Container(
-                                width: 200, height: 50,
-                                margin: const EdgeInsets.all(8.0), // 여백 추가
-                                color: Colors.green, // 초록색 배경 적용
-                                child: Padding(
-                                  // 텍스트와 사각형 사이에 여백 추가
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Text(
-                                    '${entry.key}: ${entry.value}',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                        fontFamily: 'JAL'),
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                          );
-                        } else {
-                          return CircularProgressIndicator();
-                        }
-                      },
-                    ),
+                                  Map<String, double> categoryExpenses =
+                                      calculateCategoryExpenses(
+                                          snapshot.data ?? []);
+                                  return Column(
+                                    children:
+                                        categoryExpenses.entries.map((entry) {
+                                      return Container(
+                                        width: 200, height: 50,
+                                        margin:
+                                            const EdgeInsets.all(8.0), // 여백 추가
+                                        color: Colors.green, // 초록색 배경 적용
+                                        child: Padding(
+                                          // 텍스트와 사각형 사이에 여백 추가
+                                          padding: const EdgeInsets.all(16.0),
+                                          child: Text(
+                                            '${entry.key}: ${entry.value}',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 20,
+                                                fontFamily: 'JAL'),
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  );
+                                } else {
+                                  return CircularProgressIndicator();
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ), // 카테고리 별 지출 구역 큰 배경
                 Container(
