@@ -357,7 +357,7 @@ class _calendarPageState extends State<calendarPage> {
                             '${entry.key}: ${entry.value}',
                             style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 20,
+                                fontSize: 18,
                                 fontFamily: 'JAL'),
                           ),
                         ),
