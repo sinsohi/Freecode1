@@ -79,7 +79,7 @@ class _calendarPageState extends State<calendarPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: null,
       body: content(),
       backgroundColor: Color(0xfff8f6e8),
       bottomNavigationBar: Container(
@@ -262,7 +262,7 @@ class _calendarPageState extends State<calendarPage> {
                 color: const Color(0xff37736c),
                 fontSize: 18,
               ),
-              headerPadding: const EdgeInsets.symmetric(vertical: 15.0),
+              headerPadding: const EdgeInsets.symmetric(vertical: 35.0),
             ),
             availableGestures: AvailableGestures.all,
             selectedDayPredicate: (day) => isSameDay(day, today),
