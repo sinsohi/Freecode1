@@ -317,9 +317,10 @@ class _calendarPageState extends State<calendarPage> {
         _buildEventBanner(),
 
         Container(
-          color: Color.fromRGBO(155, 189, 160, 1),
+          color: Color(0xfff8f6e8),
           width: double.infinity,
-          height: 350,
+          height: 260,
+          padding: EdgeInsets.all(5.0),
           child: Container(
             decoration: BoxDecoration(
               color: const Color(0xff37736c),
