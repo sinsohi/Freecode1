@@ -325,8 +325,7 @@ class _calendarPageState extends State<calendarPage> {
               color: const Color(0xff37736c),
               borderRadius: BorderRadius.circular(10.0),
             ),
-            padding: EdgeInsets.all(16.0),
-            width: 480,
+            padding: EdgeInsets.all(5.0),
             child: FutureBuilder<List<Map<String, dynamic>>>(
               future: expensesFuture,
               builder: (context, snapshot) {
@@ -342,9 +341,14 @@ class _calendarPageState extends State<calendarPage> {
                     itemBuilder: (BuildContext context, int index) {
                       var entry = categoryExpenses.entries.elementAt(index);
                       return Container(
-                        width: 200, height: 55,
+                        width: 200,
+                        height: 55,
+                        decoration: BoxDecoration(
+                          borderRadius:
+                              BorderRadius.circular(10.0), // 이 부분을 수정했습니다.
+                          color: const Color(0xff82a282), // 초록색 배경 적용
+                        ),
                         margin: const EdgeInsets.all(8.0), // 여백 추가
-                        color: const Color(0xff82a282), // 초록색 배경 적용
                         child: Padding(
                           // 텍스트와 사각형 사이에 여백 추가
                           padding: const EdgeInsets.all(16.0),
