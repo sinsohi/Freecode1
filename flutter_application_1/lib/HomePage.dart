@@ -622,6 +622,7 @@ class _HomePageState extends State<HomePage> {
                   color: Color.fromRGBO(173, 145, 149, 1),
                   width: double.infinity,
                   height: 350,
+                  
                 ), // 광고 배너 구역 큰 배경
               ],
             ),
