@@ -1,4 +1,4 @@
-// ignore_for_file: unused_local_variable, duplicate_ignore, file_names, library_private_types_in_public_api, deprecated_member_use, avoid_unnecessary_containers, sized_box_for_whitespace
+// ignore_for_file: unused_local_variable, duplicate_ignore, file_names, library_private_types_in_public_api, deprecated_member_use, avoid_unnecessary_containers, sized_box_for_whitespace, prefer_const_literals_to_create_immutables
 
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -395,6 +395,34 @@ class _HomePageState extends State<HomePage> {
                                                   style: TextStyle(
                                                       fontSize: 25,
                                                       fontFamily: 'JAL')),
+                                              SizedBox(
+                                                width: double.infinity,
+                                                height: 5,
+                                              ),
+                                              Container(
+                                                  width: double.infinity,
+                                                  height: 20,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Icon(
+                                                        Icons.brightness_1,
+                                                        size: 12, color: Color.fromRGBO(0, 0, 0, 0.5),
+                                                      ),
+                                                      Icon(
+                                                        Icons
+                                                            .brightness_1_outlined,
+                                                        size: 12, color: Color.fromRGBO(0, 0, 0, 0.5),
+                                                      ),
+                                                      Icon(
+                                                        Icons
+                                                            .brightness_1_outlined,
+                                                        size: 12, color: Color.fromRGBO(0, 0, 0, 0.5),
+                                                      ),
+                                                    ],
+                                                  )),
                                             ],
                                           ));
                                         } else if (snapshot.hasError) {
@@ -446,6 +474,36 @@ class _HomePageState extends State<HomePage> {
                                                     fontSize: 25,
                                                     fontFamily: 'JAL'),
                                               ),
+                                              SizedBox(
+                                                width: double.infinity,
+                                                height: 5,
+                                              ),
+                                              Container(
+                                                  width: double.infinity,
+                                                  height: 20,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      
+                                                      Icon(
+                                                        Icons
+                                                            .brightness_1_outlined,
+                                                        size: 12, color: Color.fromRGBO(0, 0, 0, 0.5),
+                                                      ),
+                                                      Icon(
+                                                        Icons.brightness_1,
+                                                        size: 12, color: Color.fromRGBO(0, 0, 0, 0.5),
+                                                      ),
+                                                      Icon(
+                                                        Icons
+                                                            .brightness_1_outlined,
+                                                        size: 12, color: Color.fromRGBO(0, 0, 0, 0.5),
+                                                      ),
+                                                    ],
+                                                  )),
+                                              
                                             ],
                                           ));
                                         }
@@ -491,6 +549,35 @@ class _HomePageState extends State<HomePage> {
                                                     fontSize: 25,
                                                     fontFamily: 'JAL'),
                                               ),
+                                              SizedBox(
+                                                width: double.infinity,
+                                                height: 5,
+                                              ),
+                                              Container(
+                                                  width: double.infinity,
+                                                  height: 20,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                     
+                                                      Icon(
+                                                        Icons
+                                                            .brightness_1_outlined,
+                                                        size: 12, color: Color.fromRGBO(0, 0, 0, 0.5),
+                                                      ),
+                                                      Icon(
+                                                        Icons
+                                                            .brightness_1_outlined,
+                                                        size: 12, color: Color.fromRGBO(0, 0, 0, 0.5),
+                                                      ),
+                                                       Icon(
+                                                        Icons.brightness_1,
+                                                        size: 12, color: Color.fromRGBO(0, 0, 0, 0.5),
+                                                      ),
+                                                    ],
+                                                  )),
                                             ],
                                           ));
                                         } else if (snapshot.hasError) {
@@ -521,25 +608,30 @@ class _HomePageState extends State<HomePage> {
                                   Container(
                                     width: double.infinity,
                                     height: 50,
-                                    color: Color.fromRGBO(100, 0, 115, 1),
+                                    color: Color.fromRGBO(
+                                        55, 115, 108, 1), //이미지 배경 컨테이너
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceEvenly,
                                       children: [
-                                        Container(width: 100, height: 50,
-                                          child: Align( 
-                                              alignment: Alignment.bottomCenter,
-                                              child: Image.asset(
-                                                'assets/shakepiggy.png',
-                                                height: 40,
-                                                fit: BoxFit.fill,
-                                              )),
-                                        ),
-                                        Container(width: 100, height: 50,
+                                        Container(
+                                          width: 100,
+                                          height: 50,
                                           child: Align(
                                               alignment: Alignment.bottomCenter,
                                               child: Image.asset(
-                                                'assets/piggy.png',
+                                                'assets/hmmpiggy.png',
+                                                height: 50,
+                                                fit: BoxFit.fill,
+                                              )),
+                                        ),
+                                        Container(
+                                          width: 100,
+                                          height: 50,
+                                          child: Align(
+                                              alignment: Alignment.bottomCenter,
+                                              child: Image.asset(
+                                                'assets/hmmpiggy.png',
                                                 height: 50,
                                                 fit: BoxFit.fill,
                                               )),
@@ -551,7 +643,9 @@ class _HomePageState extends State<HomePage> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceEvenly,
                                       children: [
-                                        Container(width: 100, height: 30,
+                                        Container(
+                                          width: 100,
+                                          height: 30,
                                           child: ElevatedButton(
                                             onPressed: () =>
                                                 _showExpenseDialog(context),
@@ -574,7 +668,8 @@ class _HomePageState extends State<HomePage> {
                                                   RoundedRectangleBorder>(
                                                 RoundedRectangleBorder(
                                                   borderRadius:
-                                                      BorderRadius.circular(5.0),
+                                                      BorderRadius.circular(
+                                                          5.0),
                                                   side: BorderSide(
                                                       color: Colors.black,
                                                       width: 2.0), // 테두리 색상 설정
@@ -583,7 +678,9 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                           ),
                                         ),
-                                        Container(width: 100, height: 30,
+                                        Container(
+                                          width: 100,
+                                          height: 30,
                                           child: ElevatedButton(
                                             onPressed: () =>
                                                 _showIncomeDialog(context),
@@ -606,7 +703,8 @@ class _HomePageState extends State<HomePage> {
                                                   RoundedRectangleBorder>(
                                                 RoundedRectangleBorder(
                                                   borderRadius:
-                                                      BorderRadius.circular(5.0),
+                                                      BorderRadius.circular(
+                                                          5.0),
                                                   side: BorderSide(
                                                       color: Colors.black,
                                                       width: 2.0), // 테두리 색상 설정
