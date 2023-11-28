@@ -260,7 +260,7 @@ class _calendarPageState extends State<calendarPage> {
               titleTextStyle: const TextStyle(
                 fontWeight: FontWeight.bold,
                 color: const Color(0xff37736c),
-                fontSize: 16,
+                fontSize: 18,
               ),
               headerPadding: const EdgeInsets.symmetric(vertical: 15.0),
             ),
