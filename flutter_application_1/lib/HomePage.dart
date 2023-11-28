@@ -1,4 +1,4 @@
-// ignore_for_file: unused_local_variable, duplicate_ignore, file_names, library_private_types_in_public_api, deprecated_member_use, avoid_unnecessary_containers
+// ignore_for_file: unused_local_variable, duplicate_ignore, file_names, library_private_types_in_public_api, deprecated_member_use, avoid_unnecessary_containers, sized_box_for_whitespace
 
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -277,12 +277,11 @@ class _HomePageState extends State<HomePage> {
                 Text(
                   'welcome!',
                   style: TextStyle(
-                    color: Color.fromRGBO(248, 246, 232, 1),
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.5,
-                    fontFamily: 'JAL'
-                  ),
+                      color: Color.fromRGBO(248, 246, 232, 1),
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.5,
+                      fontFamily: 'JAL'),
                 ),
               ],
             ),
@@ -388,7 +387,10 @@ class _HomePageState extends State<HomePage> {
                                                     fontSize: 25,
                                                     fontFamily: 'JAL'),
                                               ),
-                                              SizedBox(width: double.infinity, height: 20,),
+                                              SizedBox(
+                                                width: double.infinity,
+                                                height: 20,
+                                              ),
                                               Text('$total won',
                                                   style: TextStyle(
                                                       fontSize: 25,
@@ -434,7 +436,10 @@ class _HomePageState extends State<HomePage> {
                                                     fontSize: 25,
                                                     fontFamily: 'JAL'),
                                               ),
-                                              SizedBox(width: double.infinity, height: 20,),
+                                              SizedBox(
+                                                width: double.infinity,
+                                                height: 20,
+                                              ),
                                               Text(
                                                 '$total won',
                                                 style: TextStyle(
@@ -476,7 +481,10 @@ class _HomePageState extends State<HomePage> {
                                                     fontSize: 25,
                                                     fontFamily: 'JAL'),
                                               ),
-                                              SizedBox(width: double.infinity, height: 20,),
+                                              SizedBox(
+                                                width: double.infinity,
+                                                height: 20,
+                                              ),
                                               Text(
                                                 '$currentAsset won',
                                                 style: TextStyle(
@@ -500,70 +508,114 @@ class _HomePageState extends State<HomePage> {
                                 ],
                               ),
                             ),
-                            SizedBox(width: double.infinity, height: 20,),
+                            SizedBox(
+                              width: double.infinity,
+                              height: 20,
+                            ),
                             Container(
                               color: Color.fromRGBO(55, 115, 108, 1),
                               width: double.infinity,
                               height: 100,
                               child: Column(
                                 children: [
-                                  Container(width: double.infinity, height: 50,
-                                  color: Color.fromRGBO(100, 0, 115, 1),
-                                  child: Align(alignment: Alignment(0.4, -1.0),
-                                    child: Image.asset('assets/piggy.png', height: 50,)),),
+                                  Container(
+                                    width: double.infinity,
+                                    height: 50,
+                                    color: Color.fromRGBO(100, 0, 115, 1),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Container(width: 100, height: 50,
+                                          child: Align( 
+                                              alignment: Alignment.bottomCenter,
+                                              child: Image.asset(
+                                                'assets/shakepiggy.png',
+                                                height: 40,
+                                                fit: BoxFit.fill,
+                                              )),
+                                        ),
+                                        Container(width: 100, height: 50,
+                                          child: Align(
+                                              alignment: Alignment.bottomCenter,
+                                              child: Image.asset(
+                                                'assets/piggy.png',
+                                                height: 50,
+                                                fit: BoxFit.fill,
+                                              )),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
-                                    children: [
-                                    ElevatedButton(
-                                      onPressed: () => _showExpenseDialog(context),
-                                      // ignore: sort_child_properties_last
-                                      child: Text(
-                                        'Expense',
-                                        style: TextStyle(
-                                          color: Colors.black, // 글자 색상을 검정색으로 변경
-                                          fontFamily: 'JAL',
-                                        ),
-                                      ),
-                                      style: ButtonStyle(
-                                        backgroundColor:
-                                            MaterialStateProperty.all<Color>(
-                                                Color.fromRGBO(55, 115, 108, 1),), // 버튼 색상을 초록색으로 변경
-                                        shape: MaterialStateProperty.all<
-                                            RoundedRectangleBorder>(
-                                          RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5.0),
-                                            side: BorderSide(color: Colors.black, width: 2.0),  // 테두리 색상 설정
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Container(width: 100, height: 30,
+                                          child: ElevatedButton(
+                                            onPressed: () =>
+                                                _showExpenseDialog(context),
+                                            // ignore: sort_child_properties_last
+                                            child: Text(
+                                              'Expense',
+                                              style: TextStyle(
+                                                color: Colors
+                                                    .black, // 글자 색상을 검정색으로 변경
+                                                fontFamily: 'JAL',
+                                              ),
+                                            ),
+                                            style: ButtonStyle(
+                                              backgroundColor:
+                                                  MaterialStateProperty.all<
+                                                      Color>(
+                                                Color.fromRGBO(55, 115, 108, 1),
+                                              ), // 버튼 색상을 초록색으로 변경
+                                              shape: MaterialStateProperty.all<
+                                                  RoundedRectangleBorder>(
+                                                RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5.0),
+                                                  side: BorderSide(
+                                                      color: Colors.black,
+                                                      width: 2.0), // 테두리 색상 설정
+                                                ),
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: () => _showIncomeDialog(context),
-                                      // ignore: sort_child_properties_last
-                                      child: Text(
-                                        'Income',
-                                        style: TextStyle(
-                                          color: Colors.black, // 글자 색상을 검정색으로 변경
-                                          fontFamily: 'JAL',
-                                        ),
-                                      ),
-                                      style: ButtonStyle(
-                                        backgroundColor:
-                                            MaterialStateProperty.all<Color>(
-                                                Color.fromRGBO(55, 115, 108, 1),), // 버튼 색상을 초록색으로 변경
-                                        shape: MaterialStateProperty.all<
-                                            RoundedRectangleBorder>(
-                                          RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5.0),
-                                            side: BorderSide(color: Colors.black, width: 2.0),  // 테두리 색상 설정
+                                        Container(width: 100, height: 30,
+                                          child: ElevatedButton(
+                                            onPressed: () =>
+                                                _showIncomeDialog(context),
+                                            // ignore: sort_child_properties_last
+                                            child: Text(
+                                              'Income',
+                                              style: TextStyle(
+                                                color: Colors
+                                                    .black, // 글자 색상을 검정색으로 변경
+                                                fontFamily: 'JAL',
+                                              ),
+                                            ),
+                                            style: ButtonStyle(
+                                              backgroundColor:
+                                                  MaterialStateProperty.all<
+                                                      Color>(
+                                                Color.fromRGBO(55, 115, 108, 1),
+                                              ), // 버튼 색상을 초록색으로 변경
+                                              shape: MaterialStateProperty.all<
+                                                  RoundedRectangleBorder>(
+                                                RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5.0),
+                                                  side: BorderSide(
+                                                      color: Colors.black,
+                                                      width: 2.0), // 테두리 색상 설정
+                                                ),
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                  ]),
+                                      ]),
                                 ],
                               ),
                             ),
@@ -622,7 +674,6 @@ class _HomePageState extends State<HomePage> {
                   color: Color.fromRGBO(173, 145, 149, 1),
                   width: double.infinity,
                   height: 350,
-                  
                 ), // 광고 배너 구역 큰 배경
               ],
             ),
