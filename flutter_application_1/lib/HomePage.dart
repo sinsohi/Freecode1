@@ -1,4 +1,4 @@
-// ignore_for_file: unused_local_variable, duplicate_ignore, file_names, library_private_types_in_public_api, deprecated_member_use, avoid_unnecessary_containers
+// ignore_for_file: unused_local_variable, duplicate_ignore, file_names, library_private_types_in_public_api, deprecated_member_use, avoid_unnecessary_containers, sized_box_for_whitespace, prefer_const_literals_to_create_immutables
 
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -277,12 +277,11 @@ class _HomePageState extends State<HomePage> {
                 Text(
                   'welcome!',
                   style: TextStyle(
-                    color: Color.fromRGBO(248, 246, 232, 1),
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.5,
-                    fontFamily: 'JAL'
-                  ),
+                      color: Color.fromRGBO(248, 246, 232, 1),
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.5,
+                      fontFamily: 'JAL'),
                 ),
               ],
             ),
@@ -388,11 +387,48 @@ class _HomePageState extends State<HomePage> {
                                                     fontSize: 25,
                                                     fontFamily: 'JAL'),
                                               ),
-                                              SizedBox(width: double.infinity, height: 20,),
+                                              SizedBox(
+                                                width: double.infinity,
+                                                height: 20,
+                                              ),
                                               Text('$total won',
                                                   style: TextStyle(
                                                       fontSize: 25,
                                                       fontFamily: 'JAL')),
+                                              SizedBox(
+                                                width: double.infinity,
+                                                height: 5,
+                                              ),
+                                              Container(
+                                                  width: double.infinity,
+                                                  height: 20,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Icon(
+                                                        Icons.brightness_1,
+                                                        size: 12,
+                                                        color: Color.fromRGBO(
+                                                            0, 0, 0, 0.5),
+                                                      ),
+                                                      Icon(
+                                                        Icons
+                                                            .brightness_1_outlined,
+                                                        size: 12,
+                                                        color: Color.fromRGBO(
+                                                            0, 0, 0, 0.5),
+                                                      ),
+                                                      Icon(
+                                                        Icons
+                                                            .brightness_1_outlined,
+                                                        size: 12,
+                                                        color: Color.fromRGBO(
+                                                            0, 0, 0, 0.5),
+                                                      ),
+                                                    ],
+                                                  )),
                                             ],
                                           ));
                                         } else if (snapshot.hasError) {
@@ -434,13 +470,50 @@ class _HomePageState extends State<HomePage> {
                                                     fontSize: 25,
                                                     fontFamily: 'JAL'),
                                               ),
-                                              SizedBox(width: double.infinity, height: 20,),
+                                              SizedBox(
+                                                width: double.infinity,
+                                                height: 20,
+                                              ),
                                               Text(
                                                 '$total won',
                                                 style: TextStyle(
                                                     fontSize: 25,
                                                     fontFamily: 'JAL'),
                                               ),
+                                              SizedBox(
+                                                width: double.infinity,
+                                                height: 5,
+                                              ),
+                                              Container(
+                                                  width: double.infinity,
+                                                  height: 20,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Icon(
+                                                        Icons
+                                                            .brightness_1_outlined,
+                                                        size: 12,
+                                                        color: Color.fromRGBO(
+                                                            0, 0, 0, 0.5),
+                                                      ),
+                                                      Icon(
+                                                        Icons.brightness_1,
+                                                        size: 12,
+                                                        color: Color.fromRGBO(
+                                                            0, 0, 0, 0.5),
+                                                      ),
+                                                      Icon(
+                                                        Icons
+                                                            .brightness_1_outlined,
+                                                        size: 12,
+                                                        color: Color.fromRGBO(
+                                                            0, 0, 0, 0.5),
+                                                      ),
+                                                    ],
+                                                  )),
                                             ],
                                           ));
                                         }
@@ -476,13 +549,50 @@ class _HomePageState extends State<HomePage> {
                                                     fontSize: 25,
                                                     fontFamily: 'JAL'),
                                               ),
-                                              SizedBox(width: double.infinity, height: 20,),
+                                              SizedBox(
+                                                width: double.infinity,
+                                                height: 20,
+                                              ),
                                               Text(
                                                 '$currentAsset won',
                                                 style: TextStyle(
                                                     fontSize: 25,
                                                     fontFamily: 'JAL'),
                                               ),
+                                              SizedBox(
+                                                width: double.infinity,
+                                                height: 5,
+                                              ),
+                                              Container(
+                                                  width: double.infinity,
+                                                  height: 20,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Icon(
+                                                        Icons
+                                                            .brightness_1_outlined,
+                                                        size: 12,
+                                                        color: Color.fromRGBO(
+                                                            0, 0, 0, 0.5),
+                                                      ),
+                                                      Icon(
+                                                        Icons
+                                                            .brightness_1_outlined,
+                                                        size: 12,
+                                                        color: Color.fromRGBO(
+                                                            0, 0, 0, 0.5),
+                                                      ),
+                                                      Icon(
+                                                        Icons.brightness_1,
+                                                        size: 12,
+                                                        color: Color.fromRGBO(
+                                                            0, 0, 0, 0.5),
+                                                      ),
+                                                    ],
+                                                  )),
                                             ],
                                           ));
                                         } else if (snapshot.hasError) {
@@ -500,70 +610,125 @@ class _HomePageState extends State<HomePage> {
                                 ],
                               ),
                             ),
-                            SizedBox(width: double.infinity, height: 20,),
+                            SizedBox(
+                              width: double.infinity,
+                              height: 20,
+                            ),
                             Container(
                               color: Color.fromRGBO(55, 115, 108, 1),
                               width: double.infinity,
                               height: 100,
                               child: Column(
                                 children: [
-                                  Container(width: double.infinity, height: 50,
-                                  color: Color.fromRGBO(100, 0, 115, 1),
-                                  child: Align(alignment: Alignment(0.4, -1.0),
-                                    child: Image.asset('assets/piggy.png', height: 50,)),),
+                                  Container(
+                                    width: double.infinity,
+                                    height: 50,
+                                    color: Color.fromRGBO(
+                                        55, 115, 108, 1), //이미지 배경 컨테이너
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Container(
+                                          width: 100,
+                                          height: 50,
+                                          child: Align(
+                                              alignment: Alignment.bottomCenter,
+                                              child: Image.asset(
+                                                'assets/hmmpiggy.png',
+                                                height: 50,
+                                                fit: BoxFit.fill,
+                                              )),
+                                        ),
+                                        Container(
+                                          width: 100,
+                                          height: 50,
+                                          child: Align(
+                                              alignment: Alignment.bottomCenter,
+                                              child: Image.asset(
+                                                'assets/hmmpiggy.png',
+                                                height: 50,
+                                                fit: BoxFit.fill,
+                                              )),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
-                                    children: [
-                                    ElevatedButton(
-                                      onPressed: () => _showExpenseDialog(context),
-                                      // ignore: sort_child_properties_last
-                                      child: Text(
-                                        'Expense',
-                                        style: TextStyle(
-                                          color: Colors.black, // 글자 색상을 검정색으로 변경
-                                          fontFamily: 'JAL',
-                                        ),
-                                      ),
-                                      style: ButtonStyle(
-                                        backgroundColor:
-                                            MaterialStateProperty.all<Color>(
-                                                Color.fromRGBO(55, 115, 108, 1),), // 버튼 색상을 초록색으로 변경
-                                        shape: MaterialStateProperty.all<
-                                            RoundedRectangleBorder>(
-                                          RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5.0),
-                                            side: BorderSide(color: Colors.black, width: 2.0),  // 테두리 색상 설정
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Container(
+                                          width: 100,
+                                          height: 30,
+                                          child: ElevatedButton(
+                                            onPressed: () =>
+                                                _showExpenseDialog(context),
+                                            // ignore: sort_child_properties_last
+                                            child: Text(
+                                              'Expense',
+                                              style: TextStyle(
+                                                color: Colors
+                                                    .black, // 글자 색상을 검정색으로 변경
+                                                fontFamily: 'JAL',
+                                              ),
+                                            ),
+                                            style: ButtonStyle(
+                                              backgroundColor:
+                                                  MaterialStateProperty.all<
+                                                      Color>(
+                                                Color.fromRGBO(55, 115, 108, 1),
+                                              ), // 버튼 색상을 초록색으로 변경
+                                              shape: MaterialStateProperty.all<
+                                                  RoundedRectangleBorder>(
+                                                RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          5.0),
+                                                  side: BorderSide(
+                                                      color: Colors.black,
+                                                      width: 2.0), // 테두리 색상 설정
+                                                ),
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: () => _showIncomeDialog(context),
-                                      // ignore: sort_child_properties_last
-                                      child: Text(
-                                        'Income',
-                                        style: TextStyle(
-                                          color: Colors.black, // 글자 색상을 검정색으로 변경
-                                          fontFamily: 'JAL',
-                                        ),
-                                      ),
-                                      style: ButtonStyle(
-                                        backgroundColor:
-                                            MaterialStateProperty.all<Color>(
-                                                Color.fromRGBO(55, 115, 108, 1),), // 버튼 색상을 초록색으로 변경
-                                        shape: MaterialStateProperty.all<
-                                            RoundedRectangleBorder>(
-                                          RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5.0),
-                                            side: BorderSide(color: Colors.black, width: 2.0),  // 테두리 색상 설정
+                                        Container(
+                                          width: 100,
+                                          height: 30,
+                                          child: ElevatedButton(
+                                            onPressed: () =>
+                                                _showIncomeDialog(context),
+                                            // ignore: sort_child_properties_last
+                                            child: Text(
+                                              'Income',
+                                              style: TextStyle(
+                                                color: Colors
+                                                    .black, // 글자 색상을 검정색으로 변경
+                                                fontFamily: 'JAL',
+                                              ),
+                                            ),
+                                            style: ButtonStyle(
+                                              backgroundColor:
+                                                  MaterialStateProperty.all<
+                                                      Color>(
+                                                Color.fromRGBO(55, 115, 108, 1),
+                                              ), // 버튼 색상을 초록색으로 변경
+                                              shape: MaterialStateProperty.all<
+                                                  RoundedRectangleBorder>(
+                                                RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          5.0),
+                                                  side: BorderSide(
+                                                      color: Colors.black,
+                                                      width: 2.0), // 테두리 색상 설정
+                                                ),
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                  ]),
+                                      ]),
                                 ],
                               ),
                             ),
@@ -578,51 +743,109 @@ class _HomePageState extends State<HomePage> {
                 Container(
                   color: Color.fromRGBO(155, 189, 160, 1),
                   width: double.infinity,
-                  height: 350,
-                  child: Container(
-                    color: Color.fromRGBO(156, 40, 40, 1),
-                    child: FutureBuilder<List<Map<String, dynamic>>>(
-                      future: expensesFuture,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done) {
-                          if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          }
+                  height: 400,
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 200,
+                        height: double.infinity,
+                        color: Colors.amber,
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 50,
+                              width: 100,
+                            ),
+                            Container(
+                                height: 100,
+                                width: 150,
+                                child: Stack(
+                                  children: [
+                                    Image.asset(
+                                      'assets/mal.png',
+                                      fit: BoxFit.fill,
+                                    ),
+                                    Container(width: 150, height: 50, color: const Color.fromARGB(255, 102, 49, 49),
+                                        child: Center(
+                                          child: Text(
+                                                                              'category',
+                                                                              style: TextStyle(
+                                            fontSize: 15, fontFamily: 'JAL'),
+                                                                            ),
+                                        )),
+                                  ],
+                                )),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                  height: 200,
+                                  width: 150,
+                                  child: Image.asset(
+                                    'assets/coolpiggy.png',
+                                    height: 50,
+                                    fit: BoxFit.fill,
+                                  )),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        width: 200,
+                        height: 350,
+                        color: Color.fromRGBO(156, 40, 40, 1),
+                        child: Container(
+                          width: 200,
+                          height: double.infinity,
+                          child: Center(
+                            child: FutureBuilder<List<Map<String, dynamic>>>(
+                              future: expensesFuture,
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.done) {
+                                  if (snapshot.hasError) {
+                                    return Text('Error: ${snapshot.error}');
+                                  }
 
-                          Map<String, double> categoryExpenses =
-                              calculateCategoryExpenses(snapshot.data ?? []);
-                          return Column(
-                            children: categoryExpenses.entries.map((entry) {
-                              return Container(
-                                width: 200, height: 50,
-                                margin: const EdgeInsets.all(8.0), // 여백 추가
-                                color: Colors.green, // 초록색 배경 적용
-                                child: Padding(
-                                  // 텍스트와 사각형 사이에 여백 추가
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Text(
-                                    '${entry.key}: ${entry.value}',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                        fontFamily: 'JAL'),
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                          );
-                        } else {
-                          return CircularProgressIndicator();
-                        }
-                      },
-                    ),
+                                  Map<String, double> categoryExpenses =
+                                      calculateCategoryExpenses(
+                                          snapshot.data ?? []);
+                                  return Column(
+                                    children:
+                                        categoryExpenses.entries.map((entry) {
+                                      return Container(
+                                        width: 200, height: 50,
+                                        margin:
+                                            const EdgeInsets.all(8.0), // 여백 추가
+                                        color: Colors.green, // 초록색 배경 적용
+                                        child: Padding(
+                                          // 텍스트와 사각형 사이에 여백 추가
+                                          padding: const EdgeInsets.all(16.0),
+                                          child: Text(
+                                            '${entry.key}: ${entry.value}',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 20,
+                                                fontFamily: 'JAL'),
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  );
+                                } else {
+                                  return CircularProgressIndicator();
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ), // 카테고리 별 지출 구역 큰 배경
                 Container(
                   color: Color.fromRGBO(173, 145, 149, 1),
                   width: double.infinity,
                   height: 350,
-                  
                 ), // 광고 배너 구역 큰 배경
               ],
             ),
