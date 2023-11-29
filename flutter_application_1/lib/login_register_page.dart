@@ -149,8 +149,8 @@ class _LoginPageState extends State<LoginPage> {
                                   child: DecoratedBox(
                                     child: Padding(
                                       padding: EdgeInsets.all(10),
-                                      child: _entryField(
-                                          'email', _controllerEmail), // 이메일 입력
+                                      child: _entryField('ID(email)',
+                                          _controllerEmail), // 이메일 입력
                                     ),
                                     decoration: BoxDecoration(
                                         color: Colors.white,
@@ -168,7 +168,7 @@ class _LoginPageState extends State<LoginPage> {
                                 child: DecoratedBox(
                                   child: Padding(
                                     padding: EdgeInsets.all(10),
-                                    child: _entryField('password',
+                                    child: _entryField('Password',
                                         _controllerPassword), // 비밀번호 입력 필드 추가
                                   ),
                                   decoration: BoxDecoration(
