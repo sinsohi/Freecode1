@@ -12,6 +12,7 @@ import 'dart:math' as math;
 import 'calendarPage.dart'; //바텀네비게이션바
 import 'graph.dart';
 import 'profilePage.dart';
+import 'HomePage.dart';
 import 'package:table_calendar/table_calendar.dart'; // 15~16 현재 월 표시
 import 'package:intl/intl.dart'; 
 import 'package:firebase_auth/firebase_auth.dart';//데이터베이스 가져오기
@@ -444,6 +445,10 @@ Widget build(BuildContext context) {
               switch (index) {
                 case 0:
                 // 홈 페이지로 이동 (아직 구현되지 않음)
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                  );
                   break;
                 case 1:
                 // 캘린더 페이지로 이동
