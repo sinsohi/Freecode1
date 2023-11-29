@@ -102,6 +102,17 @@ class _LoginPageState extends State<LoginPage> {
                       ]),
                 ),
               ),
+              Container(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Icon(Icons.circle, size: 10),
+                        Icon(Icons.circle, size: 10)
+                      ]),
+                ),
+              )
             ],
           ),
         ),
