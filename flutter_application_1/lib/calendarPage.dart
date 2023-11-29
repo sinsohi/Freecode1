@@ -352,8 +352,7 @@ class _calendarPageState extends State<calendarPage> {
                         width: 200,
                         height: 55,
                         decoration: BoxDecoration(
-                          borderRadius:
-                              BorderRadius.circular(10.0), // 이 부분을 수정했습니다.
+                          borderRadius: BorderRadius.circular(10.0),
                           color: const Color(0xff82a282), // 초록색 배경 적용
                         ),
                         margin: const EdgeInsets.all(8.0), // 여백 추가
@@ -430,20 +429,41 @@ class _calendarPageState extends State<calendarPage> {
             child: ListView.builder(
               itemCount: events.length,
               itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  margin: EdgeInsets.only(bottom: 8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        events[index].name,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xfff8f6e8),
+                return InkWell(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text(events[index].category),
+                          content: Text(events[index].detail), // detail 정보 출력
+                          actions: [
+                            TextButton(
+                              child: Text('닫기'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(bottom: 8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          events[index].name,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xfff8f6e8),
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 8.0),
-                    ],
+                        SizedBox(height: 8.0),
+                      ],
+                    ),
                   ),
                 );
               },
