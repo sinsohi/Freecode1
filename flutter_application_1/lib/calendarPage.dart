@@ -123,7 +123,11 @@ class _calendarPageState extends State<calendarPage> {
           onTap: (int index) {
             switch (index) {
               case 0:
-                // 홈 페이지로 이동
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomePage()),
+                );
+// 홈 페이지로 이동
                 break;
               case 1:
                 // 캘린더 페이지로 이동
@@ -255,8 +259,8 @@ class _calendarPageState extends State<calendarPage> {
             headerStyle: HeaderStyle(
               formatButtonVisible: false,
               titleCentered: true,
-              leftChevronVisible: false,
-              rightChevronVisible: false,
+              leftChevronVisible: true,
+              rightChevronVisible: true,
               titleTextStyle: const TextStyle(
                 fontWeight: FontWeight.bold,
                 color: const Color(0xff37736c),
