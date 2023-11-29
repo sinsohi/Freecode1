@@ -147,7 +147,12 @@ class _LoginPageState extends State<LoginPage> {
                                   height:
                                       MediaQuery.of(context).size.height * 0.06,
                                   child: DecoratedBox(
-                                    child: Text('ID(email)) : '),
+                                    child: Padding(
+                                      padding: EdgeInsets.all(10),
+                                      child: _entryField(
+                                          'email', _controllerEmail),
+                                    ),
+                                    // _entryField('email', _controllerEmail),
                                     decoration: BoxDecoration(
                                         color: Colors.white,
                                         border: Border.all(
