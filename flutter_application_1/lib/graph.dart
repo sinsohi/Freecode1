@@ -16,6 +16,7 @@ import 'package:table_calendar/table_calendar.dart'; // 15~16 현재 월 표시
 import 'package:intl/intl.dart'; 
 import 'package:firebase_auth/firebase_auth.dart';//데이터베이스 가져오기
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_core/firebase_core.dart'; //파이어베이스 초기화..?
 
 
 
@@ -47,12 +48,16 @@ class PieModel {
   final double count;
   final Color color;
   final String category;
-
   PieModel({
     required this.count,
     required this.color,
     required this.category,
   });
+
+  @override
+  String toString() {
+    return 'PieModel(category: $category, count: $count, color: $color)';
+  }
 }
 
 
@@ -63,46 +68,27 @@ class graph extends StatefulWidget {
   State<graph> createState() => _graphState();
 }
 
+
 class _graphState extends State<graph> {
-    /* final DatabaseReference expenseRef =
-      // ignore: deprecated_member_use
-      FirebaseDatabase.instance.reference().child('expenses');
-  final DatabaseReference incomeRef =
-      // ignore: deprecated_member_use
-      FirebaseDatabase.instance.reference().child('incomes'); */
   late User? user;
   late String uid;
-  late DatabaseReference expenseRef;
-  late DatabaseReference incomeRef;
+  DatabaseReference? expenseRef;
+  DatabaseReference? incomeRef;
   double totalExpenses = 0.0;
   double totalincomes = 0.0;
   List<Map<String, dynamic>> expensesList = [];
   List<Map<String, dynamic>> incomesList = [];
-  Future<List<Map<String, dynamic>>>? expensesFuture;
+  List<Map<String, dynamic>> expenses = [];
+  late Future<List<Map<String, dynamic>>>? expensesFuture;
   late Future<List<Map<String, dynamic>>> incomesFuture;
-
-
-   Map<String, double> calculateDailyExpenses(List<Map<String, dynamic>> expenses) {
-    Map<String, double> dailyExpenses = {};
-
-    for (var expense in expenses) {
-      String date = expense['date']; // 날짜 가져옴
-      double amount = (expense['amount'] as num).toDouble(); 
-
-      // 날짜별로 지출 합계를 더함
-      dailyExpenses.update(date, (value) => value + amount, ifAbsent: () => amount);
-    }
-    return dailyExpenses;
-  } //일별 지출합계 더하는 함수.
+  late List<PieModel> model;
   
-
-
    @override
   void initState() {
     super.initState();
+    
     initialize(); //여기서 initialize 함수 호출
-
-    expensesFuture = _loadExpenses();
+    
   }
 
   Future<void> initialize() async {
@@ -114,8 +100,14 @@ class _graphState extends State<graph> {
     incomeRef = FirebaseDatabase.instance.reference().child('incomes').child(uid);
   //로그인할때 호출. 현재 로그인 된 사용자 UID 이용해 초기화함.
   
-  }
-  
+    /* await _loadExpenses(); //추가
+    print('Loaded Expenses: $expenses'); // 로딩된 expenses 출력 */
+    expensesFuture = _loadExpenses();
+    expenses = (await expensesFuture)!;
+
+     print('엥 여기선 나오나 Loaded Expenses: $expenses');
+    expensesFuture = _loadExpenses();
+}
 
     Future<List<Map<String, dynamic>>> _loadExpenses() async {
     List<Map<String, dynamic>> loadedExpenses = [];
@@ -126,30 +118,30 @@ class _graphState extends State<graph> {
     String firstDayOfMonthString = DateFormat('yyyy-MM-dd').format(firstDayOfMonth);
 String lastDayOfMonthString = DateFormat('yyyy-MM-dd').format(lastDayOfMonth);
 
-DataSnapshot snapshot = await expenseRef
+DataSnapshot snapshot = await expenseRef!
     .orderByChild('date')
     .startAt(firstDayOfMonthString)
     .endAt(lastDayOfMonthString)
     .get(); //이번달 시작, 끝 날짜 계산 후 문자열 변환해 이번 달 지출데이터 모두 가져옴
 
-    if (snapshot.value != null) {
-      Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
+Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
 
       if (values != null) {
-        values.forEach((key, value) {
-          loadedExpenses.add({
-            'type': value['type'],
-            'amount': value['amount'],
-            'date': value['date'],
-            'category': value['category'],
-          });
+      values.forEach((key, value) {
+        loadedExpenses.add({
+          'type': value['type'],
+          'amount': value['amount'],
+          'date': value['date'],
+          'category': value['category'],
         });
-      }
+      });
+    } else {
+      print('Values is null');
     }
 
-    return loadedExpenses; //지출 데이터 맵 형태로 가져옴.
+    return loadedExpenses;
   }
-
+    
   double calculateTotalExpensesForCurrentMonth(List<Map<String, dynamic>> expenses) {
     DateTime now = DateTime.now();
   DateTime firstDayOfMonth = DateTime(now.year, now.month, 1);
@@ -167,21 +159,91 @@ DataSnapshot snapshot = await expenseRef
   return total;
 } //현재 월의 모든 지출 합계를 계산
 
-  List<PieModel> generatePieChartData(List<Map<String, dynamic>> expenses) {
-  double totalExpenses = calculateTotalExpensesForCurrentMonth(expenses);
+
+//여기서 엄청 바꿔씀
+Future<Map<String, double>> calculateDailyExpenses() async {
+  // 데이터 로드
+  List<Map<String, dynamic>> expenses = await _loadExpenses();
   
+  Map<String, double> dailyExpenses = {};
+  print('순찌먹고싶다: $expenses');
 
-  //totalExpenses와 expenses를 활용하여 동적으로 PieModel을 생성
-  List<PieModel> model =  []; 
-  Map<String, double> categoryExpenses = calculateCategoryExpenses(expenses);
+  for (var expense in expenses) {
+    String date = expense['date']; // 날짜 가져옴
+    double amount = (expense['amount'] as num).toDouble(); 
 
-  for (var entry in categoryExpenses.entries) {
-    double percentage = (entry.value / totalExpenses) * 100;
-    model.add(PieModel(count: percentage, color: getCategoryColor(entry.key), category: entry.key,)); // 카테고리 이름을 할당
+    // 날짜별로 지출 합계를 더함
+    if (dailyExpenses.containsKey(date)) {
+      double newValue = dailyExpenses[date]! + amount;
+      print('Date: $date, Updated Value: $newValue');
+      dailyExpenses[date] = newValue;
+    } else {
+      print('Date: $date, Initial Value: $amount');
+      dailyExpenses[date] = amount;
+    }
   }
 
+  return dailyExpenses; //일별 지출 합계 계산
+}
+
+
+Future<List<HorizontalDetailsModel>> generateBarChartData() async {
+  Map<String, double> dailyExpenses = await calculateDailyExpenses();
+
+  List<HorizontalDetailsModel> barChartData = [];
+  DateTime now = DateTime.now();
+  int lastDayOfMonth = DateTime(now.year, now.month + 1, 0).day;
+
+  for (int day = 1; day <= lastDayOfMonth; day++) {
+    double expenseAmount = dailyExpenses.containsKey('2023-11-$day')
+        ? dailyExpenses['2023-11-$day']!
+        : 0.0;
+
+    print('막대그래프 Day: $day, Expense Amount: $expenseAmount');
+
+    if (expenseAmount > 0) {
+      barChartData.add(
+        HorizontalDetailsModel(
+          name: '$day일',
+          color: Color(0xFF37736C),
+          size: expenseAmount,
+          sizeTwo: expenseAmount,
+          colorTwo: Color(0xFF37736C),
+        ),
+      );
+    }
+  }
+
+  return barChartData;
+}
+
+
+ List<PieModel> generatePieChartData(List<Map<String, dynamic>> loadedExpenses) {
+  double totalExpenses = calculateTotalExpensesForCurrentMonth(loadedExpenses);
+  Map<String, double> categoryExpenses = calculateCategoryExpenses(loadedExpenses);
+
+  List<PieModel> model = [];
+
+ categoryExpenses.forEach((category, amount) {
+    // count가 0인 항목은 생성하지 않음
+    if (amount > 0) {
+      double percentage = totalExpenses != 0.0 ? (amount / totalExpenses * 100) : 0.0;
+
+      model.add(PieModel(
+        count: percentage,
+        color: getCategoryColor(category),
+        category: category,
+      ));
+    }
+  });
+  print('total Expenses 아이씨: $totalExpenses');
+  print('Category Expenses 안돼:$categoryExpenses');
+  print(model); //안나온다고 *&^&^(%&*#%$@$#3)442
   return model;
-} //count 수정
+}
+
+
+
 
 Color getCategoryColor(String category) {
   // 각 카테고리에 대한 색상을 정의하여 반환하는 함수
@@ -200,7 +262,6 @@ Color getCategoryColor(String category) {
       return const Color.fromARGB(255, 0, 0, 0); // 기본적으로는 검정 색상을 반환
   }
 }
-
 
     static const category = ['food', 'traffic', 'leisure', 'shopping', 'etc'];
 
@@ -231,14 +292,16 @@ Color getCategoryColor(String category) {
       categoryExpenses[category] = total;
     });
 
+
     return categoryExpenses;
   }
 
+
   @override
   Widget build(BuildContext context) {
-  List<PieModel> model = generatePieChartData(expensesList);
+  List<PieModel> model = generatePieChartData(expenses);  //expensesList -> expenses 바꿔봄
   
-    
+  
     return Scaffold(
       backgroundColor: Color(0xFFF8F6E8),
       appBar: AppBar(
@@ -247,8 +310,7 @@ Color getCategoryColor(String category) {
     ), //상단
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [  //여기부터는 디버깅(출력) 위한 파트
-          FutureBuilder<List<Map<String, dynamic>>>(
+        children: [ /*FutureBuilder<List<Map<String, dynamic>>>(
   future: expensesFuture,
   builder: (context, snapshot) {
     if (snapshot.connectionState == ConnectionState.done) {
@@ -257,46 +319,38 @@ Color getCategoryColor(String category) {
       }
 
       List<Map<String, dynamic>> expenses = snapshot.data ?? [];
-List<Widget> expenseTextWidgets = [];
-Map<String, double> categoryTotalExpenses = {};
+      List<Widget> expenseTextWidgets = [];
+      Map<String, double> categoryTotalExpenses = {};
+       expenses = snapshot.data ?? [];
+                model = generatePieChartData(expenses);
 
-for (var expense in expenses) {
-  String category = expense['category'];
-  double amount = (expense['amount'] as num).toDouble();
 
-  // 카테고리별 합계 계산
-  categoryTotalExpenses[category] =
-      (categoryTotalExpenses[category] ?? 0.0) + amount;
-}
+      for (var expense in expenses) {
+        String category = expense['category'];
+        double amount = (expense['amount'] as num).toDouble();
 
-// 카테고리별 합계를 텍스트로 추가
-categoryTotalExpenses.forEach((category, total) {
-  expenseTextWidgets.add(Text('Total $category Expenses: $total'));
-});
+        // 카테고리별 합계 계산
+        categoryTotalExpenses[category] =
+            (categoryTotalExpenses[category] ?? 0.0) + amount;
+      }
 
-      // 2. Total Expenses를 출력
-      double totalExpenses = calculateTotalExpensesForCurrentMonth(expenses);
-      expenseTextWidgets.add(Text('Total Expenses: $totalExpenses'));
-
-      // 3. 카테고리별 지출 비율을 계산하고 출력
-      List<PieModel> pieChartData = generatePieChartData(expenses);
-      for (var data in pieChartData) {
-      double percentage = data.count; // PieModel에서 백분율 계산
-      //expenseTextWidgets.add(Text('${data.category}: $percentage'));
-       double angle = calculateAngle(percentage); // 각도 계산
-        expenseTextWidgets.add(Text('${data.category}: $percentage% (Angle: $angle radians)'));
-} 
+      // 카테고리별 합계를 텍스트로 추가
+      categoryTotalExpenses.forEach((category, total) {
+        expenseTextWidgets.add(Text('Total $category Expenses: $total'));
+      });
 
 
       // 4. 위젯 반환
       return Column(
-        children: expenseTextWidgets,
+       // children: expenseTextWidgets,
       );
     } else {
       return CircularProgressIndicator();
     }
   },
-),  
+), */
+
+
           Expanded(
             flex: 2,
             child: Align(
@@ -336,64 +390,33 @@ categoryTotalExpenses.forEach((category, total) {
           ],
         ),
       ),
+   
           //여기에 막대그래프 추가
-          Expanded(
+            Expanded(
             flex: 3,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,  //123~124 두 줄은 막대그래프 가로 스크롤 위한 것.
-              child: Container(
-            //막대그래프 코드
-            //height: 400, //막대그래프의 높이
-        width: MediaQuery.of(context).size.width * 1.5, //막대그래프 가로 크기(0.8이었는데 1.5로 수정)
-        child: SimpleBarChart(
-          makeItDouble: true,
-          listOfHorizontalBarData: [
-            HorizontalDetailsModel(
-              name: '1일',
-              color: const Color(0xFFFBBC05),
-              size: 7300,
-              sizeTwo: 4000,
-              colorTwo: Color(0xFF37736C),
-            ),
-            HorizontalDetailsModel(
-              name: '2일',
-              color: const Color(0xFFFBBC05),
-              size: 9200,
-              sizeTwo: 8500,
-              colorTwo: Color(0xFF37736C),
-            ),
-            HorizontalDetailsModel(
-              name: '3일',
-              color: const Color(0xFFFBBC05),
-              size: 12000,
-              sizeTwo: 10000,
-              colorTwo: Color(0xFF37736C),
-            ),
-            HorizontalDetailsModel(
-              name: '4일',
-              color: const Color(0xFFFBBC05),
-              size: 8600,
-              sizeTwo: 22000,
-              colorTwo: Color(0xFF37736C),
-            ),
-            HorizontalDetailsModel(
-              name: '5일',
-              color: const Color(0xFFFBBC05),
-              size: 6400,
-              sizeTwo: 17000,
-              colorTwo: Color(0xFF37736C),
-            ),
+            child: FutureBuilder<List<HorizontalDetailsModel>>(
+            future: generateBarChartData(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                }
+
+                List<HorizontalDetailsModel> barChartData = snapshot.data ?? [];
+
+                return SimpleBarChart(
+                  makeItDouble: true,
+                  listOfHorizontalBarData: barChartData,
+                  verticalInterval: 50000,
+                  horizontalBarPadding: 20,
+                );
+              } else {
+                return CircularProgressIndicator();
+              }
+  }
+  ),
+            )
           ],
-          verticalInterval: 10000, //세로축 눈금 간격
-          horizontalBarPadding: 20, //각 막대 사이의 간격 조절
-          )
-      )
-            ),
-          ),
-          ),
-      ],
       ),
       bottomNavigationBar: Container( //여기서부턴 바텀네비게이션바(하단)
           decoration: BoxDecoration(
@@ -465,65 +488,54 @@ categoryTotalExpenses.forEach((category, total) {
     
   } //widget build
 }
+
 class _PieChart extends CustomPainter {
   final List<PieModel> data;
 
   _PieChart(this.data);
-
-  // 라디안을 각도로 변환하는 함수
-double radiansToDegrees(double radians) {
-  return radians * (180 / math.pi);
-}
   
   @override
   void paint(Canvas canvas, Size size) {
+    //print('Data Length: ${data.length}'); ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ맨날0나옴ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ
+
+
     Paint circlePaint = Paint()..color = Colors.white;
+
     Offset offset = Offset(size.width / 2, size.width / 2);
-    double radius = (size.width / 2) * 0.65; // 파이차트 크기. 원래 크기의 0.65배 함
+    double radius = (size.width / 2) * 0.65;
+
     canvas.drawCircle(offset, radius, circlePaint);
 
-    double _startPoint = 0.0;
-    
+    double _startPoint = -math.pi / 2; // 시작 각도를 -π / 2로 초기화
+
     for (int i = 0; i < data.length; i++) {
-  double _startAngle = 2 * math.pi * (data[i].count / 100); //오지게 바꿔도 뭐 안됨..
-  double _nextAngle = _startPoint + _startAngle;
-
-   if (_nextAngle > 360) {
-     _nextAngle -= 360;
-     //여기도 있으나마나
-  }
-
+      double _startAngle = 2 * math.pi * (data[i].count / 100);
+      double _nextAngle = 2 * math.pi * (data[(i + 1) % data.length].count / 100);
       circlePaint.color = data[i].color;
 
       canvas.drawArc(
-        Rect.fromCircle(
-          center: Offset(size.width / 2, size.width / 2),
-          radius: radius,
-        ),
-         -math.pi / 2 + _startPoint,
-          _nextAngle,
-          true,
-          circlePaint);
-      _startPoint = _startPoint + _startAngle;
+        Rect.fromCircle(center: Offset(size.width / 2, size.width / 2), radius: radius),
+        _startPoint,
+        _startAngle,
+        true,
+        circlePaint);
+
+      _startPoint += _startAngle;
+
+
+      print('응 여기도 안나와 ㅋㅋ Index: $i, Start Angle: $_startAngle, Next Angle: $_nextAngle');
     }
   }
-
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-double calculateAngle(double percentage) {
-  // Percentage를 각도로 변환
-  double angle = 360 * (percentage / 100); //아니 이거 맞는데
 
-   //각도를 라디안으로 변환
-  double radians = angle * (math.pi / 180);
 
-  return radians;
-}
-
-void main()  {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MaterialApp(
     home: graph(),
   ));
