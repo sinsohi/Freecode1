@@ -359,8 +359,8 @@ Widget build(BuildContext context) {
           alignment: Alignment.centerRight,
           children: [
             Positioned(
-              left: 400.0, //여백 조절
-              top: 20.0, // 여백 및 이동 조절(숫자 커질수록 텍스트 위로 올라감)
+              left: 450.0, //여백 조절
+              top: 10.0, // 여백 및 이동 조절(숫자 커질수록 텍스트 위로 올라감)
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
@@ -369,7 +369,7 @@ Widget build(BuildContext context) {
             RowItem(color: Color.fromARGB(255, 255, 199, 44).withOpacity(1), label: '여가'),
             RowItem(color: Color.fromARGB(255, 253, 225, 14).withOpacity(1), label: '교통'),
             RowItem(color: Color.fromARGB(255, 44, 183, 92).withOpacity(1), label: '쇼핑'),
-            //RowItem(color: const Color.fromARGB(255, 214, 214, 214).withOpacity(1), label: '기타'), //비율 가장 큰 지출항목 3개 반영할 계획
+            RowItem(color: const Color.fromARGB(255, 214, 214, 214).withOpacity(1), label: '기타'), 
             //지출항목에 대한 RowItem 추가
           ],
         ),
