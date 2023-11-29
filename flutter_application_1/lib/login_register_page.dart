@@ -153,12 +153,19 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                 ),
                               ),
-                              Container(
-                                color: Colors.white,
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.65,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.06,
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border.all(
+                                          color: Colors.black, width: 2),
+                                      borderRadius: BorderRadius.circular(15)),
+                                ),
                               ),
-                              Container(
-                                color: Colors.white,
-                              ),
+                              TextButton(onPressed: () {}, child: Text('Login'))
                             ],
                           ),
                         ),
