@@ -66,15 +66,6 @@ Future<void> main() async {
   runApp(MyApp());
 }
 
-// Future<void> main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   await Firebase.initializeApp(
-//     options: DefaultFirebaseOptions.web,
-//   );
-
-//   runApp(MyApp());
-// }
-
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 

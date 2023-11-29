@@ -1,6 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'auth.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Firebase 인증을 위한 패키지를 가져옵니다.
+import 'package:flutter/material.dart'; // Flutter의 기본 패키지를 가져옵니다.
+import 'auth.dart'; // auth.dart 파일을 가져옵니다. (사용자 정의 인증 관련 클래스)
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key? key}) : super(key: key);
@@ -10,19 +10,22 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  String? errorMessage = '';
-  bool isLogin = true;
+  String? errorMessage = ''; // 오류 메시지를 저장할 변수입니다.
+  bool isLogin = true; // 현재 로그인 페이지인지 회원가입 페이지인지를 나타내는 변수
 
-  final TextEditingController _controllerEmail = TextEditingController();
-  final TextEditingController _controllerPassword = TextEditingController();
+  final TextEditingController _controllerEmail =
+      TextEditingController(); // 이메일 입력을 위한 텍스트 편집 컨트롤러
+  final TextEditingController _controllerPassword =
+      TextEditingController(); // 비밀번호 입력을 위한 텍스트 편집 컨트롤러
 
   Future<void> signInWithEmailAndPassword() async {
     try {
       await Auth().signInWithEmailAndPassword(
           email: _controllerEmail.text, password: _controllerPassword.text);
+      // 이메일과 비밀번호를 사용하여 Firebase 인증을 통해 로그인을 시도
     } on FirebaseAuthException catch (e) {
       setState(() {
-        errorMessage = e.message;
+        errorMessage = e.message; // 로그인 과정에서 발생한 오류 메시지를 저장
       });
     }
   }
@@ -31,15 +34,12 @@ class _LoginPageState extends State<LoginPage> {
     try {
       await Auth().createUserWithEmailAndPassword(
           email: _controllerEmail.text, password: _controllerPassword.text);
+      // 이메일과 비밀번호를 사용하여 Firebase 인증을 통한 회원가입
     } on FirebaseAuthException catch (e) {
       setState(() {
-        errorMessage = e.message;
+        errorMessage = e.message; // 회원가입 과정에서 발생한 오류 메시지를 저장
       });
     }
-  }
-
-  Widget _title() {
-    return const Text('Firebase Auth');
   }
 
   Widget _entryField(
@@ -50,10 +50,12 @@ class _LoginPageState extends State<LoginPage> {
       controller: controller,
       decoration: InputDecoration(labelText: title),
     );
+    // 주어진 제목과 컨트롤러를 사용하여 텍스트 필드 위젯을 생성
   }
 
   Widget _errorMessage() {
     return Text(errorMessage == '' ? '' : 'Humn ? $errorMessage');
+    // 오류 메시지를 표시하는 위젯. 오류 메시지가 없으면 표시되지 않음
   }
 
   Widget _submitButton() {
@@ -62,6 +64,7 @@ class _LoginPageState extends State<LoginPage> {
           isLogin ? signInWithEmailAndPassword : createUserWithEmailAndPassword,
       child: Text(isLogin ? 'Login' : 'Register'),
     );
+    // 로그인 또는 회원가입 버튼을 생성하는 위젯. 버튼 텍스트는 isLogin 변수에 따라 결정됨.
   }
 
   Widget _loginOrRegisterButton() {
@@ -73,14 +76,12 @@ class _LoginPageState extends State<LoginPage> {
       },
       child: Text(isLogin ? 'Register instead' : 'Login instead'),
     );
+    // 로그인 페이지와 회원가입 페이지 전환을 위한 버튼을 생성하는 위젯.
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: _title(),
-      ),
       body: Container(
         height: double.infinity,
         width: double.infinity,
@@ -89,11 +90,11 @@ class _LoginPageState extends State<LoginPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            _entryField('email', _controllerEmail),
-            _entryField('password', _controllerPassword),
-            _errorMessage(),
-            _submitButton(),
-            _loginOrRegisterButton(),
+            _entryField('email', _controllerEmail), // 이메일 입력 필드를 추가
+            _entryField('password', _controllerPassword), // 비밀번호 입력 필드를 추가
+            _errorMessage(), // 오류 메시지를 표시하는 위젯을 추가
+            _submitButton(), // 로그인 또는 회원가입 버튼을 추가
+            _loginOrRegisterButton(), // 페이지 전환 버튼을 추가
           ],
         ),
       ),
