@@ -82,22 +82,34 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        height: double.infinity,
-        width: double.infinity,
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            _entryField('email', _controllerEmail), // 이메일 입력 필드를 추가
-            _entryField('password', _controllerPassword), // 비밀번호 입력 필드를 추가
-            _errorMessage(), // 오류 메시지를 표시하는 위젯을 추가
-            _submitButton(), // 로그인 또는 회원가입 버튼을 추가
-            _loginOrRegisterButton(), // 페이지 전환 버튼을 추가
-          ],
-        ),
-      ),
+      backgroundColor: Color.fromRGBO(248, 246, 232, 1),
     );
   }
 }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: Padding(
+//         padding: const EdgeInsets.fromLTRB(8, 15, 8, 15),
+//         child: Container(
+//           height: double.infinity,
+//           width: double.infinity,
+//           padding: const EdgeInsets.all(20),
+//           child: Column(
+//             crossAxisAlignment: CrossAxisAlignment.center,
+//             mainAxisAlignment: MainAxisAlignment.center,
+//             children: <Widget>[
+//               _entryField('email', _controllerEmail), // 이메일 입력 필드를 추가
+//               _entryField('password', _controllerPassword), // 비밀번호 입력 필드를 추가
+//               _errorMessage(), // 오류 메시지를 표시하는 위젯을 추가
+//               _submitButton(), // 로그인 또는 회원가입 버튼을 추가
+//               _loginOrRegisterButton(), // 페이지 전환 버튼을 추가
+//             ],
+//           ),
+//         ),
+//       ),
+//       backgroundColor: Color.fromRGBO(255, 255, 255, 20),
+//     );
+//   }
+
