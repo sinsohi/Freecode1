@@ -865,7 +865,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ), // 카테고리 별 지출 구역 큰 배경
                 Container(
-                  color: Color.fromRGBO(173, 145, 149, 1),
+                  color: Color.fromRGBO(248, 246, 232, 1), 
                   width: double.infinity,
                   height: 350,
                   child: Column(
@@ -873,13 +873,13 @@ class _HomePageState extends State<HomePage> {
                       Container(
                         width: double.infinity,
                         height: 80,
-                        color: Colors.amber,
+                        color: Color.fromRGBO(248, 246, 232, 1), 
                         child: Row(
                           children: [
                             Container(
                               width: 30,
                               height: 80,
-                              color: const Color.fromARGB(255, 168, 93, 93),
+                              color: Color.fromRGBO(248, 246, 232, 1), 
                               child: Center(
                                 child: Text(
                                   '>',
@@ -893,7 +893,7 @@ class _HomePageState extends State<HomePage> {
                               child: Container(
                                   width: 450,
                                   height: 80,
-                                  color: Colors.blue,
+                                  color: Color.fromRGBO(248, 246, 232, 1), 
                                   child: Align(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
