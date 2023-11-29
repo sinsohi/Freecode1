@@ -765,6 +765,7 @@ class _HomePageState extends State<HomePage> {
                                       'assets/mal.png',
                                       fit: BoxFit.fill,
                                     ),
+                                    
                                     Container(
                                         width: 150,
                                         height: 50,
@@ -779,6 +780,7 @@ class _HomePageState extends State<HomePage> {
                                         )),
                                   ],
                                 )),
+                                
                             Align(
                               alignment: Alignment.centerLeft,
                               child: Container(
@@ -790,6 +792,8 @@ class _HomePageState extends State<HomePage> {
                                     fit: BoxFit.fill,
                                   )),
                             ),
+                            Container(width: 150, height: 50,
+                                child: Image.asset('assets/money.png'),),
                           ],
                         ),
                       ),
