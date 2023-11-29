@@ -926,24 +926,16 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Container(
                   width: double.infinity,
-                  height: 200,
+                  height: 40,
                   color: Color.fromRGBO(248, 246, 232, 1),
-                  child: Column(
+                  child: Row(
                     children: [
-                      Stack(
-                        children: [
-                          Image.asset('assets/mal.png', width: double.infinity, height: 40,),
-                          Text(
-                            'If you want to know more information, you can visit website.',
-                            style: TextStyle(fontSize: 15, fontFamily: 'JAL'),
-                          ),
-                        ],
-                      ),
-                      Image.asset(
-                        'assets/gul.png',
-                        height: 60,
-                        width: 60,
-                      ),
+                      
+                      Image.asset('assets/gul.png', height: 40, width: 40,),
+                      Text('If you want to know more information, you can visit website.', style: TextStyle(
+                                                fontSize: 10,
+                                                fontFamily: 'JAL'),),
+                      
                     ],
                   ),
                 ), // 광고 배너 구역 큰 배경
