@@ -85,48 +85,79 @@ class _LoginPageState extends State<LoginPage> {
       body: Padding(
         padding: const EdgeInsets.fromLTRB(18, 25, 18, 25),
         child: Container(
-          decoration: BoxDecoration(
-              color: Color.fromRGBO(248, 246, 232, 1),
-              border: Border.all(color: Colors.black, width: 2),
-              borderRadius: BorderRadius.circular(15)),
-          child: Column(
-            children: [
-              Container(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Icon(Icons.circle, size: 10),
-                        Icon(Icons.circle, size: 10)
-                      ]),
+            decoration: BoxDecoration(
+                color: Color.fromRGBO(248, 246, 232, 1),
+                border: Border.all(color: Colors.black, width: 2),
+                borderRadius: BorderRadius.circular(15)),
+            child: Column(
+              children: [
+                Container(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Icon(Icons.circle, size: 10),
+                          Icon(Icons.circle, size: 10)
+                        ]),
+                  ),
                 ),
-              ),
-              Expanded(
-                  child: Stack(children: [
-                Positioned(
-                    left: 80,
-                    right: 80,
-                    bottom: 80,
-                    top: 80,
-                    child: Align(
-                        alignment: Alignment.topCenter,
-                        child: Image.asset('assets/User.png')))
-              ])),
-              Container(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Icon(Icons.circle, size: 10),
-                        Icon(Icons.circle, size: 10)
-                      ]),
-                ),
-              )
-            ],
-          ),
-        ),
+                Expanded(
+                    child: Stack(children: [
+                  Positioned(
+                      top: 200,
+                      left: 10,
+                      bottom: 80,
+                      right: 10,
+                      child: Center(
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.7,
+                          height: MediaQuery.of(context).size.height * 0.3,
+                          decoration: BoxDecoration(
+                            color: Color.fromRGBO(55, 115, 108, 1),
+                            border: Border.all(color: Colors.black, width: 2),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                      )),
+                  Positioned(
+                      top: 65,
+                      left: 10,
+                      bottom: 80,
+                      right: 10,
+                      child: Center(
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          height: MediaQuery.of(context).size.height * 0.4,
+                          decoration: BoxDecoration(
+                            color: Color.fromRGBO(55, 115, 108, 1),
+                            border: Border.all(color: Colors.black, width: 2),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                      )),
+                  Positioned(
+                      left: 80,
+                      right: 80,
+                      bottom: 80,
+                      top: 80,
+                      child: Align(
+                          alignment: Alignment.topCenter,
+                          child: Image.asset('assets/User.png')))
+                ])),
+                Container(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Icon(Icons.circle, size: 10),
+                          Icon(Icons.circle, size: 10)
+                        ]),
+                  ),
+                )
+              ],
+            )),
       ),
       backgroundColor: Color.fromRGBO(248, 246, 232, 1),
     );
