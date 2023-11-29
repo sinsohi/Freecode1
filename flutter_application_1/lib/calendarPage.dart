@@ -25,8 +25,10 @@ class calendarPage extends StatefulWidget {
 
 class Event {
   final String name;
+  final String category;
+  final String detail;
 
-  Event(this.name);
+  Event(this.name, this.category, this.detail);
 }
 
 class _calendarPageState extends State<calendarPage> {
@@ -176,6 +178,7 @@ class _calendarPageState extends State<calendarPage> {
             'amount': value['amount'],
             'date': value['date'],
             'category': value['category'],
+            'detail': value['detail'],
           });
         });
       }
