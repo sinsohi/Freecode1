@@ -178,7 +178,10 @@ class _LoginPageState extends State<LoginPage> {
                                       borderRadius: BorderRadius.circular(15)),
                                 ),
                               ),
-                              TextButton(onPressed: () {}, child: Text('Login'))
+                              TextButton(
+                                onPressed: () {},
+                                child: _submitButton(),
+                              )
                             ],
                           ),
                         ),
