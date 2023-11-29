@@ -752,9 +752,10 @@ class _HomePageState extends State<HomePage> {
                         color: Color.fromRGBO(248, 246, 232, 1), // 말풍선 돼지 컨테이너
                         child: Column(
                           children: [
-                            SizedBox(
+                            Container(
                               height: 50,
                               width: 100,
+                              child: Image.asset('assets/twinkle.png'),
                             ),
                             Container(
                                 height: 100,
