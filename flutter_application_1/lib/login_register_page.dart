@@ -89,6 +89,21 @@ class _LoginPageState extends State<LoginPage> {
               color: Color.fromRGBO(248, 246, 232, 1),
               border: Border.all(color: Colors.black, width: 2),
               borderRadius: BorderRadius.circular(15)),
+          child: Column(
+            children: [
+              Container(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Icon(Icons.circle, size: 10),
+                        Icon(Icons.circle, size: 10)
+                      ]),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       backgroundColor: Color.fromRGBO(248, 246, 232, 1),
