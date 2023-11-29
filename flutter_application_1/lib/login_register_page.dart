@@ -76,13 +76,19 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _loginOrRegisterButton() {
     return TextButton(
-      onPressed: () {
-        setState(() {
-          isLogin = !isLogin;
-        });
-      },
-      child: Text(isLogin ? 'Register instead' : 'Login instead'),
-    );
+        onPressed: () {
+          setState(() {
+            isLogin = !isLogin;
+          });
+        },
+        child: Text(
+          isLogin ? 'Register instead' : 'Login instead',
+          style: TextStyle(
+              fontFamily: 'LilitaOne',
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+              color: Color.fromRGBO(255, 255, 255, 50)),
+        ));
     // 로그인 페이지와 회원가입 페이지 전환을 위한 버튼을 생성하는 위젯.
   }
 
