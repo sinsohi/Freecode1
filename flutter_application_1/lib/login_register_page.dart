@@ -102,7 +102,17 @@ class _LoginPageState extends State<LoginPage> {
                       ]),
                 ),
               ),
-              Expanded(child: Stack()),
+              Expanded(
+                  child: Stack(children: [
+                Positioned(
+                    left: 80,
+                    right: 80,
+                    bottom: 80,
+                    top: 80,
+                    child: Align(
+                        alignment: Alignment.topCenter,
+                        child: Image.asset('assets/User.png')))
+              ])),
               Container(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
