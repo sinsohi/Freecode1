@@ -25,8 +25,10 @@ class calendarPage extends StatefulWidget {
 
 class Event {
   final String name;
+  final String category;
+  final String detail;
 
-  Event(this.name);
+  Event(this.name, this.category, this.detail);
 }
 
 class _calendarPageState extends State<calendarPage> {
@@ -79,7 +81,7 @@ class _calendarPageState extends State<calendarPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: null,
       body: content(),
       backgroundColor: Color(0xfff8f6e8),
       bottomNavigationBar: Container(
@@ -123,7 +125,11 @@ class _calendarPageState extends State<calendarPage> {
           onTap: (int index) {
             switch (index) {
               case 0:
-                // 홈 페이지로 이동
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomePage()),
+                );
+// 홈 페이지로 이동
                 break;
               case 1:
                 // 캘린더 페이지로 이동
@@ -172,6 +178,7 @@ class _calendarPageState extends State<calendarPage> {
             'amount': value['amount'],
             'date': value['date'],
             'category': value['category'],
+            'detail': value['detail'],
           });
         });
       }
@@ -255,14 +262,14 @@ class _calendarPageState extends State<calendarPage> {
             headerStyle: HeaderStyle(
               formatButtonVisible: false,
               titleCentered: true,
-              leftChevronVisible: false,
-              rightChevronVisible: false,
+              leftChevronVisible: true,
+              rightChevronVisible: true,
               titleTextStyle: const TextStyle(
                 fontWeight: FontWeight.bold,
                 color: const Color(0xff37736c),
-                fontSize: 16,
+                fontSize: 18,
               ),
-              headerPadding: const EdgeInsets.symmetric(vertical: 15.0),
+              headerPadding: const EdgeInsets.symmetric(vertical: 35.0),
             ),
             availableGestures: AvailableGestures.all,
             selectedDayPredicate: (day) => isSameDay(day, today),
@@ -345,8 +352,7 @@ class _calendarPageState extends State<calendarPage> {
                         width: 200,
                         height: 55,
                         decoration: BoxDecoration(
-                          borderRadius:
-                              BorderRadius.circular(10.0), // 이 부분을 수정했습니다.
+                          borderRadius: BorderRadius.circular(10.0),
                           color: const Color(0xff82a282), // 초록색 배경 적용
                         ),
                         margin: const EdgeInsets.all(8.0), // 여백 추가
@@ -357,7 +363,7 @@ class _calendarPageState extends State<calendarPage> {
                             '${entry.key}: ${entry.value}',
                             style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 20,
+                                fontSize: 18,
                                 fontFamily: 'JAL'),
                           ),
                         ),
@@ -394,6 +400,13 @@ class _calendarPageState extends State<calendarPage> {
   }
 
   Widget _buildEventList(String title, List<Event> events) {
+    Map<String, List<Event>> categoryEvents = {};
+    for (var event in events) {
+      if (!categoryEvents.containsKey(event.category)) {
+        categoryEvents[event.category] = [];
+      }
+      categoryEvents[event.category]!.add(event);
+    }
     return Container(
       decoration: BoxDecoration(
         color: const Color(0xff37736c),
@@ -421,23 +434,67 @@ class _calendarPageState extends State<calendarPage> {
             ),
             padding: EdgeInsets.all(16.0),
             child: ListView.builder(
-              itemCount: events.length,
+              itemCount: categoryEvents.keys.length,
               itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  margin: EdgeInsets.only(bottom: 8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        events[index].name,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xfff8f6e8),
+                var category = categoryEvents.keys.elementAt(index);
+                return FutureBuilder<DataSnapshot>(
+                  future: FirebaseDatabase.instance
+                      .reference()
+                      .child('details')
+                      .child(category)
+                      .get(), // 카테고리에 해당하는 detail 데이터를 가져옵니다.
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      }
+                      // 데이터를 가져왔을 때의 처리
+                      String detail = snapshot.data!.value.toString();
+                      return InkWell(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text(category),
+                                content: Text(detail),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: Text('확인'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        child: Container(
+                          width: 200,
+                          height: 55,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10.0),
+                            color: const Color(0xff82a282), // 초록색 배경 적용
+                          ),
+                          margin: EdgeInsets.only(bottom: 8.0),
+                          child: Padding(
+                            // 텍스트와 사각형 사이에 여백 추가
+                            padding: const EdgeInsets.all(16.0),
+                            child: Text(
+                              '$category: $detail',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontFamily: 'JAL'),
+                            ),
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 8.0),
-                    ],
-                  ),
+                      );
+                    } else {
+                      return CircularProgressIndicator(); // 데이터를 불러오는 동안의 처리
+                    }
+                  },
                 );
               },
             ),
