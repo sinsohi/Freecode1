@@ -482,8 +482,6 @@ class _PieChart extends CustomPainter {
   
   @override
   void paint(Canvas canvas, Size size) {
-    //print('Data Length: ${data.length}'); ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ맨날0나옴ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ
-
 
     Paint circlePaint = Paint()..color = Colors.white;
 
@@ -508,8 +506,6 @@ class _PieChart extends CustomPainter {
 
       _startPoint += _startAngle;
 
-
-      //print('응 여기도 안나와 ㅋㅋ Index: $i, Start Angle: $_startAngle, Next Angle: $_nextAngle');
     }
   }
 
