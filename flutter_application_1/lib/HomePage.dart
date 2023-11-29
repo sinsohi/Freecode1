@@ -867,7 +867,7 @@ class _HomePageState extends State<HomePage> {
                 Container(
                   color: Color.fromRGBO(248, 246, 232, 1), 
                   width: double.infinity,
-                  height: 350,
+                  height: 310,
                   child: Column(
                     children: [
                       Container(
@@ -892,14 +892,14 @@ class _HomePageState extends State<HomePage> {
                               alignment: Alignment.centerRight,
                               child: Container(
                                   width: 450,
-                                  height: 80,
+                                  height: 60,
                                   color: Color.fromRGBO(248, 246, 232, 1), 
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
+                                  child: Align(alignment: Alignment.centerLeft,
+                                   
                                     child: Text(
-                                      'Financial Product Recommendation',
+                                      '  Financial Product Recommendation',
                                       style: TextStyle(
-                                          fontSize: 25, fontFamily: 'JAL'),
+                                          fontSize: 20, fontFamily: 'JAL'),
                                     ),
                                   )),
                             ),
