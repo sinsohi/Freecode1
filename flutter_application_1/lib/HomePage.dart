@@ -867,18 +867,18 @@ class _HomePageState extends State<HomePage> {
                 Container(
                   color: Color.fromRGBO(248, 246, 232, 1), 
                   width: double.infinity,
-                  height: 310,
+                  height: 290,
                   child: Column(
                     children: [
                       Container(
                         width: double.infinity,
-                        height: 80,
+                        height: 40,
                         color: Color.fromRGBO(248, 246, 232, 1), 
                         child: Row(
                           children: [
                             Container(
                               width: 30,
-                              height: 80,
+                              height: 40,
                               color: Color.fromRGBO(248, 246, 232, 1), 
                               child: Center(
                                 child: Text(
@@ -892,7 +892,7 @@ class _HomePageState extends State<HomePage> {
                               alignment: Alignment.centerRight,
                               child: Container(
                                   width: 450,
-                                  height: 60,
+                                  height: 40,
                                   color: Color.fromRGBO(248, 246, 232, 1), 
                                   child: Align(alignment: Alignment.centerLeft,
                                    
@@ -928,19 +928,22 @@ class _HomePageState extends State<HomePage> {
                   width: double.infinity,
                   height: 40,
                   color: Color.fromRGBO(248, 246, 232, 1),
-                  child: Row(
-                    children: [
-                      SizedBox(height: 40, width: 5,),
-                      
-                      Image.asset('assets/gul.png', height: 40, width: 40,),
-                      SizedBox(height: 40, width: 5,),
-                      Text('If you want to know more information, you can visit website.', style: TextStyle(
-                                                fontSize: 10,
-                                                fontFamily: 'JAL'),),
-                      
-                    ],
+                  child: 
+                    Row(mainAxisAlignment: MainAxisAlignment.center,
+                    
+                      children: [
+                        SizedBox(height: 20, width: 5,),
+                        
+                        Image.asset('assets/gul.png', height: 40, width: 40,),
+                        SizedBox(height: 40, width: 5,),
+                        Text('If you want to know more information, you can visit website.', style: TextStyle(
+                                                  fontSize: 10,
+                                                  fontFamily: 'JAL'),),
+                        
+                      ],
+                    ),
                   ),
-                ), // 광고 배너 구역 큰 배경
+                 // 광고 배너 구역 큰 배경
               ],
             ),
           ),
