@@ -105,6 +105,10 @@ class _graphState extends State<graph> {
     expensesFuture = _loadExpenses();
     expenses = (await expensesFuture)!;
 
+    // 카테고리별 지출 계산
+  Map<String, double> categoryExpenses = await calculateCategoryExpenses();
+  print('Category Expenses: $categoryExpenses');
+
      print('엥 여기선 나오나 Loaded Expenses: $expenses');
     expensesFuture = _loadExpenses();
 }
@@ -142,8 +146,11 @@ Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
     return loadedExpenses;
   }
     
-  double calculateTotalExpensesForCurrentMonth(List<Map<String, dynamic>> expenses) {
-    DateTime now = DateTime.now();
+ Future<double> calculateTotalExpensesForCurrentMonth() async {
+  // 데이터 로드
+  List<Map<String, dynamic>> expenses = await _loadExpenses();
+
+  DateTime now = DateTime.now();
   DateTime firstDayOfMonth = DateTime(now.year, now.month, 1);
   DateTime lastDayOfMonth = DateTime(now.year, now.month + 1, 0);
 
@@ -151,13 +158,15 @@ Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
 
   for (var expense in expenses) {
     DateTime expenseDate = DateTime.parse(expense['date']);
-   // 지출 날짜가 현재 달 내에 있는지 확인
+    // 지출 날짜가 현재 달 내에 있는지 확인
     if (expenseDate.isAfter(firstDayOfMonth) && expenseDate.isBefore(lastDayOfMonth)) {
       total += (expense['amount'] as num).toDouble();
     }
   }
   return total;
-} //현재 월의 모든 지출 합계를 계산
+}
+
+//현재 월의 모든 지출 합계를 계산
 
 
 //여기서 엄청 바꿔씀
@@ -167,6 +176,7 @@ Future<Map<String, double>> calculateDailyExpenses() async {
   
   Map<String, double> dailyExpenses = {};
   print('순찌먹고싶다: $expenses');
+
 
   for (var expense in expenses) {
     String date = expense['date']; // 날짜 가져옴
@@ -215,17 +225,16 @@ Future<List<HorizontalDetailsModel>> generateBarChartData() async {
   }
 
   return barChartData;
-}
+} //막대그래프
 
 
- List<PieModel> generatePieChartData(List<Map<String, dynamic>> loadedExpenses) {
-  double totalExpenses = calculateTotalExpensesForCurrentMonth(loadedExpenses);
-  Map<String, double> categoryExpenses = calculateCategoryExpenses(loadedExpenses);
+Future<List<PieModel>> generatePieChartData() async {
+  double totalExpenses = await calculateTotalExpensesForCurrentMonth();
+  Map<String, double> categoryExpenses = await calculateCategoryExpenses();
 
   List<PieModel> model = [];
 
- categoryExpenses.forEach((category, amount) {
-    // count가 0인 항목은 생성하지 않음
+  categoryExpenses.forEach((category, amount) {
     if (amount > 0) {
       double percentage = totalExpenses != 0.0 ? (amount / totalExpenses * 100) : 0.0;
 
@@ -236,13 +245,13 @@ Future<List<HorizontalDetailsModel>> generateBarChartData() async {
       ));
     }
   });
-  print('total Expenses 아이씨: $totalExpenses');
-  print('Category Expenses 안돼:$categoryExpenses');
-  print(model); //안나온다고 *&^&^(%&*#%$@$#3)442
+
+  print('돼라돼라 total Expenses: $totalExpenses');
+  print('진짜됨 ㄹㅇCategory Expenses: $categoryExpenses');
+  print(model);
+
   return model;
 }
-
-
 
 
 Color getCategoryColor(String category) {
@@ -279,90 +288,67 @@ Color getCategoryColor(String category) {
     return groupedExpenses;
   }
 
-  Map<String, double> calculateCategoryExpenses(
-      List<Map<String, dynamic>> expenses) {
-    var groupedExpenses = groupExpensesByCategory(expenses);
+ Future<Map<String, double>> calculateCategoryExpenses() async {
+  // 데이터 로드
+  List<Map<String, dynamic>> loadedExpenses = await _loadExpenses();
 
-    Map<String, double> categoryExpenses = {};
-    groupedExpenses.forEach((category, expenses) {
-      double total = 0.0;
-      for (var expense in expenses) {
-        total += (expense['amount'] as num).toDouble();
-      }
-      categoryExpenses[category] = total;
-    });
+  // 지출을 카테고리로 그룹화하고 계산
+  var groupedExpenses = groupExpensesByCategory(loadedExpenses);
 
+  Map<String, double> categoryExpenses = {};
+  groupedExpenses.forEach((category, expenses) {
+    double total = 0.0;
+    for (var expense in expenses) {
+      total += (expense['amount'] as num).toDouble();
+    }
+    categoryExpenses[category] = total;
+  });
 
-    return categoryExpenses;
-  }
-
+  return categoryExpenses;
+}
 
   @override
-  Widget build(BuildContext context) {
-  List<PieModel> model = generatePieChartData(expenses);  //expensesList -> expenses 바꿔봄
-  
-  
-    return Scaffold(
-      backgroundColor: Color(0xFFF8F6E8),
-      appBar: AppBar(
-    title: Text('$currentMonth'),
-    backgroundColor: Color(0xFF37736C), 
+Widget build(BuildContext context) {
+  return Scaffold(
+    backgroundColor: Color(0xFFF8F6E8),
+    appBar: AppBar(
+      title: Text('$currentMonth'),
+      backgroundColor: Color(0xFF37736C),
     ), //상단
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [ /*FutureBuilder<List<Map<String, dynamic>>>(
-  future: expensesFuture,
-  builder: (context, snapshot) {
-    if (snapshot.connectionState == ConnectionState.done) {
-      if (snapshot.hasError) {
-        return Text('Error: ${snapshot.error}');
-      }
+    body: Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Expanded(
+          flex: 2,
+          child: Align(
+            alignment: Alignment.center,
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.7,
+              height: MediaQuery.of(context).size.width * 0.7, //파이차트의 높이
+              child: FutureBuilder<List<PieModel>>(
+                future: generatePieChartData(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    }
 
-      List<Map<String, dynamic>> expenses = snapshot.data ?? [];
-      List<Widget> expenseTextWidgets = [];
-      Map<String, double> categoryTotalExpenses = {};
-       expenses = snapshot.data ?? [];
-                model = generatePieChartData(expenses);
+                    List<PieModel> model = snapshot.data ?? [];
 
-
-      for (var expense in expenses) {
-        String category = expense['category'];
-        double amount = (expense['amount'] as num).toDouble();
-
-        // 카테고리별 합계 계산
-        categoryTotalExpenses[category] =
-            (categoryTotalExpenses[category] ?? 0.0) + amount;
-      }
-
-      // 카테고리별 합계를 텍스트로 추가
-      categoryTotalExpenses.forEach((category, total) {
-        expenseTextWidgets.add(Text('Total $category Expenses: $total'));
-      });
-
-
-      // 4. 위젯 반환
-      return Column(
-       // children: expenseTextWidgets,
-      );
-    } else {
-      return CircularProgressIndicator();
-    }
-  },
-), */
-
-
-          Expanded(
-            flex: 2,
-            child: Align(
-              alignment: Alignment.center,
-              child: Container( //원래 Sizedbox였는데 좀 바꿈
-            width: MediaQuery.of(context).size.width * 0.7,
-            height: MediaQuery.of(context).size.width * 0.7, //파이차트의 높이
-            child: CustomPaint(
-              size: Size(MediaQuery.of(context).size.width,
-                  200,),
-              painter: _PieChart(model),
-            ),
+                    return CustomPaint(
+                      size: Size(
+                        MediaQuery.of(context).size.width,
+                        200,
+                      ),
+                      painter: _PieChart(model),
+                    );
+                  }
+                  else {
+                    // Future가 완료되지 않았을 때 반환할 위젯
+                    return CircularProgressIndicator();
+                  }
+                }
+              ),
           ),
             ),
           ),
@@ -523,7 +509,7 @@ class _PieChart extends CustomPainter {
       _startPoint += _startAngle;
 
 
-      print('응 여기도 안나와 ㅋㅋ Index: $i, Start Angle: $_startAngle, Next Angle: $_nextAngle');
+      //print('응 여기도 안나와 ㅋㅋ Index: $i, Start Angle: $_startAngle, Next Angle: $_nextAngle');
     }
   }
 
