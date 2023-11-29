@@ -400,6 +400,13 @@ class _calendarPageState extends State<calendarPage> {
   }
 
   Widget _buildEventList(String title, List<Event> events) {
+    Map<String, List<Event>> categoryEvents = {};
+    for (var event in events) {
+      if (!categoryEvents.containsKey(event.category)) {
+        categoryEvents[event.category] = [];
+      }
+      categoryEvents[event.category]!.add(event);
+    }
     return Container(
       decoration: BoxDecoration(
         color: const Color(0xff37736c),
@@ -429,14 +436,17 @@ class _calendarPageState extends State<calendarPage> {
             child: ListView.builder(
               itemCount: events.length,
               itemBuilder: (BuildContext context, int index) {
+                var category = categoryEvents.keys.elementAt(index);
+                var categoryDetail =
+                    categoryEvents[category]!.map((e) => e.detail).join('\n');
                 return InkWell(
                   onTap: () {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text(events[index].category),
-                          content: Text(events[index].detail), // detail 정보 출력
+                          title: Text(category),
+                          content: Text(categoryDetail), // detail 정보 출력
                           actions: [
                             TextButton(
                               child: Text('닫기'),
