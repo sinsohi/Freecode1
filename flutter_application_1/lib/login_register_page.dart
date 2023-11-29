@@ -53,17 +53,24 @@ class _LoginPageState extends State<LoginPage> {
     // 주어진 제목과 컨트롤러를 사용하여 텍스트 필드 위젯을 생성
   }
 
-  Widget _errorMessage() {
-    return Text(errorMessage == '' ? '' : 'Humn ? $errorMessage');
-    // 오류 메시지를 표시하는 위젯. 오류 메시지가 없으면 표시되지 않음
-  }
+  // Widget _errorMessage() {
+  //   return Text(errorMessage == '' ? '' : 'Humn ? $errorMessage');
+  //   // 오류 메시지를 표시하는 위젯. 오류 메시지가 없으면 표시되지 않음
+  // }
 
   Widget _submitButton() {
-    return ElevatedButton(
-      onPressed:
-          isLogin ? signInWithEmailAndPassword : createUserWithEmailAndPassword,
-      child: Text(isLogin ? 'Login' : 'Register'),
-    );
+    return TextButton(
+        onPressed: isLogin
+            ? signInWithEmailAndPassword
+            : createUserWithEmailAndPassword,
+        child: Text(
+          isLogin ? 'Login' : 'Register',
+          style: TextStyle(
+              fontFamily: 'LilitaOne',
+              fontSize: 25,
+              fontWeight: FontWeight.w500,
+              color: Color.fromRGBO(255, 255, 255, 50)),
+        ));
     // 로그인 또는 회원가입 버튼을 생성하는 위젯. 버튼 텍스트는 isLogin 변수에 따라 결정됨.
   }
 
@@ -243,7 +250,7 @@ class _LoginPageState extends State<LoginPage> {
 //               _errorMessage(), // 오류 메시지를 표시하는 위젯을 추가
 //               _submitButton(), // 로그인 또는 회원가입 버튼을 추가
 //               _loginOrRegisterButton(), // 페이지 전환 버튼을 추가
-//             ],
+//             ], 
 //           ),
 //         ),
 //       ),
