@@ -105,21 +105,34 @@ class _LoginPageState extends State<LoginPage> {
                 Expanded(
                     child: Stack(children: [
                   Positioned(
-                      top: 200,
-                      left: 10,
-                      bottom: 80,
-                      right: 10,
-                      child: Center(
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * 0.7,
-                          height: MediaQuery.of(context).size.height * 0.3,
-                          decoration: BoxDecoration(
-                            color: Color.fromRGBO(55, 115, 108, 1),
-                            border: Border.all(color: Colors.black, width: 2),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
+                    top: 200,
+                    left: 10,
+                    bottom: 80,
+                    right: 10,
+                    child: Center(
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.7,
+                        height: MediaQuery.of(context).size.height * 0.3,
+                        decoration: BoxDecoration(
+                          color: Color.fromRGBO(55, 115, 108, 1),
+                          border: Border.all(color: Colors.black, width: 2),
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                      )),
+                        // child: SizedBox(
+                        //   width: 50,
+                        //   height: 0.1,
+                        //   child: DecoratedBox(
+                        //     child: Text('Register Instead'),
+                        //     decoration: BoxDecoration(
+                        //         color: Colors.white,
+                        //         border:
+                        //             Border.all(color: Colors.black, width: 2),
+                        //         borderRadius: BorderRadius.circular(15)),
+                        //   ),
+                        // ),
+                      ),
+                    ),
+                  ),
                   Positioned(
                       top: 65,
                       left: 10,
@@ -137,7 +150,8 @@ class _LoginPageState extends State<LoginPage> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              SizedBox(
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 25, 0, 0),
                                 child: SizedBox(
                                   width:
                                       MediaQuery.of(context).size.width * 0.65,
@@ -178,6 +192,17 @@ class _LoginPageState extends State<LoginPage> {
                       child: Align(
                           alignment: Alignment.topCenter,
                           child: Image.asset('assets/User.png'))),
+                  Positioned(
+                    left: 20,
+                    bottom: 135,
+                    right: 20,
+                    child: SizedBox(
+                      width: 100,
+                      height: 20,
+                      child: TextButton(
+                          onPressed: () {}, child: Text('Register Instead')),
+                    ),
+                  ),
                 ])),
                 Container(
                   child: Padding(
