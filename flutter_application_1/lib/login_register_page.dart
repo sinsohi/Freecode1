@@ -134,6 +134,33 @@ class _LoginPageState extends State<LoginPage> {
                             border: Border.all(color: Colors.black, width: 2),
                             borderRadius: BorderRadius.circular(20),
                           ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              SizedBox(
+                                child: SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.65,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.06,
+                                  child: DecoratedBox(
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        border: Border.all(
+                                            color: Colors.black, width: 2),
+                                        borderRadius:
+                                            BorderRadius.circular(15)),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                color: Colors.white,
+                              ),
+                              Container(
+                                color: Colors.white,
+                              ),
+                            ],
+                          ),
                         ),
                       )),
                   Positioned(
@@ -143,7 +170,7 @@ class _LoginPageState extends State<LoginPage> {
                       top: 80,
                       child: Align(
                           alignment: Alignment.topCenter,
-                          child: Image.asset('assets/User.png')))
+                          child: Image.asset('assets/User.png'))),
                 ])),
                 Container(
                   child: Padding(
@@ -155,7 +182,7 @@ class _LoginPageState extends State<LoginPage> {
                           Icon(Icons.circle, size: 10)
                         ]),
                   ),
-                )
+                ),
               ],
             )),
       ),
