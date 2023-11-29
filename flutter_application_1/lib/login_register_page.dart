@@ -202,7 +202,7 @@ class _LoginPageState extends State<LoginPage> {
                       width: 100,
                       height: 20,
                       child: TextButton(
-                          onPressed: () {}, child: Text('Register Instead')),
+                          onPressed: () {}, child: _loginOrRegisterButton()),
                     ),
                   ),
                 ])),
