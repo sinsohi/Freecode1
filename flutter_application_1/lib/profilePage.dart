@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_application_1/HomePage.dart';
 import 'calendarPage.dart';
 import 'graph.dart';
-import 'HomePage.dart';
 import 'main.dart';
 import 'package:firebase_database/firebase_database.dart';
 
