@@ -930,8 +930,10 @@ class _HomePageState extends State<HomePage> {
                   color: Color.fromRGBO(248, 246, 232, 1),
                   child: Row(
                     children: [
+                      SizedBox(height: 40, width: 5,),
                       
                       Image.asset('assets/gul.png', height: 40, width: 40,),
+                      SizedBox(height: 40, width: 5,),
                       Text('If you want to know more information, you can visit website.', style: TextStyle(
                                                 fontSize: 10,
                                                 fontFamily: 'JAL'),),
