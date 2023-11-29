@@ -104,6 +104,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 Expanded(
                     child: Stack(children: [
+                  // Text('Login'),
                   Positioned(
                     top: 200,
                     left: 10,
@@ -118,18 +119,6 @@ class _LoginPageState extends State<LoginPage> {
                           border: Border.all(color: Colors.black, width: 2),
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        // child: SizedBox(
-                        //   width: 50,
-                        //   height: 0.1,
-                        //   child: DecoratedBox(
-                        //     child: Text('Register Instead'),
-                        //     decoration: BoxDecoration(
-                        //         color: Colors.white,
-                        //         border:
-                        //             Border.all(color: Colors.black, width: 2),
-                        //         borderRadius: BorderRadius.circular(15)),
-                        //   ),
-                        // ),
                       ),
                     ),
                   ),
@@ -158,6 +147,7 @@ class _LoginPageState extends State<LoginPage> {
                                   height:
                                       MediaQuery.of(context).size.height * 0.06,
                                   child: DecoratedBox(
+                                    child: Text('ID(email)) : '),
                                     decoration: BoxDecoration(
                                         color: Colors.white,
                                         border: Border.all(
@@ -172,6 +162,7 @@ class _LoginPageState extends State<LoginPage> {
                                 height:
                                     MediaQuery.of(context).size.height * 0.06,
                                 child: DecoratedBox(
+                                  child: Text('Password : '),
                                   decoration: BoxDecoration(
                                       color: Colors.white,
                                       border: Border.all(
