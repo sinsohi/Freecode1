@@ -1,4 +1,4 @@
-// ignore_for_file: unused_local_variable, duplicate_ignore, file_names, library_private_types_in_public_api, deprecated_member_use, avoid_unnecessary_containers, sized_box_for_whitespace, prefer_const_literals_to_create_immutables
+// ignore_for_file: unused_local_variable, duplicate_ignore, file_names, library_private_types_in_public_api, deprecated_member_use, avoid_unnecessary_containers, sized_box_for_whitespace, prefer_const_literals_to_create_immutables, unused_import
 
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -8,6 +8,7 @@ import 'profilePage.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -21,6 +22,13 @@ class _HomePageState extends State<HomePage> {
   late String uid;
   late DatabaseReference expenseRef;
   late DatabaseReference incomeRef;
+
+  final List<String> imgList = [
+    'assets/1.jpeg',
+    'assets/2.jpeg',
+    'assets/3.jpeg',
+    // ... 다른 이미지 경로
+  ];
 
   Future<void> initialize() async {
     user = FirebaseAuth.instance.currentUser;
@@ -752,10 +760,9 @@ class _HomePageState extends State<HomePage> {
                         color: Color.fromRGBO(248, 246, 232, 1), // 말풍선 돼지 컨테이너
                         child: Column(
                           children: [
-                            Container(
-                              height: 50,
+                            SizedBox(
                               width: 100,
-                              child: Image.asset('assets/twinkle.png'),
+                              height: 50,
                             ),
                             Container(
                                 height: 100,
@@ -766,11 +773,9 @@ class _HomePageState extends State<HomePage> {
                                       'assets/mal.png',
                                       fit: BoxFit.fill,
                                     ),
-                                    
                                     Container(
                                         width: 150,
                                         height: 50,
-                                        
                                         child: Center(
                                           child: Text(
                                             'category',
@@ -781,7 +786,6 @@ class _HomePageState extends State<HomePage> {
                                         )),
                                   ],
                                 )),
-                                
                             Align(
                               alignment: Alignment.centerLeft,
                               child: Container(
@@ -793,8 +797,6 @@ class _HomePageState extends State<HomePage> {
                                     fit: BoxFit.fill,
                                   )),
                             ),
-                            Container(width: 150, height: 50,
-                                child: Image.asset('assets/money.png'),),
                           ],
                         ),
                       ),
@@ -831,7 +833,6 @@ class _HomePageState extends State<HomePage> {
                                               color: Colors.black, width: 3),
                                           borderRadius:
                                               BorderRadius.circular(5),
-                                         
                                         ),
                                         margin:
                                             const EdgeInsets.all(8.0), // 여백 추가
@@ -867,6 +868,84 @@ class _HomePageState extends State<HomePage> {
                   color: Color.fromRGBO(173, 145, 149, 1),
                   width: double.infinity,
                   height: 350,
+                  child: Column(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        height: 80,
+                        color: Colors.amber,
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 30,
+                              height: 80,
+                              color: const Color.fromARGB(255, 168, 93, 93),
+                              child: Center(
+                                child: Text(
+                                  '>',
+                                  style: TextStyle(
+                                      fontSize: 25, fontFamily: 'JAL'),
+                                ),
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: Container(
+                                  width: 450,
+                                  height: 80,
+                                  color: Colors.blue,
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      'Financial Product Recommendation',
+                                      style: TextStyle(
+                                          fontSize: 25, fontFamily: 'JAL'),
+                                    ),
+                                  )),
+                            ),
+                          ],
+                        ),
+                      ),
+                      CarouselSlider(
+                        options: CarouselOptions(
+                          autoPlay: true,
+                          aspectRatio: 2.0,
+                          enlargeCenterPage: true,
+                        ),
+                        items: imgList
+                            .map((item) => Container(
+                                  child: Center(
+                                    child: Image.asset(item,
+                                        fit: BoxFit.cover, width: 1000),
+                                  ),
+                                ))
+                            .toList(),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: double.infinity,
+                  height: 200,
+                  color: Color.fromRGBO(248, 246, 232, 1),
+                  child: Column(
+                    children: [
+                      Stack(
+                        children: [
+                          Image.asset('assets/mal.png', width: double.infinity, height: 40,),
+                          Text(
+                            'If you want to know more information, you can visit website.',
+                            style: TextStyle(fontSize: 15, fontFamily: 'JAL'),
+                          ),
+                        ],
+                      ),
+                      Image.asset(
+                        'assets/gul.png',
+                        height: 60,
+                        width: 60,
+                      ),
+                    ],
+                  ),
                 ), // 광고 배너 구역 큰 배경
               ],
             ),
