@@ -11,6 +11,7 @@ import 'package:pie_chart/pie_chart.dart';
 import 'dart:math' as math;
 import 'calendarPage.dart'; //바텀네비게이션바
 import 'graph.dart';
+import 'HomePage.dart';
 import 'profilePage.dart';
 import 'package:table_calendar/table_calendar.dart'; // 15~16 현재 월 표시
 import 'package:intl/intl.dart'; 
@@ -275,11 +276,11 @@ Color getCategoryColor(String category) {
     case 'food':
       return Color.fromARGB(255, 44, 183, 92).withOpacity(1); // 음식 카테고리의 색상을 빨강으로 지정
     case 'traffic':
-      return Color.fromARGB(255, 253, 225, 14).withOpacity(1); // 교통 카테고리의 색상을 주황으로 지정
+      return Color.fromARGB(255, 175, 246, 255).withOpacity(1); // 교통 카테고리의 색상을 주황으로 지정
     case 'leisure':
-      return Color.fromARGB(255, 112, 245, 255).withOpacity(1); // 여가 카테고리의 색상을 노랑으로 지정
+      return Color.fromARGB(255, 253, 225, 14).withOpacity(1); // 여가 카테고리의 색상을 노랑으로 지정
     case 'shopping':
-      return  Color.fromARGB(255, 255, 199, 44).withOpacity(1); // 쇼핑 카테고리의 색상을 초록으로 지정
+      return  Color.fromARGB(255, 219, 133, 196).withOpacity(1); // 쇼핑 카테고리의 색상을 초록으로 지정
     case 'etc':
       return  Color.fromARGB(255, 214, 214, 214).withOpacity(1); // 기타 카테고리의 색상을 회색으로 지정
     default:
@@ -322,12 +323,21 @@ Color getCategoryColor(String category) {
   return categoryExpenses;
 }
 
-  @override
+
+
+
+
+
+
+
+
+@override
 Widget build(BuildContext context) {
   return Scaffold(
     backgroundColor: Color(0xFFF8F6E8),
     appBar: AppBar(
-      title: Text('$currentMonth'),
+      title: Text('$currentMonth', style: TextStyle(fontFamily: 'JAL'),
+),
       backgroundColor: Color(0xFF37736C),
     ), //상단
     body: Column(
@@ -353,7 +363,7 @@ Widget build(BuildContext context) {
                     return CustomPaint(
                       size: Size(
                         MediaQuery.of(context).size.width,
-                        200,
+                        200, //파이차트 높이
                       ),
                       painter: _PieChart(model),
                     );
@@ -374,40 +384,46 @@ Widget build(BuildContext context) {
           children: [
             Positioned(
               left: 400.0, //여백 조절
-              top: 20.0, // 여백 및 이동 조절(숫자 커질수록 텍스트 위로 올라감)
+              top: 8.0, // 여백 및 이동 조절(숫자 커질수록 텍스트 위로 올라감)
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
                 children: [
+                  RowItem(
+  color: Color.fromARGB(255, 129, 201, 134).withOpacity(1),
+  label: 'food',
+  textStyle: TextStyle(
+    fontFamily: 'JAL',
+  ),
+),
            RowItem(
   color: Color.fromARGB(255, 255, 204, 77).withOpacity(1),
-  label: '여가',
+  label: 'leisure',
   textStyle: TextStyle(
     fontFamily: 'JAL',
   ),
 ),
 RowItem(
-  color: Color.fromARGB(255, 77, 212, 230).withOpacity(1),
-  label: '교통',
+  color: Color.fromARGB(255, 175, 246, 255).withOpacity(1),
+  label: 'traffic',
   textStyle: TextStyle(
     fontFamily: 'JAL',
   ),
 ),
 RowItem(
   color: Color.fromARGB(255, 219, 133, 196).withOpacity(1),
-  label: '쇼핑',
+  label: 'shopping',
   textStyle: TextStyle(
     fontFamily: 'JAL',
   ),
 ),
 RowItem(
   color: Color.fromARGB(255, 226, 226, 226).withOpacity(1),
-  label: '기타',
+  label: 'etc',
   textStyle: TextStyle(
     fontFamily: 'JAL',
   ),
 ),
-
             //지출항목에 대한 RowItem 추가
           ],
         ),
@@ -418,29 +434,32 @@ RowItem(
    
           //여기에 막대그래프 추가
             Expanded(
-            flex: 3,
-            child: FutureBuilder<List<HorizontalDetailsModel>>(
-            future: generateBarChartData(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                }
+  flex: 3,
+  child: Padding(
+    padding: EdgeInsets.only(bottom: 30.0), // 원하는 여백 값
+    child: FutureBuilder<List<HorizontalDetailsModel>>(
+      future: generateBarChartData(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
 
-                List<HorizontalDetailsModel> barChartData = snapshot.data ?? [];
+          List<HorizontalDetailsModel> barChartData = snapshot.data ?? [];
 
-                return SimpleBarChart(
-                  makeItDouble: true,
-                  listOfHorizontalBarData: barChartData,
-                  verticalInterval: 50000,
-                  horizontalBarPadding: 20,
-                );
-              } else {
-                return CircularProgressIndicator();
-              }
-  }
+          return SimpleBarChart(
+            makeItDouble: true,
+            listOfHorizontalBarData: barChartData,
+            verticalInterval: 50000,
+            horizontalBarPadding: 20,
+          );
+        } else {
+          return CircularProgressIndicator();
+        }
+      },
+    ),
   ),
-            )
+)
           ],
       ),
       bottomNavigationBar: Container( //여기서부턴 바텀네비게이션바(하단)
@@ -482,7 +501,11 @@ RowItem(
             onTap: (int index) {
               switch (index) {
                 case 0:
-                // 홈 페이지로 이동 (아직 구현되지 않음)
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                  );
+                // 홈 페이지로 이동
                   break;
                 case 1:
                 // 캘린더 페이지로 이동
@@ -513,6 +536,15 @@ RowItem(
     
   } //widget build
 }
+
+
+
+
+
+
+
+
+
 
 class _PieChart extends CustomPainter {
   final List<PieModel> data;
