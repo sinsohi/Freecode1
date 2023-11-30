@@ -258,16 +258,17 @@ Future<List<PieModel>> generatePieChartData() async {
 Color getCategoryColor(String category) {
   // 각 카테고리에 대한 색상을 정의하여 반환하는 함수
   switch (category) {
-    case 'food':
-      return Color.fromARGB(255, 176, 226, 195).withOpacity(1); // 음식 카테고리의 색상
-    case 'traffic':
-      return Color.fromARGB(255, 255, 214, 153).withOpacity(1); // 교통 카테고리의 색상
-    case 'leisure':
-      return Color.fromARGB(255, 179, 217, 235).withOpacity(1); // 여가 카테고리의 색상
-    case 'shopping':
-      return  Color.fromARGB(255, 228, 182, 229).withOpacity(1); // 쇼핑 카테고리의 색상
-    case 'etc':
-      return  Color.fromARGB(255, 224, 224, 224).withOpacity(1); // 기타 카테고리의 색상
+   case 'food':
+  return Color.fromARGB(255, 129, 201, 134).withOpacity(1); // 연한 녹색 (파스텔톤)
+case 'traffic':
+  return Color.fromARGB(255, 77, 212, 230).withOpacity(1);// 연한 황색 (파스텔톤)
+case 'leisure':
+  return Color.fromARGB(255, 255, 204, 77).withOpacity(1); // 연한 청록색 (파스텔톤)
+case 'shopping':
+  return Color.fromARGB(255, 219, 133, 196).withOpacity(1); // 연한 자홍색 (파스텔톤)
+case 'etc':
+  return Color.fromARGB(255, 226, 226, 226).withOpacity(1); // 연한 회색 (파스텔톤)
+
     default:
       return const Color.fromARGB(255, 0, 0, 0); // 기본적으로는 검정 색상을 반환
   }
@@ -365,11 +366,13 @@ Widget build(BuildContext context) {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
                 children: [
-            RowItem(color: Color.fromARGB(255, 44, 183, 92).withOpacity(1), label: '음식'),
-            RowItem(color: Color.fromARGB(255, 255, 199, 44).withOpacity(1), label: '여가'),
-            RowItem(color: Color.fromARGB(255, 253, 225, 14).withOpacity(1), label: '교통'),
-            RowItem(color: Color.fromARGB(255, 44, 183, 92).withOpacity(1), label: '쇼핑'),
-            RowItem(color: const Color.fromARGB(255, 214, 214, 214).withOpacity(1), label: '기타'), 
+          RowItem(color: Color.fromARGB(255, 129, 201, 134).withOpacity(1), label: '음식'),
+RowItem(color: Color.fromARGB(255, 255, 204, 77).withOpacity(1), label: '여가'),
+RowItem(color: Color.fromARGB(255, 77, 212, 230).withOpacity(1), label: '교통'),
+RowItem(color: Color.fromARGB(255, 219, 133, 196).withOpacity(1), label: '쇼핑'),
+RowItem(color: Color.fromARGB(255, 226, 226, 226).withOpacity(1), label: '기타'),
+
+ 
             //지출항목에 대한 RowItem 추가
           ],
         ),
