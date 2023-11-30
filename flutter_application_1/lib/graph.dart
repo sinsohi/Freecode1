@@ -82,7 +82,7 @@ class _graphState extends State<graph> {
   List<Map<String, dynamic>> expenses = [];
   late Future<List<Map<String, dynamic>>>? expensesFuture;
   late Future<List<Map<String, dynamic>>> incomesFuture;
-  late List<PieModel> model;
+  late List<PieModel> model = [];
   
    @override
   void initState() {
@@ -317,7 +317,9 @@ Widget build(BuildContext context) {
       title: Text('$currentMonth'),
       backgroundColor: Color(0xFF37736C),
     ), //상단
-    body: Column(
+    body:  model.isEmpty
+        ? _buildNoExpensesPage()
+        : Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Expanded(
@@ -447,7 +449,7 @@ RowItem(color: Color.fromARGB(255, 226, 226, 226).withOpacity(1), label: '기타
             onTap: (int index) {
               switch (index) {
                 case 0:
-                // 홈 페이지로 이동 (아직 구현되지 않음)
+                // 홈 페이지로 이동
                 Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => HomePage()),
@@ -481,6 +483,29 @@ RowItem(color: Color.fromARGB(255, 226, 226, 226).withOpacity(1), label: '기타
     );
     
   } //widget build
+  Widget _buildNoExpensesPage() { //지출 데이터 없을 때 표시되는 페이지
+  return Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          'No expense records for this month!', //이번 달의 지출 내역이 없어요!
+          style: TextStyle(
+            fontSize: 25.0,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'JAL'
+          ),
+        ),
+        SizedBox(height: 16.0),
+        Image.asset(
+          'assets/Lovepik.png',
+          width: 100.0,
+          height: 100.0,
+        ),
+      ],
+    ),
+  );
+}
 }
 
 class _PieChart extends CustomPainter {
