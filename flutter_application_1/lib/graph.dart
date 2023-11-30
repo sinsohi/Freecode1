@@ -25,8 +25,10 @@ final String currentMonth = DateFormat('MMMM').format(DateTime.now());
 class RowItem extends StatelessWidget {
   final Color color;
   final String label;
+  final TextStyle textStyle; // 새롭게 추가된 textStyle 속성
 
-  RowItem({required this.color, required this.label});
+  RowItem({required this.color, required this.label, required this.textStyle});
+
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +45,7 @@ class RowItem extends StatelessWidget {
     );
   }
 }
+
 
 class PieModel {
   final double count;
@@ -376,11 +379,35 @@ Widget build(BuildContext context) {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
                 children: [
-            RowItem(color: Color.fromARGB(255, 44, 183, 92).withOpacity(1), label: '음식'),
-            RowItem(color: Color.fromARGB(255, 255, 199, 44).withOpacity(1), label: '여가'),
-            RowItem(color: Color.fromARGB(255, 253, 225, 14).withOpacity(1), label: '교통'),
-            RowItem(color: Color.fromARGB(255, 44, 183, 92).withOpacity(1), label: '쇼핑'),
-            //RowItem(color: const Color.fromARGB(255, 214, 214, 214).withOpacity(1), label: '기타'), //비율 가장 큰 지출항목 3개 반영할 계획
+           RowItem(
+  color: Color.fromARGB(255, 255, 204, 77).withOpacity(1),
+  label: '여가',
+  textStyle: TextStyle(
+    fontFamily: 'JAL',
+  ),
+),
+RowItem(
+  color: Color.fromARGB(255, 77, 212, 230).withOpacity(1),
+  label: '교통',
+  textStyle: TextStyle(
+    fontFamily: 'JAL',
+  ),
+),
+RowItem(
+  color: Color.fromARGB(255, 219, 133, 196).withOpacity(1),
+  label: '쇼핑',
+  textStyle: TextStyle(
+    fontFamily: 'JAL',
+  ),
+),
+RowItem(
+  color: Color.fromARGB(255, 226, 226, 226).withOpacity(1),
+  label: '기타',
+  textStyle: TextStyle(
+    fontFamily: 'JAL',
+  ),
+),
+
             //지출항목에 대한 RowItem 추가
           ],
         ),
