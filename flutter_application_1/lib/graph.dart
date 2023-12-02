@@ -31,20 +31,23 @@ class RowItem extends StatelessWidget {
   RowItem({required this.color, required this.label, required this.textStyle});
 
 
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          width: 10, // 작은 네모 너비 조절
-          height: 10, // 작은 네모 높이 조절
-          color: color,
-        ),
-        SizedBox(width: 6), // 네모와 텍스트 간 간격 조절
-        Text(label),
-      ],
-    );
-  }
+@override
+Widget build(BuildContext context) {
+  return Row(
+    children: [
+      Container(
+        width: 10, // 작은 네모 너비 조절
+        height: 10, // 작은 네모 높이 조절
+        color: color,
+      ),
+      SizedBox(width: 6), // 네모와 텍스트 간 간격 조절
+      Text(
+        label,
+        style: textStyle, // textStyle 적용
+      ),
+    ],
+  );
+}
 }
 
 
@@ -350,7 +353,7 @@ Widget build(BuildContext context) {
           child: Align(
             alignment: Alignment.center,
             child: Container(
-              margin: EdgeInsets.only(top: 25), // 조절하고자 하는 여백 값. 숫자 커질수록 아래로
+              margin: EdgeInsets.only(top: 20), // 조절하고자 하는 여백 값. 숫자 커질수록 아래로
               width: MediaQuery.of(context).size.width * 0.7,
               height: MediaQuery.of(context).size.width * 0.7, //파이차트의 높이
               child: FutureBuilder<List<PieModel>>(
@@ -397,6 +400,7 @@ Widget build(BuildContext context) {
   label: 'food',
   textStyle: TextStyle(
     fontFamily: 'JAL',
+    fontWeight: FontWeight.w100,
   ),
 ),
            RowItem(
@@ -404,6 +408,7 @@ Widget build(BuildContext context) {
   label: 'leisure',
   textStyle: TextStyle(
     fontFamily: 'JAL',
+    fontWeight: FontWeight.w100,
   ),
 ),
 RowItem(
@@ -411,6 +416,7 @@ RowItem(
   label: 'traffic',
   textStyle: TextStyle(
     fontFamily: 'JAL',
+    fontWeight: FontWeight.w100,
   ),
 ),
 RowItem(
@@ -418,6 +424,7 @@ RowItem(
   label: 'shopping',
   textStyle: TextStyle(
     fontFamily: 'JAL',
+     fontWeight: FontWeight.w100,
   ),
 ),
 RowItem(
@@ -425,6 +432,7 @@ RowItem(
   label: 'etc',
   textStyle: TextStyle(
     fontFamily: 'JAL',
+     fontWeight: FontWeight.w100,
   ),
 ),
             //지출항목에 대한 RowItem 추가
