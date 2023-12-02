@@ -107,7 +107,7 @@ class _graphState extends State<graph> {
     /* await _loadExpenses(); //추가
     print('Loaded Expenses: $expenses'); // 로딩된 expenses 출력 */
     expensesFuture = _loadExpenses();
-    expenses = (await expensesFuture)!;
+    expenses = await _loadExpenses(); // 이 부분을 수정
 
     // 카테고리별 지출 계산
   Map<String, double> categoryExpenses = await calculateCategoryExpenses();
@@ -115,6 +115,7 @@ class _graphState extends State<graph> {
 
      print('엥 여기선 나오나 Loaded Expenses: $expenses');
     expensesFuture = _loadExpenses();
+     setState(() {}); // UI 업데이트를 위해 setState 호출
 }
 
 Future<List<Map<String, dynamic>>> _loadExpenses() async {
@@ -340,7 +341,8 @@ Widget build(BuildContext context) {
 ),
       backgroundColor: Color(0xFF37736C),
     ), //상단
-    body: Column(
+    body: expenses.isEmpty ? _buildNoExpensesPage()
+        : Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Expanded(
@@ -348,6 +350,7 @@ Widget build(BuildContext context) {
           child: Align(
             alignment: Alignment.center,
             child: Container(
+              margin: EdgeInsets.only(top: 25), // 조절하고자 하는 여백 값. 숫자 커질수록 아래로
               width: MediaQuery.of(context).size.width * 0.7,
               height: MediaQuery.of(context).size.width * 0.7, //파이차트의 높이
               child: FutureBuilder<List<PieModel>>(
@@ -533,10 +536,32 @@ RowItem(
           ),
     )
     );
-    
-  } //widget build
 }
-
+    Widget _buildNoExpensesPage() {
+  // 지출 데이터가 없을 때 표시되는 페이지
+  return Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          'No expense records for this month!',
+          style: TextStyle(
+            fontSize: 25.0,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'JAL',
+          ),
+        ),
+        SizedBox(height: 16.0),
+        Image.asset(
+          'assets/Lovepik.png',
+          width: 100.0,
+          height: 100.0,
+        ),
+      ],
+    ),
+  );
+}
+  } //widget build
 
 
 
