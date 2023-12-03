@@ -76,7 +76,7 @@ class graph extends StatefulWidget {
 }
 
 
-class _graphState extends State<graph> {
+class _graphState extends State<graph> with TickerProviderStateMixin  {
   late User? user;
   late String uid;
   DatabaseReference? expenseRef;
@@ -89,14 +89,36 @@ class _graphState extends State<graph> {
   late Future<List<Map<String, dynamic>>>? expensesFuture;
   late Future<List<Map<String, dynamic>>> incomesFuture;
   late List<PieModel> model;
+  late AnimationController animationController; // AnimationController 추가
   
-   @override
+  
+  @override
   void initState() {
     super.initState();
-    
-    initialize(); //여기서 initialize 함수 호출
-    
+
+      initialize(); //여기서 initialize 함수 호출
+
+    animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 1200), // 1.2 seconds // 애니메이션 기간을 1.5초로 설정
+      
+    );
+     startAnimation(); // 여기서 애니메이션 시작
+     print('애니메이션: ${animationController.value}');
+
   }
+
+  void startAnimation() {
+    animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
+
+
 
   Future<void> initialize() async {
     user = FirebaseAuth.instance.currentUser;
@@ -366,15 +388,23 @@ Widget build(BuildContext context) {
 
                     List<PieModel> model = snapshot.data ?? [];
 
+
+                    return AnimatedBuilder(
+                              animation: animationController,
+                              builder: (context, child) {
+                                 if (animationController.value < 0.1) {
+                return const SizedBox();
+              }
                     return CustomPaint(
                       size: Size(
                         MediaQuery.of(context).size.width,
                         200, //파이차트 높이
                       ),
-                      painter: _PieChart(model),
+                      painter: _PieChart(model, animationController),
                     );
-                  }
-                  else {
+                  },
+);
+                  } else {
                     // Future가 완료되지 않았을 때 반환할 위젯
                     return CircularProgressIndicator();
                   }
@@ -581,43 +611,48 @@ RowItem(
 
 class _PieChart extends CustomPainter {
   final List<PieModel> data;
+  final Animation<double> animation;
 
-  _PieChart(this.data);
+  _PieChart(this.data, this.animation);
   
   @override
   void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()..color = const Color.fromRGBO(61, 61, 61, 1);
 
-
-    Paint circlePaint = Paint()..color = Colors.white;
+    Paint circlePaint = Paint()..color = Color(0xFFF8F6E8);
 
     Offset offset = Offset(size.width / 2, size.width / 2);
     double radius = (size.width / 2) * 0.65;
 
     canvas.drawCircle(offset, radius, circlePaint);
+    paint.strokeWidth = 50;
+    paint.style = PaintingStyle.stroke;
+    paint.strokeCap = StrokeCap.round;
 
-    double _startPoint = -math.pi / 2; // 시작 각도를 -π / 2로 초기화
+    double totalPercentage = 0.0; // 각 파이의 시작 각도를 계산하기 위한 변수
 
     for (int i = 0; i < data.length; i++) {
-      double _startAngle = 2 * math.pi * (data[i].count / 100);
-      double _nextAngle = 2 * math.pi * (data[(i + 1) % data.length].count / 100);
+      double startAngle = totalPercentage * 2 * math.pi; // 시작 각도 계산
+      double endAngle = (totalPercentage + data[i].count / 100) * 2 * math.pi; // 종료 각도 계산
+      
+      double animatedStartAngle = startAngle * animation.value; // 애니메이션 적용
+       
       circlePaint.color = data[i].color;
 
       canvas.drawArc(
         Rect.fromCircle(center: Offset(size.width / 2, size.width / 2), radius: radius),
-        _startPoint,
-        _startAngle,
+        animatedStartAngle - math.pi / 2, // 시작 각도를 -π / 2로 초기화
+        (endAngle - startAngle) * animation.value, // 애니메이션 적용
         true,
-        circlePaint);
+        circlePaint,
+      );
 
-      _startPoint += _startAngle;
-
-
-    
+      totalPercentage += data[i].count / 100;
     }
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
 
 
