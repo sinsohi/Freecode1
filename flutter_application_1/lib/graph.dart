@@ -11,6 +11,7 @@ import 'package:pie_chart/pie_chart.dart';
 import 'dart:math' as math;
 import 'calendarPage.dart'; //바텀네비게이션바
 import 'graph.dart';
+import 'HomePage.dart';
 import 'profilePage.dart';
 import 'package:table_calendar/table_calendar.dart'; // 15~16 현재 월 표시
 import 'package:intl/intl.dart'; 
@@ -25,24 +26,30 @@ final String currentMonth = DateFormat('MMMM').format(DateTime.now());
 class RowItem extends StatelessWidget {
   final Color color;
   final String label;
+  final TextStyle textStyle; // 새롭게 추가된 textStyle 속성
 
-  RowItem({required this.color, required this.label});
+  RowItem({required this.color, required this.label, required this.textStyle});
 
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          width: 10, // 작은 네모 너비 조절
-          height: 10, // 작은 네모 높이 조절
-          color: color,
-        ),
-        SizedBox(width: 6), // 네모와 텍스트 간 간격 조절
-        Text(label),
-      ],
-    );
-  }
+
+@override
+Widget build(BuildContext context) {
+  return Row(
+    children: [
+      Container(
+        width: 10, // 작은 네모 너비 조절
+        height: 10, // 작은 네모 높이 조절
+        color: color,
+      ),
+      SizedBox(width: 6), // 네모와 텍스트 간 간격 조절
+      Text(
+        label,
+        style: textStyle, // textStyle 적용
+      ),
+    ],
+  );
 }
+}
+
 
 class PieModel {
   final double count;
@@ -103,7 +110,7 @@ class _graphState extends State<graph> {
     /* await _loadExpenses(); //추가
     print('Loaded Expenses: $expenses'); // 로딩된 expenses 출력 */
     expensesFuture = _loadExpenses();
-    expenses = (await expensesFuture)!;
+    expenses = await _loadExpenses(); // 이 부분을 수정
 
     // 카테고리별 지출 계산
   Map<String, double> categoryExpenses = await calculateCategoryExpenses();
@@ -111,42 +118,45 @@ class _graphState extends State<graph> {
 
      print('엥 여기선 나오나 Loaded Expenses: $expenses');
     expensesFuture = _loadExpenses();
+     setState(() {}); // UI 업데이트를 위해 setState 호출
 }
 
-    Future<List<Map<String, dynamic>>> _loadExpenses() async {
-    List<Map<String, dynamic>> loadedExpenses = [];
-     DateTime now = DateTime.now();
-     DateTime firstDayOfMonth = DateTime(now.year, now.month, 1);
-     DateTime lastDayOfMonth = DateTime(now.year, now.month + 1, 0);
+Future<List<Map<String, dynamic>>> _loadExpenses() async {
+  List<Map<String, dynamic>> loadedExpenses = [];
+  DateTime now = DateTime.now();
+  DateTime firstDayOfMonth = DateTime(now.year, now.month, 1);
+  DateTime lastDayOfMonth = DateTime(now.year, now.month + 1, 0);
 
-    String firstDayOfMonthString = DateFormat('yyyy-MM-dd').format(firstDayOfMonth);
-String lastDayOfMonthString = DateFormat('yyyy-MM-dd').format(lastDayOfMonth);
+  String firstDayOfMonthString = DateFormat('yyyy-MM-dd').format(firstDayOfMonth);
+  String lastDayOfMonthString = DateFormat('yyyy-MM-dd').format(lastDayOfMonth);
 
-DataSnapshot snapshot = await expenseRef!
-    .orderByChild('date')
-    .startAt(firstDayOfMonthString)
-    .endAt(lastDayOfMonthString)
-    .get(); //이번달 시작, 끝 날짜 계산 후 문자열 변환해 이번 달 지출데이터 모두 가져옴
+  DataSnapshot snapshot = await expenseRef!
+      .orderByChild('date')
+      .startAt(firstDayOfMonthString)
+      .endAt(lastDayOfMonthString + '\uf8ff') // Unicode character 'uffff'를 추가하여 범위 끝을 지정
+      .get();
 
-Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
+  Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
 
-      if (values != null) {
-      values.forEach((key, value) {
-        loadedExpenses.add({
-          'type': value['type'],
-          'amount': value['amount'],
-          'date': value['date'],
-          'category': value['category'],
-        });
+  if (values != null) {
+    values.forEach((key, value) {
+      loadedExpenses.add({
+        'type': value['type'],
+        'amount': value['amount'],
+        'date': value['date'],
+        'category': value['category'],
       });
-    } else {
-      print('Values is null');
-    }
-
-    return loadedExpenses;
+    });
+  } else {
+    print('Values is null');
   }
+
+  return loadedExpenses;
+}
+
+
     
- Future<double> calculateTotalExpensesForCurrentMonth() async {
+Future<double> calculateTotalExpensesForCurrentMonth() async {
   // 데이터 로드
   List<Map<String, dynamic>> expenses = await _loadExpenses();
 
@@ -158,15 +168,19 @@ Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
 
   for (var expense in expenses) {
     DateTime expenseDate = DateTime.parse(expense['date']);
+    
     // 지출 날짜가 현재 달 내에 있는지 확인
-    if (expenseDate.isAfter(firstDayOfMonth) && expenseDate.isBefore(lastDayOfMonth)) {
+    if (expenseDate.isAfter(firstDayOfMonth.subtract(Duration(seconds: 1))) &&
+        expenseDate.isBefore(lastDayOfMonth.add(Duration(seconds: 1)))) {
       total += (expense['amount'] as num).toDouble();
     }
   }
+
+  print('Total Expenses휴 해결~: $total'); // 계산된 total 확인
+
   return total;
 }
 
-//현재 월의 모든 지출 합계를 계산
 
 
 //여기서 엄청 바꿔씀
@@ -205,8 +219,10 @@ Future<List<HorizontalDetailsModel>> generateBarChartData() async {
   int lastDayOfMonth = DateTime(now.year, now.month + 1, 0).day;
 
   for (int day = 1; day <= lastDayOfMonth; day++) {
-    double expenseAmount = dailyExpenses.containsKey('2023-11-$day')
-        ? dailyExpenses['2023-11-$day']!
+    String dateString = DateFormat('yyyy-MM-dd').format(DateTime(now.year, now.month, day));
+
+    double expenseAmount = dailyExpenses.containsKey(dateString)
+        ? dailyExpenses[dateString]!
         : 0.0;
 
     print('막대그래프 Day: $day, Expense Amount: $expenseAmount');
@@ -225,14 +241,16 @@ Future<List<HorizontalDetailsModel>> generateBarChartData() async {
   }
 
   return barChartData;
-} //막대그래프
-
+}//막대그래프
 
 Future<List<PieModel>> generatePieChartData() async {
   double totalExpenses = await calculateTotalExpensesForCurrentMonth();
   Map<String, double> categoryExpenses = await calculateCategoryExpenses();
 
   List<PieModel> model = [];
+
+  DateTime now = DateTime.now();
+  String currentMonth = DateFormat('yyyy-MM').format(now);
 
   categoryExpenses.forEach((category, amount) {
     if (amount > 0) {
@@ -254,19 +272,21 @@ Future<List<PieModel>> generatePieChartData() async {
 }
 
 
+
+
 Color getCategoryColor(String category) {
   // 각 카테고리에 대한 색상을 정의하여 반환하는 함수
   switch (category) {
     case 'food':
-      return Color.fromARGB(255, 44, 183, 92).withOpacity(1); // 음식 카테고리의 색상을 빨강으로 지정
+      return Color.fromARGB(255, 129, 201, 134).withOpacity(1); // 음식 카테고리의 색상을 빨강으로 지정
     case 'traffic':
-      return Color.fromARGB(255, 253, 225, 14).withOpacity(1); // 교통 카테고리의 색상을 주황으로 지정
+      return Color.fromARGB(255, 175, 246, 255).withOpacity(1); // 교통 카테고리의 색상을 주황으로 지정
     case 'leisure':
-      return Color.fromARGB(255, 112, 245, 255).withOpacity(1); // 여가 카테고리의 색상을 노랑으로 지정
+      return Color.fromARGB(255, 255, 204, 77).withOpacity(1); // 여가 카테고리의 색상을 노랑으로 지정
     case 'shopping':
-      return  Color.fromARGB(255, 255, 199, 44).withOpacity(1); // 쇼핑 카테고리의 색상을 초록으로 지정
+      return  Color.fromARGB(255, 219, 133, 196).withOpacity(1); // 쇼핑 카테고리의 색상을 초록으로 지정
     case 'etc':
-      return  Color.fromARGB(255, 214, 214, 214).withOpacity(1); // 기타 카테고리의 색상을 회색으로 지정
+      return  Color.fromARGB(255, 226, 226, 226).withOpacity(1); // 기타 카테고리의 색상을 회색으로 지정
     default:
       return const Color.fromARGB(255, 0, 0, 0); // 기본적으로는 검정 색상을 반환
   }
@@ -307,15 +327,25 @@ Color getCategoryColor(String category) {
   return categoryExpenses;
 }
 
-  @override
+
+
+
+
+
+
+
+
+@override
 Widget build(BuildContext context) {
   return Scaffold(
     backgroundColor: Color(0xFFF8F6E8),
     appBar: AppBar(
-      title: Text('$currentMonth'),
+      title: Text('$currentMonth', style: TextStyle(fontFamily: 'JAL'),
+),
       backgroundColor: Color(0xFF37736C),
     ), //상단
-    body: Column(
+    body: expenses.isEmpty ? _buildNoExpensesPage()
+        : Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Expanded(
@@ -323,6 +353,7 @@ Widget build(BuildContext context) {
           child: Align(
             alignment: Alignment.center,
             child: Container(
+              margin: EdgeInsets.only(top: 20), // 조절하고자 하는 여백 값. 숫자 커질수록 아래로
               width: MediaQuery.of(context).size.width * 0.7,
               height: MediaQuery.of(context).size.width * 0.7, //파이차트의 높이
               child: FutureBuilder<List<PieModel>>(
@@ -338,7 +369,7 @@ Widget build(BuildContext context) {
                     return CustomPaint(
                       size: Size(
                         MediaQuery.of(context).size.width,
-                        200,
+                        200, //파이차트 높이
                       ),
                       painter: _PieChart(model),
                     );
@@ -359,16 +390,51 @@ Widget build(BuildContext context) {
           children: [
             Positioned(
               left: 400.0, //여백 조절
-              top: 20.0, // 여백 및 이동 조절(숫자 커질수록 텍스트 위로 올라감)
+              top: 8.0, // 여백 및 이동 조절(숫자 커질수록 텍스트 위로 올라감)
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
                 children: [
-            RowItem(color: Color.fromARGB(255, 44, 183, 92).withOpacity(1), label: '음식'),
-            RowItem(color: Color.fromARGB(255, 255, 199, 44).withOpacity(1), label: '여가'),
-            RowItem(color: Color.fromARGB(255, 253, 225, 14).withOpacity(1), label: '교통'),
-            RowItem(color: Color.fromARGB(255, 44, 183, 92).withOpacity(1), label: '쇼핑'),
-            //RowItem(color: const Color.fromARGB(255, 214, 214, 214).withOpacity(1), label: '기타'), //비율 가장 큰 지출항목 3개 반영할 계획
+                  RowItem(
+  color: Color.fromARGB(255, 129, 201, 134).withOpacity(1),
+  label: 'food',
+  textStyle: TextStyle(
+    fontFamily: 'JAL',
+    fontWeight: FontWeight.w100,
+  ),
+),
+           RowItem(
+  color: Color.fromARGB(255, 255, 204, 77).withOpacity(1),
+  label: 'leisure',
+  textStyle: TextStyle(
+    fontFamily: 'JAL',
+    fontWeight: FontWeight.w100,
+  ),
+),
+RowItem(
+  color: Color.fromARGB(255, 175, 246, 255).withOpacity(1),
+  label: 'traffic',
+  textStyle: TextStyle(
+    fontFamily: 'JAL',
+    fontWeight: FontWeight.w100,
+  ),
+),
+RowItem(
+  color: Color.fromARGB(255, 219, 133, 196).withOpacity(1),
+  label: 'shopping',
+  textStyle: TextStyle(
+    fontFamily: 'JAL',
+     fontWeight: FontWeight.w100,
+  ),
+),
+RowItem(
+  color: Color.fromARGB(255, 226, 226, 226).withOpacity(1),
+  label: 'etc',
+  textStyle: TextStyle(
+    fontFamily: 'JAL',
+     fontWeight: FontWeight.w100,
+  ),
+),
             //지출항목에 대한 RowItem 추가
           ],
         ),
@@ -379,29 +445,32 @@ Widget build(BuildContext context) {
    
           //여기에 막대그래프 추가
             Expanded(
-            flex: 3,
-            child: FutureBuilder<List<HorizontalDetailsModel>>(
-            future: generateBarChartData(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                }
+  flex: 3,
+  child: Padding(
+    padding: EdgeInsets.only(bottom: 30.0), // 원하는 여백 값
+    child: FutureBuilder<List<HorizontalDetailsModel>>(
+      future: generateBarChartData(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
 
-                List<HorizontalDetailsModel> barChartData = snapshot.data ?? [];
+          List<HorizontalDetailsModel> barChartData = snapshot.data ?? [];
 
-                return SimpleBarChart(
-                  makeItDouble: true,
-                  listOfHorizontalBarData: barChartData,
-                  verticalInterval: 50000,
-                  horizontalBarPadding: 20,
-                );
-              } else {
-                return CircularProgressIndicator();
-              }
-  }
+          return SimpleBarChart(
+            makeItDouble: true,
+            listOfHorizontalBarData: barChartData,
+            verticalInterval: 50000,
+            horizontalBarPadding: 20,
+          );
+        } else {
+          return CircularProgressIndicator();
+        }
+      },
+    ),
   ),
-            )
+)
           ],
       ),
       bottomNavigationBar: Container( //여기서부턴 바텀네비게이션바(하단)
@@ -443,7 +512,11 @@ Widget build(BuildContext context) {
             onTap: (int index) {
               switch (index) {
                 case 0:
-                // 홈 페이지로 이동 (아직 구현되지 않음)
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                  );
+                // 홈 페이지로 이동
                   break;
                 case 1:
                 // 캘린더 페이지로 이동
@@ -471,9 +544,40 @@ Widget build(BuildContext context) {
           ),
     )
     );
-    
-  } //widget build
 }
+    Widget _buildNoExpensesPage() {
+  // 지출 데이터가 없을 때 표시되는 페이지
+  return Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          'No expense records for this month!',
+          style: TextStyle(
+            fontSize: 25.0,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'JAL',
+          ),
+        ),
+        SizedBox(height: 16.0),
+        Image.asset(
+          'assets/Lovepik.png',
+          width: 100.0,
+          height: 100.0,
+        ),
+      ],
+    ),
+  );
+}
+  } //widget build
+
+
+
+
+
+
+
+
 
 class _PieChart extends CustomPainter {
   final List<PieModel> data;
@@ -482,7 +586,6 @@ class _PieChart extends CustomPainter {
   
   @override
   void paint(Canvas canvas, Size size) {
-    //print('Data Length: ${data.length}'); ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ맨날0나옴ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ
 
 
     Paint circlePaint = Paint()..color = Colors.white;
@@ -509,7 +612,7 @@ class _PieChart extends CustomPainter {
       _startPoint += _startAngle;
 
 
-      //print('응 여기도 안나와 ㅋㅋ Index: $i, Start Angle: $_startAngle, Next Angle: $_nextAngle');
+    
     }
   }
 
