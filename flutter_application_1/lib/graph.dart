@@ -278,15 +278,15 @@ Color getCategoryColor(String category) {
   // 각 카테고리에 대한 색상을 정의하여 반환하는 함수
   switch (category) {
     case 'food':
-      return Color.fromARGB(255, 44, 183, 92).withOpacity(1); // 음식 카테고리의 색상을 빨강으로 지정
+      return Color.fromARGB(255, 129, 201, 134).withOpacity(1); // 음식 카테고리의 색상을 빨강으로 지정
     case 'traffic':
       return Color.fromARGB(255, 175, 246, 255).withOpacity(1); // 교통 카테고리의 색상을 주황으로 지정
     case 'leisure':
-      return Color.fromARGB(255, 253, 225, 14).withOpacity(1); // 여가 카테고리의 색상을 노랑으로 지정
+      return Color.fromARGB(255, 255, 204, 77).withOpacity(1); // 여가 카테고리의 색상을 노랑으로 지정
     case 'shopping':
       return  Color.fromARGB(255, 219, 133, 196).withOpacity(1); // 쇼핑 카테고리의 색상을 초록으로 지정
     case 'etc':
-      return  Color.fromARGB(255, 214, 214, 214).withOpacity(1); // 기타 카테고리의 색상을 회색으로 지정
+      return  Color.fromARGB(255, 226, 226, 226).withOpacity(1); // 기타 카테고리의 색상을 회색으로 지정
     default:
       return const Color.fromARGB(255, 0, 0, 0); // 기본적으로는 검정 색상을 반환
   }
