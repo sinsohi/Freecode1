@@ -104,7 +104,6 @@ class _graphState extends State<graph> with TickerProviderStateMixin  {
       
     );
      startAnimation(); // 여기서 애니메이션 시작
-     print('애니메이션: ${animationController.value}');
 
   }
 
