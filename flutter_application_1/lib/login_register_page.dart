@@ -221,8 +221,20 @@ class _LoginPageState extends State<LoginPage> {
                   Positioned(
                       left: 20,
                       right: 20,
-                      bottom: 110,
-                      child: Center(child: Text('Start to save my money!'))),
+                      bottom: 100,
+                      child: Center(
+                          child: Text(
+                        'Start to save my money !',
+                        style: TextStyle(
+                          fontFamily: 'LilitaOne',
+                          fontSize: 24,
+                          fontWeight: FontWeight.w500,
+                          foreground: Paint()
+                            ..style = PaintingStyle.stroke
+                            ..strokeWidth = 2
+                            ..color = Colors.black.withOpacity(0.5),
+                        ),
+                      ))),
                 ])),
                 Container(
                   child: Padding(
