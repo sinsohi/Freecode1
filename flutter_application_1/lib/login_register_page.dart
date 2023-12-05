@@ -10,7 +10,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  String? errorMessage = ''; // 오류 메시지를 저장할 변수입니다.
+  String? errorMessage = ''; // 오류 메시지를 저장할 변수
   bool isLogin = true; // 현재 로그인 페이지인지 회원가입 페이지인지를 나타내는 변수
 
   final TextEditingController _controllerEmail =
@@ -53,10 +53,10 @@ class _LoginPageState extends State<LoginPage> {
     // 주어진 제목과 컨트롤러를 사용하여 텍스트 필드 위젯을 생성
   }
 
-  // Widget _errorMessage() {
-  //   return Text(errorMessage == '' ? '' : 'Humn ? $errorMessage');
-  //   // 오류 메시지를 표시하는 위젯. 오류 메시지가 없으면 표시되지 않음
-  // }
+  Widget _errorMessage() {
+    return Text(errorMessage == '' ? '' : 'Humn ? $errorMessage');
+    // 오류 메시지를 표시하는 위젯. 오류 메시지가 없으면 표시되지 않음
+  }
 
   Widget _submitButton() {
     return TextButton(
@@ -237,30 +237,3 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Padding(
-//         padding: const EdgeInsets.fromLTRB(8, 15, 8, 15),
-//         child: Container(
-//           height: double.infinity,
-//           width: double.infinity,
-//           padding: const EdgeInsets.all(20),
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.center,
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             children: <Widget>[
-//               _entryField('email', _controllerEmail), // 이메일 입력 필드를 추가
-//               _entryField('password', _controllerPassword), // 비밀번호 입력 필드를 추가
-//               _errorMessage(), // 오류 메시지를 표시하는 위젯을 추가
-//               _submitButton(), // 로그인 또는 회원가입 버튼을 추가
-//               _loginOrRegisterButton(), // 페이지 전환 버튼을 추가
-//             ], 
-//           ),
-//         ),
-//       ),
-//       backgroundColor: Color.fromRGBO(255, 255, 255, 20),
-//     );
-//   }
-
