@@ -100,6 +100,14 @@ class _LoginPageState extends State<LoginPage> {
         child: Container(
             decoration: BoxDecoration(
                 color: Color.fromRGBO(248, 246, 232, 1),
+                boxShadow: [
+                  BoxShadow(
+                    color:
+                        const Color.fromARGB(255, 10, 10, 10).withOpacity(0.5),
+                    offset: Offset(0, 3),
+                    blurRadius: 8,
+                  ),
+                ],
                 border: Border.all(color: Colors.black, width: 2),
                 borderRadius: BorderRadius.circular(15)),
             child: Column(
