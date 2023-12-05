@@ -1151,7 +1151,7 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('cancel'),
+                  child: Text('cancel',style: TextStyle(color: Colors.black),),
                 ),
                 TextButton(
                   onPressed: () {
@@ -1164,7 +1164,7 @@ class _HomePageState extends State<HomePage> {
                     );
                     Navigator.of(context).pop();
                   },
-                  child: Text('add'),
+                  child: Text('add', style: TextStyle(color: Colors.black),),
                 ),
               ],
             );
@@ -1242,7 +1242,7 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('cancel'),
+                  child: Text('cancel', style: TextStyle(color: Colors.black),),
                 ),
                 TextButton(
                   onPressed: () {
@@ -1252,7 +1252,7 @@ class _HomePageState extends State<HomePage> {
                     );
                     Navigator.of(context).pop();
                   },
-                  child: Text('add'),
+                  child: Text('add',style: TextStyle(color: Colors.black),),
                 ),
               ],
             );
