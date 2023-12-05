@@ -393,12 +393,25 @@ class _calendarPageState extends State<calendarPage> {
                                     context: context,
                                     builder: (BuildContext context) {
                                       return AlertDialog(
-                                        title: Text('${entry.key}'),
-                                        content: Column(
-                                          children: snapshot.data!.map((item) {
-                                            return Text(
-                                                'Item: ${item['itemName']}, Amount: ${item['amount']}');
-                                          }).toList(),
+                                        contentPadding: EdgeInsets.zero,
+                                        insetPadding: EdgeInsets.all(
+                                            20), // 이 값을 조절하여 전체 AlertDialog 크기 조절
+                                        content: Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.5, // 이 값을 조절하여 가로 크기 조절
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.5, // 이 값을 조절하여 세로 크기 조절
+                                          child: Column(
+                                            children:
+                                                snapshot.data!.map((item) {
+                                              return Text(
+                                                  'Item: ${item['itemName']}, Amount: ${item['amount']}');
+                                            }).toList(),
+                                          ),
                                         ),
                                         actions: <Widget>[
                                           TextButton(
