@@ -758,204 +758,119 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-                Container(color: Color.fromRGBO(248, 246, 232, 1), width: double.infinity,
-                      height: 400,
-                  child: PageView(
-                    scrollDirection: Axis.horizontal,
+                Container(
+                  color: Color.fromRGBO(248, 246, 232, 1), //카테고리 가장 큰  배경 컨테이너
+                  width: double.infinity,
+                  height: 400,
+                  child: Row(
                     children: [
                       Container(
-                      color: Color.fromRGBO(248, 246, 232, 1), //카테고리 가장 큰  배경 컨테이너
-                      width: double.infinity,
-                      height: 400,
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 200,
-                            height: double.infinity,
-                            color: Color.fromRGBO(248, 246, 232, 1), // 말풍선 돼지 컨테이너
-                            child: Column(
-                              children: [
-                                SizedBox(
-                                  width: 100,
-                                  height: 50,
-                                ),
-                                Container(
-                                    height: 100,
-                                    width: 150,
-                                    child: Stack(
-                                      children: [
-                                        Image.asset(
-                                          'assets/mal.png',
-                                          fit: BoxFit.fill,
-                                        ),
-                                        Container(
-                                            width: 150,
-                                            height: 50,
-                                            child: Center(
-                                              child: Text(
-                                                'category',
-                                                style: TextStyle(
-                                                    fontSize: 20,
-                                                    fontFamily: 'JAL'),
-                                              ),
-                                            )),
-                                      ],
-                                    )),
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Container(
-                                      height: 200,
-                                      width: 150,
-                                      child: Image.asset(
-                                        'assets/coolpiggy.png',
+                        width: 200,
+                        height: double.infinity,
+                        color: Color.fromRGBO(248, 246, 232, 1), // 말풍선 돼지 컨테이너
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              width: 100,
+                              height: 50,
+                            ),
+                            Container(
+                                height: 100,
+                                width: 150,
+                                child: Stack(
+                                  children: [
+                                    Image.asset(
+                                      'assets/mal.png',
+                                      fit: BoxFit.fill,
+                                    ),
+                                    Container(
+                                        width: 150,
                                         height: 50,
-                                        fit: BoxFit.fill,
-                                      )),
-                                ),
-                              ],
+                                        child: Center(
+                                          child: Text(
+                                            'category',
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontFamily: 'JAL'),
+                                          ),
+                                        )),
+                                  ],
+                                )),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                  height: 200,
+                                  width: 150,
+                                  child: Image.asset(
+                                    'assets/coolpiggy.png',
+                                    height: 50,
+                                    fit: BoxFit.fill,
+                                  )),
                             ),
-                          ),
-                          Container(
-                            width: 300,
-                            height: 350,
-                            color:
-                                Color.fromRGBO(248, 246, 232, 1), //카테고리 별 금액합계 컨테이너
-                            child: Container(
-                              width: 200,
-                              height: double.infinity,
-                              child: Center(
-                                child: FutureBuilder<List<Map<String, dynamic>>>(
-                                  future: expensesFuture,
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.done) {
-                                      if (snapshot.hasError) {
-                                        return Text('Error: ${snapshot.error}');
-                                      }
-                  
-                                      Map<String, double> categoryExpenses =
-                                          calculateCategoryExpenses(
-                                              snapshot.data ?? []);
-                                      return Column(
-                                        children:
-                                            categoryExpenses.entries.map((entry) {
-                                          return Container(
-                                            width: 250, height: 50,
-                                            decoration: BoxDecoration(
-                                              color:
-                                                  Color.fromRGBO(55, 115, 108, 1),
-                                              border: Border.all(
-                                                  color: Colors.black, width: 3),
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                            ),
-                                            margin:
-                                                const EdgeInsets.all(8.0), // 여백 추가
-                  
-                                            child: Padding(
-                                              // 텍스트와 사각형 사이에 여백 추가
-                                              padding: const EdgeInsets.all(10.0),
-                                              child: Center(
-                                                child: Text(
-                                                  '${entry.key}: ${entry.value}',
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 20,
-                                                      fontFamily: 'JAL'),
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        }).toList(),
-                                      );
-                                    } else {
-                                      return CircularProgressIndicator();
-                                    }
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    Container(color: Colors.amber, width: double.infinity, height: 400,
-                    child: FutureBuilder(
-  future: Future.wait([_loadAllExpenses(), _loadAllIncomes()]),
-  builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
-    if (snapshot.connectionState == ConnectionState.waiting) {
-      return Center(child: CircularProgressIndicator());
-    } else if (snapshot.hasError) {
-      return Text('Error: ${snapshot.error}');
-    } else {
-      var expenses = snapshot.data![0];
-      var incomes = snapshot.data![1];
+                      Container(
+                        width: 300,
+                        height: 350,
+                        color:
+                            Color.fromRGBO(248, 246, 232, 1), //카테고리 별 금액합계 컨테이너
+                        child: Container(
+                          width: 200,
+                          height: double.infinity,
+                          child: Center(
+                            child: FutureBuilder<List<Map<String, dynamic>>>(
+                              future: expensesFuture,
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.done) {
+                                  if (snapshot.hasError) {
+                                    return Text('Error: ${snapshot.error}');
+                                  }
 
-      return Row(
-        children: [
-          Expanded(
-            child: ListView(
-              children: [
-                Text('지출 내역', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                ...expenses.map((expense) => Container(width: 250, height: 50,
-                                            decoration: BoxDecoration(
-                                              color:
-                                                  Color.fromRGBO(55, 115, 108, 1),
-                                              border: Border.all(
-                                                  color: Colors.black, width: 3),
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
+                                  Map<String, double> categoryExpenses =
+                                      calculateCategoryExpenses(
+                                          snapshot.data ?? []);
+                                  return Column(
+                                    children:
+                                        categoryExpenses.entries.map((entry) {
+                                      return Container(
+                                        width: 250, height: 50,
+                                        decoration: BoxDecoration(
+                                          color:
+                                              Color.fromRGBO(55, 115, 108, 1),
+                                          border: Border.all(
+                                              color: Colors.black, width: 3),
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                        margin:
+                                            const EdgeInsets.all(8.0), // 여백 추가
+
+                                        child: Padding(
+                                          // 텍스트와 사각형 사이에 여백 추가
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: Center(
+                                            child: Text(
+                                              '${entry.key}: ${entry.value}',
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 20,
+                                                  fontFamily: 'JAL'),
                                             ),
-                                            margin:
-                                                const EdgeInsets.all(8.0),
-                   
-                  child: ListTile(
-                    title: Text(expense['date']),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(expense['category']),
-                        Text(expense['type']),
-                        Text(expense['amount'].toString()),
-                      ],
-                    ),
-                  ),
-                )).toList(),
-              ],
-            ),
-          ),
-          Expanded(
-            child: ListView(
-              children: [
-                Text('수입 내역', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                ...incomes.map((income) => Container(width: 250, height: 50,
-                                            decoration: BoxDecoration(
-                                              color:
-                                                  Color.fromRGBO(55, 115, 108, 1),
-                                              border: Border.all(
-                                                  color: Colors.black, width: 3),
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                            ),
-                                            margin:
-                                                const EdgeInsets.all(8.0),
-                   
-                  child: ListTile(
-                    title: Text(income['date']),
-                    subtitle: Text(income['amount'].toString()),
-                  ),
-                )).toList(),
-              ],
-            ),
-          ),
-        ],
-      );
-    }
-  },
-)
-
-
-                    ),
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  );
+                                } else {
+                                  return CircularProgressIndicator();
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ), // 카테고리 별 지출 구역 큰 배경
