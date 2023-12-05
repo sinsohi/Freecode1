@@ -209,7 +209,7 @@ class _LoginPageState extends State<LoginPage> {
                           child: Image.asset('assets/User.png'))),
                   Positioned(
                     left: 20,
-                    bottom: 135,
+                    bottom: 145,
                     right: 20,
                     child: SizedBox(
                       width: 100,
