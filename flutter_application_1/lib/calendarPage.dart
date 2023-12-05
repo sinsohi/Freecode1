@@ -406,15 +406,26 @@ class _calendarPageState extends State<calendarPage> {
                                                   .height *
                                               0.5, // 이 값을 조절하여 세로 크기 조절
                                           child: Column(
-                                            children:
-                                                snapshot.data!.map((item) {
-                                              return Padding(
+                                            children: [
+                                              Padding(
                                                 padding: EdgeInsets.only(
-                                                    top: 30), // 원하는 간격으로 조절
-                                                child: Text(
-                                                    'Item: ${item['itemName']}, Amount: ${item['amount']}'),
-                                              );
-                                            }).toList(),
+                                                    bottom:
+                                                        10), // 이 값을 조절하여 텍스트와 리스트 사이의 간격을 조절
+                                                child: Text('지출 내역',
+                                                    style: TextStyle(
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.bold)),
+                                              ),
+                                              ...snapshot.data!.map((item) {
+                                                return Padding(
+                                                  padding: EdgeInsets.only(
+                                                      top: 3), // 원하는 간격으로 조절
+                                                  child: Text(
+                                                      'Item: ${item['itemName']}, Amount: ${item['amount']}'),
+                                                );
+                                              }).toList(),
+                                            ],
                                           ),
                                         ),
                                         actions: <Widget>[
