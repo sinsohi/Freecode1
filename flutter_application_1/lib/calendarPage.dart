@@ -408,8 +408,12 @@ class _calendarPageState extends State<calendarPage> {
                                           child: Column(
                                             children:
                                                 snapshot.data!.map((item) {
-                                              return Text(
-                                                  'Item: ${item['itemName']}, Amount: ${item['amount']}');
+                                              return Padding(
+                                                padding: EdgeInsets.only(
+                                                    top: 30), // 원하는 간격으로 조절
+                                                child: Text(
+                                                    'Item: ${item['itemName']}, Amount: ${item['amount']}'),
+                                              );
                                             }).toList(),
                                           ),
                                         ),
