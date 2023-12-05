@@ -218,6 +218,11 @@ class _LoginPageState extends State<LoginPage> {
                           onPressed: () {}, child: _loginOrRegisterButton()),
                     ),
                   ),
+                  Positioned(
+                      left: 20,
+                      right: 20,
+                      bottom: 110,
+                      child: Center(child: Text('Start to save my money!'))),
                 ])),
                 Container(
                   child: Padding(
