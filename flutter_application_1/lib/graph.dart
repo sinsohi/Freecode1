@@ -104,12 +104,11 @@ class _graphState extends State<graph> with TickerProviderStateMixin  {
       
     );
      startAnimation(); // 여기서 애니메이션 시작
-    
+     print('애니메이션: ${animationController.value}');
 
   }
 
   void startAnimation() {
-    animationController.reset(); // 애니메이션 컨트롤러 리셋
     animationController.forward();
   }
 
@@ -396,7 +395,6 @@ Widget build(BuildContext context) {
                                  if (animationController.value < 0.1) {
                 return const SizedBox();
               }
-              
                     return CustomPaint(
                       size: Size(
                         MediaQuery.of(context).size.width,
@@ -514,58 +512,58 @@ RowItem(
               ),
             ],
           ),
-          child: BottomNavigationBar(
+          child:  BottomNavigationBar(
             backgroundColor: Color.fromRGBO(55, 115, 108, 1),
             type: BottomNavigationBarType.fixed,
             selectedItemColor: Color.fromRGBO(248, 246, 232, 1),
             unselectedItemColor: Color.fromRGBO(248, 246, 232, 1),
-            selectedLabelStyle: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-            unselectedLabelStyle: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-            showSelectedLabels: true,
-            showUnselectedLabels: false,
+            selectedLabelStyle:
+                TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+            unselectedLabelStyle:
+                TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
-                
+                label: '홈',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.calendar_month),
-                
+                label: '캘린더',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.bar_chart_sharp),
-                
+                label: '통계자료',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.people),
-                
+                label: '마이페이지',
               ),
             ],
             onTap: (int index) {
               switch (index) {
                 case 0:
-                Navigator.push(
+                  Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => HomePage()),
                   );
-                // 홈 페이지로 이동
                   break;
+
                 case 1:
-                // 캘린더 페이지로 이동
+                  // 캘린더 페이지로 이동
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => calendarPage()),
                   );
                   break;
                 case 2:
-                // 통계자료 페이지로 이동
+                  // 통계자료 페이지로 이동
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => graph()),
                   );
                   break;
                 case 3:
-                // 마이페이지로 이동
+                  // 마이페이지로 이동
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => profilePage()),
@@ -638,7 +636,7 @@ class _PieChart extends CustomPainter {
       double endAngle = (totalPercentage + data[i].count / 100) * 2 * math.pi; // 종료 각도 계산
       
       double animatedStartAngle = startAngle * animation.value; // 애니메이션 적용
-      
+       
       circlePaint.color = data[i].color;
 
       canvas.drawArc(
