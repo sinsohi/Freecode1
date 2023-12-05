@@ -1114,7 +1114,7 @@ class _HomePageState extends State<HomePage> {
                       iconSize: 24,
                       elevation: 16,
                       style: TextStyle(
-                          color: Color.fromRGBO(1, 1, 1, 0.6), fontSize: 15),
+                          color: Color.fromRGBO(1, 1, 1, 1), fontSize: 15),
                       underline: Container(
                         height: 1,
                         color: Color.fromRGBO(1, 1, 1, 0.3),
@@ -1129,7 +1129,7 @@ class _HomePageState extends State<HomePage> {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(value,
-                          style: TextStyle(color: Color.fromRGBO(55, 115, 108, 1),),),
+                          ),
                         );
                       }).toList(),
                     ),
@@ -1140,6 +1140,7 @@ class _HomePageState extends State<HomePage> {
                       child: TextField(
                         decoration: InputDecoration(
                           labelText: 'detail',
+                          labelStyle: TextStyle(color: Colors.black),
                           focusedBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
                               color: Color.fromRGBO(55, 115, 108, 1),
@@ -1158,6 +1159,7 @@ class _HomePageState extends State<HomePage> {
                       child: TextField(
                         decoration: InputDecoration(
                           labelText: 'account',
+                          labelStyle: TextStyle(color: Colors.black),
                           focusedBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
                               color: Color.fromRGBO(55, 115, 108, 1),
@@ -1265,6 +1267,7 @@ class _HomePageState extends State<HomePage> {
                     TextField(
                       decoration: InputDecoration(
                         labelText: 'account',
+                        labelStyle: TextStyle(color: Colors.black),
                         focusedBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: Color.fromRGBO(55, 115, 108, 1),
