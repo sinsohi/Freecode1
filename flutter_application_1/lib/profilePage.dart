@@ -29,6 +29,13 @@ class profilePage extends StatefulWidget {
   State<profilePage> createState() => _profilePageState();
 }
 
+class WishListItem {
+  TextEditingController controller;
+  String key;
+
+  WishListItem(this.controller, this.key);
+}
+
 class _profilePageState extends State<profilePage> {
   List<TextEditingController> wishList = [];
   List<String> wishListKeys = [];
@@ -71,6 +78,11 @@ class _profilePageState extends State<profilePage> {
       DatabaseReference _ref =
           FirebaseDatabase.instance.reference().child('wishList/$userKey');
       _ref.child(wishListKeys[index]).remove();
+
+      // Remove the corresponding TextEditingController from the list
+      wishList.removeAt(index);
+      wishListKeys.removeAt(index);
+      setState(() {});
     }
   }
 
