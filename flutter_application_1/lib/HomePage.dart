@@ -276,6 +276,11 @@ class _HomePageState extends State<HomePage> {
     double totalExpense = _calculateTotalExpenses(expenses);
     return totalIncome - totalExpense;
   }
+  PageController _pageController = PageController(
+  initialPage: 0, // 초기 페이지 인덱스
+  keepPage: true, // 페이지 상태를 유지할지 여부
+  viewportFraction: 0.85, // 화면에 보여지는 페이지의 비율
+);
 
   @override
   Widget build(BuildContext context) {
@@ -381,6 +386,7 @@ class _HomePageState extends State<HomePage> {
                               width: double.infinity,
                               height: 100,
                               child: PageView(
+                                controller: _pageController,
                                 scrollDirection: Axis.horizontal,
                                 children: <Widget>[
                                   Container(
