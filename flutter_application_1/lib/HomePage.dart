@@ -1109,13 +1109,15 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     DropdownButton<String>(
+                      dropdownColor: Color.fromRGBO(248, 246, 232, 1),
                       value: category,
                       iconSize: 24,
                       elevation: 16,
-                      style: TextStyle(color: Colors.deepPurple),
+                      style: TextStyle(
+                          color: Color.fromRGBO(1, 1, 1, 0.6), fontSize: 15),
                       underline: Container(
-                        height: 2,
-                        color: Colors.deepPurpleAccent,
+                        height: 1,
+                        color: Color.fromRGBO(1, 1, 1, 0.3),
                       ),
                       onChanged: (String? newValue) {
                         setState(() {
@@ -1126,22 +1128,47 @@ class _HomePageState extends State<HomePage> {
                           .map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
-                          child: Text(value),
+                          child: Text(value,
+                          style: TextStyle(color: Color.fromRGBO(55, 115, 108, 1),),),
                         );
                       }).toList(),
                     ),
-                    TextField(
-                      decoration: InputDecoration(labelText: 'detail'),
-                      onChanged: (text) {
-                        itemName = text;
-                      },
+                    Theme(
+                      data: ThemeData(
+                        primaryColor: Color.fromRGBO(16, 34, 32, 1), 
+                      ),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          labelText: 'detail',
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Color.fromRGBO(55, 115, 108, 1),
+                            ), 
+                          ),
+                        ),
+                        onChanged: (text) {
+                          itemName = text;
+                        },
+                      ),
                     ),
-                    TextField(
-                      decoration: InputDecoration(labelText: 'account'),
-                      keyboardType: TextInputType.number,
-                      onChanged: (text) {
-                        amount = double.parse(text);
-                      },
+                    Theme(
+                      data: ThemeData(
+    primaryColor: Color.fromRGBO(55, 115, 108, 1), 
+  ),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          labelText: 'account',
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Color.fromRGBO(55, 115, 108, 1),
+                            ), // 밑줄 색상을 핑크색으로 지정
+                          ),
+                        ),
+                        keyboardType: TextInputType.number,
+                        onChanged: (text) {
+                          amount = double.parse(text);
+                        },
+                      ),
                     ),
                   ],
                 ),
@@ -1151,7 +1178,10 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('cancel',style: TextStyle(color: Colors.black),),
+                  child: Text(
+                    'cancel',
+                    style: TextStyle(color: Colors.black),
+                  ),
                 ),
                 TextButton(
                   onPressed: () {
@@ -1164,7 +1194,12 @@ class _HomePageState extends State<HomePage> {
                     );
                     Navigator.of(context).pop();
                   },
-                  child: Text('add', style: TextStyle(color: Colors.black),),
+                  child: Text(
+                    'add',
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                  ),
                 ),
               ],
             );
@@ -1228,7 +1263,14 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     TextField(
-                      decoration: InputDecoration(labelText: 'account'),
+                      decoration: InputDecoration(
+                        labelText: 'account',
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color.fromRGBO(55, 115, 108, 1),
+                          ), // 밑줄 색상을 핑크색으로 지정
+                        ),
+                      ),
                       keyboardType: TextInputType.number,
                       onChanged: (text) {
                         amount = double.parse(text);
@@ -1242,7 +1284,10 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('cancel', style: TextStyle(color: Colors.black),),
+                  child: Text(
+                    'cancel',
+                    style: TextStyle(color: Colors.black),
+                  ),
                 ),
                 TextButton(
                   onPressed: () {
@@ -1252,7 +1297,10 @@ class _HomePageState extends State<HomePage> {
                     );
                     Navigator.of(context).pop();
                   },
-                  child: Text('add',style: TextStyle(color: Colors.black),),
+                  child: Text(
+                    'add',
+                    style: TextStyle(color: Colors.black),
+                  ),
                 ),
               ],
             );
