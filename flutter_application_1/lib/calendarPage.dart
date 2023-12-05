@@ -178,13 +178,39 @@ class _calendarPageState extends State<calendarPage> {
             'amount': value['amount'],
             'date': value['date'],
             'category': value['category'],
-            'detail': value['detail'],
           });
         });
       }
     }
 
     return loadedExpenses;
+  }
+
+  Future<List<Map<String, dynamic>>> _loadItemsForDay(DateTime day) async {
+    List<Map<String, dynamic>> loadedItems = [];
+    String dayString = DateFormat('yyyy-MM-dd').format(day);
+
+    DataSnapshot snapshot = await expenseRef
+        .orderByChild('date')
+        .equalTo(dayString) // 선택한 날짜에 대해 일치하는 항목만 가져옴
+        .get();
+
+    if (snapshot.value != null) {
+      Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
+
+      if (values != null) {
+        values.forEach((key, value) {
+          if (value['itemName'] != null && value['amount'] != null) {
+            loadedItems.add({
+              'itemName': value['itemName'],
+              'amount': value['amount'],
+            });
+          }
+        });
+      }
+    }
+
+    return loadedItems;
   }
 
   Future<List<Map<String, dynamic>>> _loadIncomes() async {
@@ -348,47 +374,67 @@ class _calendarPageState extends State<calendarPage> {
                     itemCount: categoryExpenses.length,
                     itemBuilder: (BuildContext context, int index) {
                       var entry = categoryExpenses.entries.elementAt(index);
-                      return InkWell(
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text('${entry.key}'),
-                                content:
-                                    Text('Here is the detail for ${entry.key}'),
-                                actions: <Widget>[
-                                  TextButton(
-                                    child: Text('Close'),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
+                      return FutureBuilder<List<Map<String, dynamic>>>(
+                        future: _loadItemsForDay(today),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<List<Map<String, dynamic>>>
+                                snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return CircularProgressIndicator(); // 데이터를 불러오는 동안의 처리
+                          } else {
+                            if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            } else {
+                              return InkWell(
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text('${entry.key}'),
+                                        content: Column(
+                                          children: snapshot.data!.map((item) {
+                                            return Text(
+                                                'Item: ${item['itemName']}, Amount: ${item['amount']}');
+                                          }).toList(),
+                                        ),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            child: Text('Close'),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
                                     },
+                                  );
+                                },
+                                child: Container(
+                                  width: 200,
+                                  height: 55,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    color: const Color(0xff82a282),
                                   ),
-                                ],
+                                  margin: const EdgeInsets.all(8.0),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Text(
+                                      '${entry.key}: ${entry.value}',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontFamily: 'JAL',
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               );
-                            },
-                          );
+                            }
+                          }
                         },
-                        child: Container(
-                          width: 200,
-                          height: 55,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.0),
-                            color: const Color(0xff82a282),
-                          ),
-                          margin: const EdgeInsets.all(8.0),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Text(
-                              '${entry.key}: ${entry.value}',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontFamily: 'JAL',
-                              ),
-                            ),
-                          ),
-                        ),
                       );
                     },
                   );
