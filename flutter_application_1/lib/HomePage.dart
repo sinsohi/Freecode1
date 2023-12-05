@@ -1065,6 +1065,7 @@ class _HomePageState extends State<HomePage> {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
+              backgroundColor: Color.fromRGBO(248, 246, 232, 1),
               title: Text('expense'),
               content: SingleChildScrollView(
                 child: ListBody(
@@ -1183,6 +1184,7 @@ class _HomePageState extends State<HomePage> {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
+              backgroundColor: Color.fromRGBO(248, 246, 232, 1),
               title: Text('income'),
               content: SingleChildScrollView(
                 child: ListBody(
