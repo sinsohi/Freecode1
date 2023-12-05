@@ -29,6 +29,13 @@ class profilePage extends StatefulWidget {
   State<profilePage> createState() => _profilePageState();
 }
 
+class WishListItem {
+  TextEditingController controller;
+  String key;
+
+  WishListItem(this.controller, this.key);
+}
+
 class _profilePageState extends State<profilePage> {
   List<TextEditingController> wishList = [];
   List<String> wishListKeys = [];
@@ -71,6 +78,11 @@ class _profilePageState extends State<profilePage> {
       DatabaseReference _ref =
           FirebaseDatabase.instance.reference().child('wishList/$userKey');
       _ref.child(wishListKeys[index]).remove();
+
+      // Remove the corresponding TextEditingController from the list
+      wishList.removeAt(index);
+      wishListKeys.removeAt(index);
+      setState(() {});
     }
   }
 
@@ -257,6 +269,14 @@ class _profilePageState extends State<profilePage> {
         ),
         backgroundColor: Color.fromRGBO(55, 115, 108, 1),
         bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            boxShadow: const <BoxShadow>[
+              BoxShadow(
+                color: Colors.grey,
+                blurRadius: 15,
+              ),
+            ],
+          ),
           child: BottomNavigationBar(
             backgroundColor: Color.fromRGBO(55, 115, 108, 1),
             type: BottomNavigationBarType.fixed,
@@ -266,8 +286,6 @@ class _profilePageState extends State<profilePage> {
                 TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
             unselectedLabelStyle:
                 TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-            showSelectedLabels: true,
-            showUnselectedLabels: false,
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
@@ -289,12 +307,12 @@ class _profilePageState extends State<profilePage> {
             onTap: (int index) {
               switch (index) {
                 case 0:
-                  // 홈 페이지로 이동
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => HomePage()),
                   );
                   break;
+
                 case 1:
                   // 캘린더 페이지로 이동
                   Navigator.push(
@@ -307,6 +325,13 @@ class _profilePageState extends State<profilePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => graph()),
+                  );
+                  break;
+                case 3:
+                  // 마이페이지로 이동
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => profilePage()),
                   );
                   break;
               }

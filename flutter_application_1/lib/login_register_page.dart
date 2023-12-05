@@ -10,8 +10,12 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  String? errorMessage = ''; // 오류 메시지를 저장할 변수입니다.
+  String? errorMessage = ''; // 오류 메시지를 저장할 변수
   bool isLogin = true; // 현재 로그인 페이지인지 회원가입 페이지인지를 나타내는 변수
+
+  void _submit() {
+    isLogin ? signInWithEmailAndPassword() : createUserWithEmailAndPassword();
+  }
 
   final TextEditingController _controllerEmail =
       TextEditingController(); // 이메일 입력을 위한 텍스트 편집 컨트롤러
@@ -42,21 +46,19 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  Widget _entryField(
-    String title,
-    TextEditingController controller,
-  ) {
+  Widget _entryField(String title, TextEditingController controller,
+      VoidCallback onSubmitted) {
     return TextField(
       controller: controller,
       decoration: InputDecoration(labelText: title),
+      onSubmitted: (_) => onSubmitted(),
     );
-    // 주어진 제목과 컨트롤러를 사용하여 텍스트 필드 위젯을 생성
   }
 
-  // Widget _errorMessage() {
-  //   return Text(errorMessage == '' ? '' : 'Humn ? $errorMessage');
-  //   // 오류 메시지를 표시하는 위젯. 오류 메시지가 없으면 표시되지 않음
-  // }
+  Widget _errorMessage() {
+    return Text(errorMessage == '' ? '' : 'Humn ? $errorMessage');
+    // 오류 메시지를 표시하는 위젯. 오류 메시지가 없으면 표시되지 않음
+  }
 
   Widget _submitButton() {
     return TextButton(
@@ -100,6 +102,14 @@ class _LoginPageState extends State<LoginPage> {
         child: Container(
             decoration: BoxDecoration(
                 color: Color.fromRGBO(248, 246, 232, 1),
+                boxShadow: [
+                  BoxShadow(
+                    color:
+                        const Color.fromARGB(255, 10, 10, 10).withOpacity(0.5),
+                    offset: Offset(0, 3),
+                    blurRadius: 8,
+                  ),
+                ],
                 border: Border.all(color: Colors.black, width: 2),
                 borderRadius: BorderRadius.circular(15)),
             child: Column(
@@ -147,6 +157,14 @@ class _LoginPageState extends State<LoginPage> {
                           decoration: BoxDecoration(
                             color: Color.fromRGBO(55, 115, 108, 1),
                             border: Border.all(color: Colors.black, width: 2),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color.fromARGB(255, 23, 23, 23)
+                                    .withOpacity(0.5),
+                                offset: Offset(0, 3),
+                                blurRadius: 8,
+                              ),
+                            ],
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Column(
@@ -163,7 +181,8 @@ class _LoginPageState extends State<LoginPage> {
                                     child: Padding(
                                       padding: EdgeInsets.all(10),
                                       child: _entryField('ID(email)',
-                                          _controllerEmail), // 이메일 입력
+                                          _controllerEmail, _submit),
+                                      // 이메일 입력
                                     ),
                                     decoration: BoxDecoration(
                                         color: Colors.white,
@@ -182,7 +201,8 @@ class _LoginPageState extends State<LoginPage> {
                                   child: Padding(
                                     padding: EdgeInsets.all(10),
                                     child: _entryField('Password',
-                                        _controllerPassword), // 비밀번호 입력 필드 추가
+                                        _controllerPassword, _submit),
+                                    // 비밀번호 입력 필드 추가
                                   ),
                                   decoration: BoxDecoration(
                                       color: Colors.white,
@@ -209,7 +229,7 @@ class _LoginPageState extends State<LoginPage> {
                           child: Image.asset('assets/User.png'))),
                   Positioned(
                     left: 20,
-                    bottom: 135,
+                    bottom: 145,
                     right: 20,
                     child: SizedBox(
                       width: 100,
@@ -218,6 +238,23 @@ class _LoginPageState extends State<LoginPage> {
                           onPressed: () {}, child: _loginOrRegisterButton()),
                     ),
                   ),
+                  Positioned(
+                      left: 20,
+                      right: 20,
+                      bottom: 100,
+                      child: Center(
+                          child: Text(
+                        'Start to save my money !',
+                        style: TextStyle(
+                          fontFamily: 'LilitaOne',
+                          fontSize: 24,
+                          fontWeight: FontWeight.w500,
+                          foreground: Paint()
+                            ..style = PaintingStyle.stroke
+                            ..strokeWidth = 2
+                            ..color = Colors.black.withOpacity(0.5),
+                        ),
+                      ))),
                 ])),
                 Container(
                   child: Padding(
@@ -237,30 +274,3 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Padding(
-//         padding: const EdgeInsets.fromLTRB(8, 15, 8, 15),
-//         child: Container(
-//           height: double.infinity,
-//           width: double.infinity,
-//           padding: const EdgeInsets.all(20),
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.center,
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             children: <Widget>[
-//               _entryField('email', _controllerEmail), // 이메일 입력 필드를 추가
-//               _entryField('password', _controllerPassword), // 비밀번호 입력 필드를 추가
-//               _errorMessage(), // 오류 메시지를 표시하는 위젯을 추가
-//               _submitButton(), // 로그인 또는 회원가입 버튼을 추가
-//               _loginOrRegisterButton(), // 페이지 전환 버튼을 추가
-//             ], 
-//           ),
-//         ),
-//       ),
-//       backgroundColor: Color.fromRGBO(255, 255, 255, 20),
-//     );
-//   }
-
