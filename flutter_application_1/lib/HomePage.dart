@@ -19,7 +19,7 @@ class HomePage extends StatefulWidget {
 }
 
 void _launchURL() async {
-  const url = 'https://flutter.dev';
+  const url = 'https://www.kfb.or.kr/main/main.php';
   if (await canLaunch(url)) {
     await launch(url);
   } else {
@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
     'assets/1.jpeg',
     'assets/2.jpeg',
     'assets/3.jpeg',
-    // ... 다른 이미지 경로
+    'assets/4.jpeg',
   ];
 
   Future<void> initialize() async {
@@ -875,7 +875,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ), // 카테고리 별 지출 구역 큰 배경
                 Container(
-                  color: Color.fromRGBO(248, 246, 232, 1), 
+                  color: Color.fromRGBO(248, 246, 232, 1),
                   width: double.infinity,
                   height: 290,
                   child: Column(
@@ -883,13 +883,13 @@ class _HomePageState extends State<HomePage> {
                       Container(
                         width: double.infinity,
                         height: 40,
-                        color: Color.fromRGBO(248, 246, 232, 1), 
+                        color: Color.fromRGBO(248, 246, 232, 1),
                         child: Row(
                           children: [
                             Container(
                               width: 30,
                               height: 40,
-                              color: Color.fromRGBO(248, 246, 232, 1), 
+                              color: Color.fromRGBO(248, 246, 232, 1),
                               child: Center(
                                 child: Text(
                                   '>',
@@ -903,9 +903,9 @@ class _HomePageState extends State<HomePage> {
                               child: Container(
                                   width: 450,
                                   height: 40,
-                                  color: Color.fromRGBO(248, 246, 232, 1), 
-                                  child: Align(alignment: Alignment.centerLeft,
-                                   
+                                  color: Color.fromRGBO(248, 246, 232, 1),
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
                                     child: Text(
                                       '  Financial Product Recommendation',
                                       style: TextStyle(
@@ -934,35 +934,39 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-                
-Container(
-  width: double.infinity,
-  height: 40,
-  color: Color.fromRGBO(248, 246, 232, 1),
-  child: 
-    Row(mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SizedBox(height: 20, width: 5,),
-        
-        GestureDetector(
-          onTap: _launchURL,
-          child: Image.asset('assets/gul.png', height: 40, width: 40,),
-        ),
-        
-        SizedBox(height: 40, width: 5,),
 
-        GestureDetector(
-          onTap: _launchURL,
-          child: Text(
-            'If you want to know more information, click here!', 
-            style: TextStyle(fontSize: 10, fontFamily: 'JAL'),
-          ),
-        ),
-    ]),
-),
-
-
-                 
+                Container(
+                  width: double.infinity,
+                  height: 40,
+                  color: Color.fromRGBO(248, 246, 232, 1),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 20,
+                          width: 5,
+                        ),
+                        GestureDetector(
+                          onTap: _launchURL,
+                          child: Image.asset(
+                            'assets/gul.png',
+                            height: 40,
+                            width: 40,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 40,
+                          width: 5,
+                        ),
+                        GestureDetector(
+                          onTap: _launchURL,
+                          child: Text(
+                            'If you want to know more information, click here!',
+                            style: TextStyle(fontSize: 10, fontFamily: 'JAL'),
+                          ),
+                        ),
+                      ]),
+                ),
               ],
             ),
           ),
@@ -981,26 +985,26 @@ Container(
             type: BottomNavigationBarType.fixed,
             selectedItemColor: Color.fromRGBO(248, 246, 232, 1),
             unselectedItemColor: Color.fromRGBO(248, 246, 232, 1),
-            selectedLabelStyle:
-                TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-            unselectedLabelStyle:
-                TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+            selectedLabelStyle: TextStyle(
+                fontFamily: 'JAL', fontSize: 10, fontWeight: FontWeight.bold),
+            unselectedLabelStyle: TextStyle(
+                fontFamily: 'JAL', fontSize: 10, fontWeight: FontWeight.bold),
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
-                label: '홈',
+                label: 'home',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.calendar_month),
-                label: '캘린더',
+                label: 'calendar',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.bar_chart_sharp),
-                label: '통계자료',
+                label: 'chart',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.people),
-                label: '마이페이지',
+                label: 'mypage',
               ),
             ],
             onTap: (int index) {
