@@ -155,6 +155,14 @@ class _LoginPageState extends State<LoginPage> {
                           decoration: BoxDecoration(
                             color: Color.fromRGBO(55, 115, 108, 1),
                             border: Border.all(color: Colors.black, width: 2),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color.fromARGB(255, 23, 23, 23)
+                                    .withOpacity(0.5),
+                                offset: Offset(0, 3),
+                                blurRadius: 8,
+                              ),
+                            ],
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Column(
