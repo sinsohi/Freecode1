@@ -9,12 +9,22 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
+}
+
+void _launchURL() async {
+  const url = 'https://flutter.dev';
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
 }
 
 class _HomePageState extends State<HomePage> {
@@ -924,26 +934,35 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-                Container(
-                  width: double.infinity,
-                  height: 40,
-                  color: Color.fromRGBO(248, 246, 232, 1),
-                  child: 
-                    Row(mainAxisAlignment: MainAxisAlignment.center,
-                    
-                      children: [
-                        SizedBox(height: 20, width: 5,),
-                        
-                        Image.asset('assets/gul.png', height: 40, width: 40,),
-                        SizedBox(height: 40, width: 5,),
-                        Text('If you want to know more information, you can visit website.', style: TextStyle(
-                                                  fontSize: 10,
-                                                  fontFamily: 'JAL'),),
-                        
-                      ],
-                    ),
-                  ),
-                 // 광고 배너 구역 큰 배경
+                
+Container(
+  width: double.infinity,
+  height: 40,
+  color: Color.fromRGBO(248, 246, 232, 1),
+  child: 
+    Row(mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(height: 20, width: 5,),
+        
+        GestureDetector(
+          onTap: _launchURL,
+          child: Image.asset('assets/gul.png', height: 40, width: 40,),
+        ),
+        
+        SizedBox(height: 40, width: 5,),
+
+        GestureDetector(
+          onTap: _launchURL,
+          child: Text(
+            'If you want to know more information, click here!', 
+            style: TextStyle(fontSize: 10, fontFamily: 'JAL'),
+          ),
+        ),
+    ]),
+),
+
+
+                 
               ],
             ),
           ),
