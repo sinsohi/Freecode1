@@ -13,6 +13,10 @@ class _LoginPageState extends State<LoginPage> {
   String? errorMessage = ''; // 오류 메시지를 저장할 변수
   bool isLogin = true; // 현재 로그인 페이지인지 회원가입 페이지인지를 나타내는 변수
 
+  void _submit() {
+    isLogin ? signInWithEmailAndPassword() : createUserWithEmailAndPassword();
+  }
+
   final TextEditingController _controllerEmail =
       TextEditingController(); // 이메일 입력을 위한 텍스트 편집 컨트롤러
   final TextEditingController _controllerPassword =
@@ -42,15 +46,13 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  Widget _entryField(
-    String title,
-    TextEditingController controller,
-  ) {
+  Widget _entryField(String title, TextEditingController controller,
+      VoidCallback onSubmitted) {
     return TextField(
       controller: controller,
       decoration: InputDecoration(labelText: title),
+      onSubmitted: (_) => onSubmitted(),
     );
-    // 주어진 제목과 컨트롤러를 사용하여 텍스트 필드 위젯을 생성
   }
 
   Widget _errorMessage() {
@@ -179,7 +181,8 @@ class _LoginPageState extends State<LoginPage> {
                                     child: Padding(
                                       padding: EdgeInsets.all(10),
                                       child: _entryField('ID(email)',
-                                          _controllerEmail), // 이메일 입력
+                                          _controllerEmail, _submit),
+                                      // 이메일 입력
                                     ),
                                     decoration: BoxDecoration(
                                         color: Colors.white,
@@ -198,7 +201,8 @@ class _LoginPageState extends State<LoginPage> {
                                   child: Padding(
                                     padding: EdgeInsets.all(10),
                                     child: _entryField('Password',
-                                        _controllerPassword), // 비밀번호 입력 필드 추가
+                                        _controllerPassword, _submit),
+                                    // 비밀번호 입력 필드 추가
                                   ),
                                   decoration: BoxDecoration(
                                       color: Colors.white,
