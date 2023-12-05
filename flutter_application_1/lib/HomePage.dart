@@ -986,9 +986,9 @@ class _HomePageState extends State<HomePage> {
             selectedItemColor: Color.fromRGBO(248, 246, 232, 1),
             unselectedItemColor: Color.fromRGBO(248, 246, 232, 1),
             selectedLabelStyle: TextStyle(
-                fontFamily: 'JAL', fontSize: 10, fontWeight: FontWeight.normal),
+                fontFamily: 'JAL', fontSize: 10, fontWeight: FontWeight.w100),
             unselectedLabelStyle: TextStyle(
-                fontFamily: 'JAL', fontSize: 10, fontWeight: FontWeight.normal),
+                fontFamily: 'JAL', fontSize: 10, fontWeight: FontWeight.w100),
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
