@@ -276,11 +276,7 @@ class _HomePageState extends State<HomePage> {
     double totalExpense = _calculateTotalExpenses(expenses);
     return totalIncome - totalExpense;
   }
-  PageController _pageController = PageController(
-  initialPage: 0, // 초기 페이지 인덱스
-  keepPage: true, // 페이지 상태를 유지할지 여부
-  viewportFraction: 0.85, // 화면에 보여지는 페이지의 비율
-);
+  
 
   @override
   Widget build(BuildContext context) {
@@ -330,6 +326,8 @@ class _HomePageState extends State<HomePage> {
                         //추가 디자인을 위한 공간
                         width: double.infinity,
                         height: 30,
+                        child: Align(alignment: Alignment.bottomRight,
+                          child: Text('Start to save your money!           ', style: TextStyle(fontFamily: 'JAL', fontSize: 10,),)),
                       ),
                       Container(
                         //기능 구현 작은 배경 container
@@ -386,7 +384,6 @@ class _HomePageState extends State<HomePage> {
                               width: double.infinity,
                               height: 100,
                               child: PageView(
-                                controller: _pageController,
                                 scrollDirection: Axis.horizontal,
                                 children: <Widget>[
                                   Container(
@@ -760,7 +757,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
 
-                      // 위의 함수를 사용해 지출을 카테고리별로 분류하고, 각 카테고리의 총 지출을 계산
+                      
                     ],
                   ),
                 ),
