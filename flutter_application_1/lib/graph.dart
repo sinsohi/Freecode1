@@ -104,10 +104,12 @@ class _graphState extends State<graph> with TickerProviderStateMixin  {
       
     );
      startAnimation(); // 여기서 애니메이션 시작
+    
 
   }
 
   void startAnimation() {
+    animationController.reset(); // 애니메이션 컨트롤러 리셋
     animationController.forward();
   }
 
@@ -394,6 +396,7 @@ Widget build(BuildContext context) {
                                  if (animationController.value < 0.1) {
                 return const SizedBox();
               }
+              
                     return CustomPaint(
                       size: Size(
                         MediaQuery.of(context).size.width,
@@ -523,19 +526,19 @@ RowItem(
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
-                label: '홈',
+                
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.calendar_month),
-                label: '캘린더',
+                
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.bar_chart_sharp),
-                label: '통계자료',
+                
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.people),
-                label: '마이페이지',
+                
               ),
             ],
             onTap: (int index) {
@@ -635,7 +638,7 @@ class _PieChart extends CustomPainter {
       double endAngle = (totalPercentage + data[i].count / 100) * 2 * math.pi; // 종료 각도 계산
       
       double animatedStartAngle = startAngle * animation.value; // 애니메이션 적용
-       
+      
       circlePaint.color = data[i].color;
 
       canvas.drawArc(
