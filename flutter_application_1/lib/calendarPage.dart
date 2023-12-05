@@ -186,21 +186,22 @@ class _calendarPageState extends State<calendarPage> {
     return loadedExpenses;
   }
 
-  Future<List<Map<String, dynamic>>> _loadItemsForDay(DateTime day) async {
+  Future<List<Map<String, dynamic>>> _loadItemsForCategory(
+      String category, DateTime day) async {
     List<Map<String, dynamic>> loadedItems = [];
     String dayString = DateFormat('yyyy-MM-dd').format(day);
 
-    DataSnapshot snapshot = await expenseRef
-        .orderByChild('date')
-        .equalTo(dayString) // 선택한 날짜에 대해 일치하는 항목만 가져옴
-        .get();
+    DataSnapshot snapshot =
+        await expenseRef.orderByChild('date').equalTo(dayString).get();
 
     if (snapshot.value != null) {
       Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
 
       if (values != null) {
         values.forEach((key, value) {
-          if (value['itemName'] != null && value['amount'] != null) {
+          if (value['category'] == category &&
+              value['itemName'] != null &&
+              value['amount'] != null) {
             loadedItems.add({
               'itemName': value['itemName'],
               'amount': value['amount'],
@@ -375,7 +376,7 @@ class _calendarPageState extends State<calendarPage> {
                     itemBuilder: (BuildContext context, int index) {
                       var entry = categoryExpenses.entries.elementAt(index);
                       return FutureBuilder<List<Map<String, dynamic>>>(
-                        future: _loadItemsForDay(today),
+                        future: _loadItemsForCategory(entry.key, today),
                         builder: (BuildContext context,
                             AsyncSnapshot<List<Map<String, dynamic>>>
                                 snapshot) {
