@@ -276,6 +276,7 @@ class _HomePageState extends State<HomePage> {
     double totalExpense = _calculateTotalExpenses(expenses);
     return totalIncome - totalExpense;
   }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -325,6 +326,8 @@ class _HomePageState extends State<HomePage> {
                         //추가 디자인을 위한 공간
                         width: double.infinity,
                         height: 30,
+                        child: Align(alignment: Alignment.bottomRight,
+                          child: Text('Start to save your money!           ', style: TextStyle(fontFamily: 'JAL', fontSize: 10,),)),
                       ),
                       Container(
                         //기능 구현 작은 배경 container
@@ -754,7 +757,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
 
-                      // 위의 함수를 사용해 지출을 카테고리별로 분류하고, 각 카테고리의 총 지출을 계산
+                      
                     ],
                   ),
                 ),
@@ -986,9 +989,9 @@ class _HomePageState extends State<HomePage> {
             selectedItemColor: Color.fromRGBO(248, 246, 232, 1),
             unselectedItemColor: Color.fromRGBO(248, 246, 232, 1),
             selectedLabelStyle: TextStyle(
-                fontFamily: 'JAL', fontSize: 10, fontWeight: FontWeight.normal),
+                fontFamily: 'JAL', fontSize: 10, fontWeight: FontWeight.w100),
             unselectedLabelStyle: TextStyle(
-                fontFamily: 'JAL', fontSize: 10, fontWeight: FontWeight.normal),
+                fontFamily: 'JAL', fontSize: 10, fontWeight: FontWeight.w100),
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
