@@ -9,12 +9,22 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
+}
+
+void _launchURL() async {
+  const url = 'https://www.kfb.or.kr/main/main.php';
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
 }
 
 class _HomePageState extends State<HomePage> {
@@ -27,7 +37,7 @@ class _HomePageState extends State<HomePage> {
     'assets/1.jpeg',
     'assets/2.jpeg',
     'assets/3.jpeg',
-    // ... 다른 이미지 경로
+    'assets/4.jpeg',
   ];
 
   Future<void> initialize() async {
@@ -865,7 +875,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ), // 카테고리 별 지출 구역 큰 배경
                 Container(
-                  color: Color.fromRGBO(248, 246, 232, 1), 
+                  color: Color.fromRGBO(248, 246, 232, 1),
                   width: double.infinity,
                   height: 290,
                   child: Column(
@@ -873,13 +883,13 @@ class _HomePageState extends State<HomePage> {
                       Container(
                         width: double.infinity,
                         height: 40,
-                        color: Color.fromRGBO(248, 246, 232, 1), 
+                        color: Color.fromRGBO(248, 246, 232, 1),
                         child: Row(
                           children: [
                             Container(
                               width: 30,
                               height: 40,
-                              color: Color.fromRGBO(248, 246, 232, 1), 
+                              color: Color.fromRGBO(248, 246, 232, 1),
                               child: Center(
                                 child: Text(
                                   '>',
@@ -893,9 +903,9 @@ class _HomePageState extends State<HomePage> {
                               child: Container(
                                   width: 450,
                                   height: 40,
-                                  color: Color.fromRGBO(248, 246, 232, 1), 
-                                  child: Align(alignment: Alignment.centerLeft,
-                                   
+                                  color: Color.fromRGBO(248, 246, 232, 1),
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
                                     child: Text(
                                       '  Financial Product Recommendation',
                                       style: TextStyle(
@@ -924,26 +934,39 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
+
                 Container(
                   width: double.infinity,
                   height: 40,
                   color: Color.fromRGBO(248, 246, 232, 1),
-                  child: 
-                    Row(mainAxisAlignment: MainAxisAlignment.center,
-                    
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SizedBox(height: 20, width: 5,),
-                        
-                        Image.asset('assets/gul.png', height: 40, width: 40,),
-                        SizedBox(height: 40, width: 5,),
-                        Text('If you want to know more information, you can visit website.', style: TextStyle(
-                                                  fontSize: 10,
-                                                  fontFamily: 'JAL'),),
-                        
-                      ],
-                    ),
-                  ),
-                 // 광고 배너 구역 큰 배경
+                        SizedBox(
+                          height: 20,
+                          width: 5,
+                        ),
+                        GestureDetector(
+                          onTap: _launchURL,
+                          child: Image.asset(
+                            'assets/gul.png',
+                            height: 40,
+                            width: 40,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 40,
+                          width: 5,
+                        ),
+                        GestureDetector(
+                          onTap: _launchURL,
+                          child: Text(
+                            'If you want to know more information, click here!',
+                            style: TextStyle(fontSize: 10, fontFamily: 'JAL'),
+                          ),
+                        ),
+                      ]),
+                ),
               ],
             ),
           ),
@@ -962,26 +985,26 @@ class _HomePageState extends State<HomePage> {
             type: BottomNavigationBarType.fixed,
             selectedItemColor: Color.fromRGBO(248, 246, 232, 1),
             unselectedItemColor: Color.fromRGBO(248, 246, 232, 1),
-            selectedLabelStyle:
-                TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-            unselectedLabelStyle:
-                TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+            selectedLabelStyle: TextStyle(
+                fontFamily: 'JAL', fontSize: 10, fontWeight: FontWeight.normal),
+            unselectedLabelStyle: TextStyle(
+                fontFamily: 'JAL', fontSize: 10, fontWeight: FontWeight.normal),
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
-                label: '홈',
+                label: 'home',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.calendar_month),
-                label: '캘린더',
+                label: 'calendar',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.bar_chart_sharp),
-                label: '통계자료',
+                label: 'chart',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.people),
-                label: '마이페이지',
+                label: 'my',
               ),
             ],
             onTap: (int index) {
@@ -1042,6 +1065,7 @@ class _HomePageState extends State<HomePage> {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
+              backgroundColor: Color.fromRGBO(248, 246, 232, 1),
               title: Text('expense'),
               content: SingleChildScrollView(
                 child: ListBody(
@@ -1085,13 +1109,15 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     DropdownButton<String>(
+                      dropdownColor: Color.fromRGBO(248, 246, 232, 1),
                       value: category,
                       iconSize: 24,
                       elevation: 16,
-                      style: TextStyle(color: Colors.deepPurple),
+                      style: TextStyle(
+                          color: Color.fromRGBO(1, 1, 1, 1), fontSize: 15),
                       underline: Container(
-                        height: 2,
-                        color: Colors.deepPurpleAccent,
+                        height: 1,
+                        color: Color.fromRGBO(1, 1, 1, 0.3),
                       ),
                       onChanged: (String? newValue) {
                         setState(() {
@@ -1102,22 +1128,49 @@ class _HomePageState extends State<HomePage> {
                           .map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
-                          child: Text(value),
+                          child: Text(value,
+                          ),
                         );
                       }).toList(),
                     ),
-                    TextField(
-                      decoration: InputDecoration(labelText: 'detail'),
-                      onChanged: (text) {
-                        itemName = text;
-                      },
+                    Theme(
+                      data: ThemeData(
+                        primaryColor: Color.fromRGBO(16, 34, 32, 1), 
+                      ),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          labelText: 'detail',
+                          labelStyle: TextStyle(color: Colors.black),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Color.fromRGBO(55, 115, 108, 1),
+                            ), 
+                          ),
+                        ),
+                        onChanged: (text) {
+                          itemName = text;
+                        },
+                      ),
                     ),
-                    TextField(
-                      decoration: InputDecoration(labelText: 'account'),
-                      keyboardType: TextInputType.number,
-                      onChanged: (text) {
-                        amount = double.parse(text);
-                      },
+                    Theme(
+                      data: ThemeData(
+    primaryColor: Color.fromRGBO(55, 115, 108, 1), 
+  ),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          labelText: 'account',
+                          labelStyle: TextStyle(color: Colors.black),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Color.fromRGBO(55, 115, 108, 1),
+                            ), // 밑줄 색상을 핑크색으로 지정
+                          ),
+                        ),
+                        keyboardType: TextInputType.number,
+                        onChanged: (text) {
+                          amount = double.parse(text);
+                        },
+                      ),
                     ),
                   ],
                 ),
@@ -1127,7 +1180,10 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('cancel'),
+                  child: Text(
+                    'cancel',
+                    style: TextStyle(color: Colors.black),
+                  ),
                 ),
                 TextButton(
                   onPressed: () {
@@ -1140,7 +1196,12 @@ class _HomePageState extends State<HomePage> {
                     );
                     Navigator.of(context).pop();
                   },
-                  child: Text('add'),
+                  child: Text(
+                    'add',
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                  ),
                 ),
               ],
             );
@@ -1160,6 +1221,7 @@ class _HomePageState extends State<HomePage> {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
+              backgroundColor: Color.fromRGBO(248, 246, 232, 1),
               title: Text('income'),
               content: SingleChildScrollView(
                 child: ListBody(
@@ -1203,7 +1265,15 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     TextField(
-                      decoration: InputDecoration(labelText: 'account'),
+                      decoration: InputDecoration(
+                        labelText: 'account',
+                        labelStyle: TextStyle(color: Colors.black),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color.fromRGBO(55, 115, 108, 1),
+                          ), // 밑줄 색상을 핑크색으로 지정
+                        ),
+                      ),
                       keyboardType: TextInputType.number,
                       onChanged: (text) {
                         amount = double.parse(text);
@@ -1217,7 +1287,10 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('cancel'),
+                  child: Text(
+                    'cancel',
+                    style: TextStyle(color: Colors.black),
+                  ),
                 ),
                 TextButton(
                   onPressed: () {
@@ -1227,7 +1300,10 @@ class _HomePageState extends State<HomePage> {
                     );
                     Navigator.of(context).pop();
                   },
-                  child: Text('add'),
+                  child: Text(
+                    'add',
+                    style: TextStyle(color: Colors.black),
+                  ),
                 ),
               ],
             );
