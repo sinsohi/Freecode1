@@ -326,10 +326,9 @@ class _calendarPageState extends State<calendarPage> {
                 shape: BoxShape.circle,
               ),
             ),
-            eventLoader: _getEventsForDay,
             calendarBuilders: CalendarBuilders(
-              markerBuilder: (context, date, dynamic event) {
-                if (event.isNotEmpty) {
+              markerBuilder: (context, date, dynamic events) {
+                if (events.isNotEmpty) {
                   return Container(
                     width: 35,
                     decoration: BoxDecoration(
