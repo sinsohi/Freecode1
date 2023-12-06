@@ -418,11 +418,13 @@ class _calendarPageState extends State<calendarPage> {
                                                 child: Text(
                                                   'breakdown of expenditure',
                                                   style: TextStyle(
-                                                      color: const Color(
-                                                          0xff37736c),
-                                                      fontSize: 20,
-                                                      fontWeight:
-                                                          FontWeight.bold),
+                                                    fontFamily: 'JAL', // 폰트 변경
+                                                    fontSize: 17, // 글자 크기 변경
+                                                    fontWeight: FontWeight
+                                                        .w100, // 글자 굵기 변경
+                                                    color: const Color(
+                                                        0xff37736c), // 글자 색상 변경
+                                                  ),
                                                 ),
                                               ),
                                               ...snapshot.data!.map((item) {
@@ -436,15 +438,27 @@ class _calendarPageState extends State<calendarPage> {
                                                       padding: EdgeInsets.only(
                                                           left:
                                                               24.0), // 좌측 여백 추가
-                                                      child: Text(
-                                                        'Item: ${item['itemName']} , Amount: ${item['amount']} won',
-                                                        style: TextStyle(
-                                                          color: Colors.black,
-
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          // 글자 색상 변경
-                                                        ),
+                                                      child: Row(
+                                                        children: <Widget>[
+                                                          Icon(Icons
+                                                              .check), // 체크 아이콘 추가
+                                                          SizedBox(
+                                                              width:
+                                                                  10), // 아이콘과 텍스트 사이의 간격 조정
+                                                          Text(
+                                                            'Item: ${item['itemName']} , Amount: ${item['amount']} won',
+                                                            style: TextStyle(
+                                                              fontFamily:
+                                                                  'JAL', // 폰트 변경
+                                                              fontSize:
+                                                                  14, // 글자 크기 변경
+                                                              fontWeight: FontWeight
+                                                                  .w100, // 글자 굵기 변경
+                                                              color: Colors
+                                                                  .black, // 글자 색상 변경
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
                                                     ),
                                                   ),
