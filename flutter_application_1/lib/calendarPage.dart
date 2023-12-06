@@ -98,28 +98,26 @@ class _calendarPageState extends State<calendarPage> {
           type: BottomNavigationBarType.fixed,
           selectedItemColor: Color.fromRGBO(248, 246, 232, 1),
           unselectedItemColor: Color.fromRGBO(248, 246, 232, 1),
-          selectedLabelStyle:
-              TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-          unselectedLabelStyle:
-              TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-          showSelectedLabels: true,
-          showUnselectedLabels: false,
+          selectedLabelStyle: TextStyle(
+              fontFamily: 'JAL', fontSize: 10, fontWeight: FontWeight.w100),
+          unselectedLabelStyle: TextStyle(
+              fontFamily: 'JAL', fontSize: 10, fontWeight: FontWeight.w100),
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
-              label: '홈',
+              label: 'home',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.calendar_month),
-              label: '캘린더',
+              label: 'calendar',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.bar_chart_sharp),
-              label: '통계자료',
+              label: 'chart',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.people),
-              label: '마이페이지',
+              label: 'my',
             ),
           ],
           onTap: (int index) {
@@ -129,8 +127,8 @@ class _calendarPageState extends State<calendarPage> {
                   context,
                   MaterialPageRoute(builder: (context) => HomePage()),
                 );
-// 홈 페이지로 이동
                 break;
+
               case 1:
                 // 캘린더 페이지로 이동
                 Navigator.push(
@@ -393,6 +391,7 @@ class _calendarPageState extends State<calendarPage> {
                                     context: context,
                                     builder: (BuildContext context) {
                                       return AlertDialog(
+                                        backgroundColor: Color(0xfff8f6e8),
                                         contentPadding: EdgeInsets.zero,
                                         insetPadding: EdgeInsets.all(
                                             20), // 이 값을 조절하여 전체 AlertDialog 크기 조절
@@ -409,20 +408,41 @@ class _calendarPageState extends State<calendarPage> {
                                             children: [
                                               Padding(
                                                 padding: EdgeInsets.only(
-                                                    bottom:
-                                                        10), // 이 값을 조절하여 텍스트와 리스트 사이의 간격을 조절
-                                                child: Text('지출 내역',
-                                                    style: TextStyle(
-                                                        fontSize: 20,
-                                                        fontWeight:
-                                                            FontWeight.bold)),
+                                                    top:
+                                                        20), // 이 값을 조절하여 원하는 만큼의 공간을 추가
+                                                child: Text(
+                                                  'breakdown of expenditure',
+                                                  style: TextStyle(
+                                                      color: const Color(
+                                                          0xff37736c),
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
                                               ),
                                               ...snapshot.data!.map((item) {
                                                 return Padding(
                                                   padding: EdgeInsets.only(
-                                                      top: 3), // 원하는 간격으로 조절
-                                                  child: Text(
-                                                      'Item: ${item['itemName']}, Amount: ${item['amount']}'),
+                                                      top: 6), // 원하는 간격으로 조절
+                                                  child: Align(
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    child: Padding(
+                                                      padding: EdgeInsets.only(
+                                                          left:
+                                                              24.0), // 좌측 여백 추가
+                                                      child: Text(
+                                                        'Item: ${item['itemName']} , Amount: ${item['amount']} won',
+                                                        style: TextStyle(
+                                                          color: Colors.black,
+
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          // 글자 색상 변경
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
                                                 );
                                               }).toList(),
                                             ],
@@ -430,7 +450,15 @@ class _calendarPageState extends State<calendarPage> {
                                         ),
                                         actions: <Widget>[
                                           TextButton(
-                                            child: Text('Close'),
+                                            child: Text(
+                                              'Close',
+                                              style: TextStyle(
+                                                fontWeight:
+                                                    FontWeight.bold, // 글자를 두껍게
+                                                color: const Color(
+                                                    0xff37736c), // 글자 색깔 변경
+                                              ),
+                                            ),
                                             onPressed: () {
                                               Navigator.of(context).pop();
                                             },
@@ -446,6 +474,11 @@ class _calendarPageState extends State<calendarPage> {
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10.0),
                                     color: const Color(0xff82a282),
+                                    border: Border.all(
+                                      // 테두리 추가
+                                      color: Colors.black, // 테두리 색상 설정
+                                      width: 2, // 테두리 두께 설정
+                                    ),
                                   ),
                                   margin: const EdgeInsets.all(8.0),
                                   child: Padding(
