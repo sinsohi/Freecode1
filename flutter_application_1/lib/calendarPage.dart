@@ -186,21 +186,22 @@ class _calendarPageState extends State<calendarPage> {
     return loadedExpenses;
   }
 
-  Future<List<Map<String, dynamic>>> _loadItemsForDay(DateTime day) async {
+  Future<List<Map<String, dynamic>>> _loadItemsForCategory(
+      String category, DateTime day) async {
     List<Map<String, dynamic>> loadedItems = [];
     String dayString = DateFormat('yyyy-MM-dd').format(day);
 
-    DataSnapshot snapshot = await expenseRef
-        .orderByChild('date')
-        .equalTo(dayString) // 선택한 날짜에 대해 일치하는 항목만 가져옴
-        .get();
+    DataSnapshot snapshot =
+        await expenseRef.orderByChild('date').equalTo(dayString).get();
 
     if (snapshot.value != null) {
       Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
 
       if (values != null) {
         values.forEach((key, value) {
-          if (value['itemName'] != null && value['amount'] != null) {
+          if (value['category'] == category &&
+              value['itemName'] != null &&
+              value['amount'] != null) {
             loadedItems.add({
               'itemName': value['itemName'],
               'amount': value['amount'],
@@ -375,7 +376,7 @@ class _calendarPageState extends State<calendarPage> {
                     itemBuilder: (BuildContext context, int index) {
                       var entry = categoryExpenses.entries.elementAt(index);
                       return FutureBuilder<List<Map<String, dynamic>>>(
-                        future: _loadItemsForDay(today),
+                        future: _loadItemsForCategory(entry.key, today),
                         builder: (BuildContext context,
                             AsyncSnapshot<List<Map<String, dynamic>>>
                                 snapshot) {
@@ -392,12 +393,40 @@ class _calendarPageState extends State<calendarPage> {
                                     context: context,
                                     builder: (BuildContext context) {
                                       return AlertDialog(
-                                        title: Text('${entry.key}'),
-                                        content: Column(
-                                          children: snapshot.data!.map((item) {
-                                            return Text(
-                                                'Item: ${item['itemName']}, Amount: ${item['amount']}');
-                                          }).toList(),
+                                        contentPadding: EdgeInsets.zero,
+                                        insetPadding: EdgeInsets.all(
+                                            20), // 이 값을 조절하여 전체 AlertDialog 크기 조절
+                                        content: Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.5, // 이 값을 조절하여 가로 크기 조절
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.5, // 이 값을 조절하여 세로 크기 조절
+                                          child: Column(
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.only(
+                                                    bottom:
+                                                        10), // 이 값을 조절하여 텍스트와 리스트 사이의 간격을 조절
+                                                child: Text('지출 내역',
+                                                    style: TextStyle(
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.bold)),
+                                              ),
+                                              ...snapshot.data!.map((item) {
+                                                return Padding(
+                                                  padding: EdgeInsets.only(
+                                                      top: 3), // 원하는 간격으로 조절
+                                                  child: Text(
+                                                      'Item: ${item['itemName']}, Amount: ${item['amount']}'),
+                                                );
+                                              }).toList(),
+                                            ],
+                                          ),
                                         ),
                                         actions: <Widget>[
                                           TextButton(
