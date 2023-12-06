@@ -448,7 +448,7 @@ class _calendarPageState extends State<calendarPage> {
                                                               width:
                                                                   2), // 아이콘과 텍스트 사이의 간격 조정
                                                           Text(
-                                                            'Item: ${item['itemName']} , Amount: ${item['amount']} won',
+                                                            'Item: ${item['itemName']} , amount: ${item['amount']} won',
                                                             style: TextStyle(
                                                               fontFamily:
                                                                   'JAL', // 폰트 변경
