@@ -1001,8 +1001,8 @@ Widget build(BuildContext context) {
         SizedBox(height: 16.0),
         Image.asset(
           'assets/Lovepik.png',
-          width: 170.0,
-          height: 170.0,
+          width: 175.0,
+          height: 175.0,
         ),
       ],
     ),
