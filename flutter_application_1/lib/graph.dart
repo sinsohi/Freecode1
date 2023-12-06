@@ -584,7 +584,7 @@ Widget build(BuildContext context) {
   return Scaffold(
     backgroundColor: Color(0xFFF8F6E8),
     appBar: AppBar(
-      title: Text('$currentMonth Expense Stats', style: TextStyle(fontFamily: 'JAL'),
+      title: Text('Expense Stats', style: TextStyle(fontFamily: 'JAL'),
 ),
       backgroundColor: Color(0xFF37736C),
     ), //상단
@@ -886,11 +886,7 @@ Widget build(BuildContext context) {
     ],
   ),
 ),
-               Container(
-  width: double.infinity,
-  height: 650,
-  color: Color(0xFFF8F6E8),
-),
+               
             ],
           ),
         ),
