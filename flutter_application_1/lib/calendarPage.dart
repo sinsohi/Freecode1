@@ -327,6 +327,7 @@ class _calendarPageState extends State<calendarPage> {
               ),
             ),
             calendarBuilders: CalendarBuilders(
+              //데이터를 가져와서 내역을 표시하도록
               markerBuilder: (context, date, dynamic events) {
                 return FutureBuilder<List<Map<String, dynamic>>>(
                   future: _loadExpensesForDay(date),
