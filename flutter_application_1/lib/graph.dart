@@ -363,7 +363,7 @@ Widget build(BuildContext context) {
   return Scaffold(
     backgroundColor: Color(0xFFF8F6E8),
     appBar: AppBar(
-      title: Text('$currentMonth', style: TextStyle(fontFamily: 'JAL'),
+      title: Text('$currentMonth Expense Stats', style: TextStyle(fontFamily: 'JAL'),
 ),
       backgroundColor: Color(0xFF37736C),
     ), //상단
