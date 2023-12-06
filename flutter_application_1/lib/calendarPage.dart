@@ -409,7 +409,8 @@ class _calendarPageState extends State<calendarPage> {
                                                 padding: EdgeInsets.only(
                                                     bottom:
                                                         10), // 이 값을 조절하여 텍스트와 리스트 사이의 간격을 조절
-                                                child: Text('지출 내역',
+                                                child: Text(
+                                                    'breakdown of expenditure ',
                                                     style: TextStyle(
                                                         fontSize: 20,
                                                         fontWeight:
