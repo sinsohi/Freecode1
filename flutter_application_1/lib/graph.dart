@@ -531,26 +531,26 @@ RowItem(
             type: BottomNavigationBarType.fixed,
             selectedItemColor: Color.fromRGBO(248, 246, 232, 1),
             unselectedItemColor: Color.fromRGBO(248, 246, 232, 1),
-            selectedLabelStyle:
-                TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-            unselectedLabelStyle:
-                TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+            selectedLabelStyle: TextStyle(
+                fontFamily: 'JAL', fontSize: 10, fontWeight: FontWeight.w100),
+            unselectedLabelStyle: TextStyle(
+                fontFamily: 'JAL', fontSize: 10, fontWeight: FontWeight.w100),
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
-                label: '홈',
+                label: 'home',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.calendar_month),
-                label: '캘린더',
+                label: 'calendar',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.bar_chart_sharp),
-                label: '통계자료',
+                label: 'chart',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.people),
-                label: '마이페이지',
+                label: 'my',
               ),
             ],
             onTap: (int index) {
