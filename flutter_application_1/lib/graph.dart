@@ -432,14 +432,16 @@ Widget build(BuildContext context) {
   textStyle: TextStyle(
     fontFamily: 'JAL',
     fontWeight: FontWeight.w100,
+    color: Colors.grey[700], // 진한 회색
   ),
 ),
-           RowItem(
+RowItem(
   color: Color.fromARGB(255, 255, 204, 77).withOpacity(1),
   label: 'leisure',
   textStyle: TextStyle(
     fontFamily: 'JAL',
     fontWeight: FontWeight.w100,
+    color: Colors.grey[700], // 진한 회색
   ),
 ),
 RowItem(
@@ -448,6 +450,7 @@ RowItem(
   textStyle: TextStyle(
     fontFamily: 'JAL',
     fontWeight: FontWeight.w100,
+    color: Colors.grey[700], // 진한 회색
   ),
 ),
 RowItem(
@@ -455,7 +458,8 @@ RowItem(
   label: 'shopping',
   textStyle: TextStyle(
     fontFamily: 'JAL',
-     fontWeight: FontWeight.w100,
+    fontWeight: FontWeight.w100,
+    color: Colors.grey[700], // 진한 회색
   ),
 ),
 RowItem(
@@ -463,9 +467,11 @@ RowItem(
   label: 'etc',
   textStyle: TextStyle(
     fontFamily: 'JAL',
-     fontWeight: FontWeight.w100,
+    fontWeight: FontWeight.w100,
+    color: Colors.grey[700], // 진한 회색
   ),
 ),
+
             //지출항목에 대한 RowItem 추가
           ],
         ),
@@ -478,7 +484,7 @@ RowItem(
             Expanded(
   flex: 3,
   child: Padding(
-    padding: EdgeInsets.only(bottom: 35.0), // 원하는 여백 값
+    padding: EdgeInsets.only(bottom: 36.0), // 원하는 여백 값
     child: FutureBuilder<List<HorizontalDetailsModel>>(
       future: generateBarChartData(),
       builder: (context, snapshot) {
