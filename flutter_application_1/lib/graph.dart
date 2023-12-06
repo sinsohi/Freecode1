@@ -190,9 +190,43 @@ Future<List<Map<String, dynamic>>> _loadExpenses() async {
   } else {
     print('Values is null');
   }
-
   return loadedExpenses;
 }
+
+Future<List<Map<String, dynamic>>> _loadLastMonthExpenses() async {
+  List<Map<String, dynamic>> loadedLastMonthExpenses = [];
+  DateTime now = DateTime.now();
+  DateTime firstDayOfLastMonth = DateTime(now.year, now.month - 1, 1);
+  DateTime lastDayOfLastMonth = DateTime(now.year, now.month, 0);
+
+  String firstDayOfLastMonthString = DateFormat('yyyy-MM-dd').format(firstDayOfLastMonth);
+  String lastDayOfLastMonthString = DateFormat('yyyy-MM-dd').format(lastDayOfLastMonth);
+
+  DataSnapshot snapshot = await expenseRef!
+      .orderByChild('date')
+      .startAt(firstDayOfLastMonthString)
+      .endAt(lastDayOfLastMonthString + '\uf8ff')
+      .get();
+
+  Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
+
+  if (values != null) {
+    values.forEach((key, value) {
+      loadedLastMonthExpenses.add({
+        'type': value['type'],
+        'amount': value['amount'],
+        'date': value['date'],
+        'category': value['category'],
+      });
+    });
+  } else {
+    print('Values is null');
+  }
+
+  return loadedLastMonthExpenses;
+}
+
+
 
 
     
@@ -221,6 +255,32 @@ Future<double> calculateTotalExpensesForCurrentMonth() async {
   return total;
 }
 
+Future<double> calculateTotalExpensesForLastMonth() async {
+  // 데이터 로드
+  List<Map<String, dynamic>> expenses = await _loadLastMonthExpenses();
+
+  DateTime now = DateTime.now();
+  DateTime firstDayOfLastMonth = DateTime(now.year, now.month - 1, 1);
+  DateTime lastDayOfLastMonth = DateTime(now.year, now.month, 0);
+
+  double LastMonthtotal = 0.0;
+
+  for (var expense in expenses) {
+    DateTime expenseDate = DateTime.parse(expense['date']);
+    
+    // 지출 날짜가 지난 달 내에 있는지 확인
+    if (expenseDate.isAfter(firstDayOfLastMonth.subtract(Duration(seconds: 1))) &&
+        expenseDate.isBefore(lastDayOfLastMonth.add(Duration(seconds: 1)))) {
+      LastMonthtotal += (expense['amount'] as num).toDouble();
+    }
+  }
+
+  //print('Total Expenses휴 해결~: $LastMonthtotal'); // 계산된 LastMonthtotal 확인
+
+  return LastMonthtotal;
+}
+
+
 
 
 //여기서 엄청 바꿔씀
@@ -229,7 +289,7 @@ Future<Map<String, double>> calculateDailyExpenses() async {
   List<Map<String, dynamic>> expenses = await _loadExpenses();
   
   Map<String, double> dailyExpenses = {};
-  //print('순찌먹고싶다: $expenses');
+  print('이번달은 순찌먹고싶다: $expenses');
 
 
   for (var expense in expenses) {
@@ -249,6 +309,32 @@ Future<Map<String, double>> calculateDailyExpenses() async {
 
   return dailyExpenses; //일별 지출 합계 계산
 }
+
+Future<Map<String, double>> calculateLastMonthDailyExpenses() async {
+  // 데이터 로드
+  List<Map<String, dynamic>> expenses = await _loadLastMonthExpenses();
+  
+  Map<String, double> LastMonthdailyExpenses = {};
+  print('지난달엔 해물파전 먹고싶었다: $expenses');
+
+  for (var expense in expenses) {
+    String date = expense['date']; // 날짜 가져옴
+    double amount = (expense['amount'] as num).toDouble(); 
+
+    // 날짜별로 지출 합계를 더함
+    if (LastMonthdailyExpenses.containsKey(date)) {
+      double newValue = LastMonthdailyExpenses[date]! + amount;
+      //print('Date: $date, Updated Value: $newValue');
+      LastMonthdailyExpenses[date] = newValue;
+    } else {
+      //print('Date: $date, Initial Value: $amount');
+      LastMonthdailyExpenses[date] = amount;
+    }
+  }
+
+  return LastMonthdailyExpenses; // 지난 달 일별 지출 합계 계산
+}
+
 
 
 
@@ -285,6 +371,40 @@ Future<List<HorizontalDetailsModel>> generateBarChartData() async {
 
   return barChartData;
 }
+
+Future<List<HorizontalDetailsModel>> generateBarChartLastMonthData() async {
+  Map<String, double> LastMonthdailyExpenses = await calculateLastMonthDailyExpenses();
+  double maxExpense = getMaxExpense(LastMonthdailyExpenses);
+
+  List<HorizontalDetailsModel> barChartLastMonthData = [];
+  DateTime now = DateTime.now();
+  int lastDayOfLastMonth = DateTime(now.year, now.month, 0).day;
+
+  for (int day = 1; day <= lastDayOfLastMonth; day++) {
+    String dateString = DateFormat('yyyy-MM-dd').format(DateTime(now.year, now.month - 1, day));
+
+    double expenseAmount = LastMonthdailyExpenses.containsKey(dateString)
+        ? LastMonthdailyExpenses[dateString]!
+        : 0.0;
+
+    if (expenseAmount > 0) {
+      Color barColor = getColorForExpense(expenseAmount, maxExpense);
+
+      barChartLastMonthData.add(
+        HorizontalDetailsModel(
+          name: '$day일',
+          color: barColor,
+          size: expenseAmount,
+          sizeTwo: expenseAmount,
+          colorTwo: barColor,
+        ),
+      );
+    }
+  }
+
+  return barChartLastMonthData;
+}
+
 
 
 double getMaxExpense(Map<String, double> dailyExpenses) {
@@ -352,6 +472,31 @@ Future<List<PieModel>> generatePieChartData() async {
   return model;
 }
 
+Future<List<PieModel>> generatePieChartLastMonthData() async {
+  double lastMonthTotalExpenses = await calculateTotalExpensesForLastMonth();
+  Map<String, double> categoryLastMonthExpenses = await calculateCategoryLastMonthExpenses();
+
+  List<PieModel> modelLastMonth = [];
+
+  DateTime now = DateTime.now();
+  String lastMonth = DateFormat('yyyy-MM').format(DateTime(now.year, now.month - 1, 1));
+
+  categoryLastMonthExpenses.forEach((category, amount) {
+    if (amount > 0) {
+      double percentage = lastMonthTotalExpenses != 0.0 ? (amount / lastMonthTotalExpenses * 100) : 0.0;
+
+      modelLastMonth.add(PieModel(
+        count: percentage,
+        color: getCategoryColor(category),
+        category: category,
+      ));
+    }
+  });
+
+  return modelLastMonth;
+}
+
+
 
 
 
@@ -409,6 +554,24 @@ Color getCategoryColor(String category) {
 }
 
 
+Future<Map<String, double>> calculateCategoryLastMonthExpenses() async {
+  // 데이터 로드
+  List<Map<String, dynamic>> loadedLastMonthExpenses = await _loadLastMonthExpenses();
+
+  // 지난 달 지출을 카테고리로 그룹화하고 계산
+  var groupedLastMonthExpenses = groupExpensesByCategory(loadedLastMonthExpenses);
+
+  Map<String, double> categoryLastMonthExpenses = {};
+  groupedLastMonthExpenses.forEach((category, expenses) {
+    double total = 0.0;
+    for (var expense in expenses) {
+      total += (expense['amount'] as num).toDouble();
+    }
+    categoryLastMonthExpenses[category] = total;
+  });
+
+  return categoryLastMonthExpenses;
+}
 
 
 
@@ -431,10 +594,7 @@ Widget build(BuildContext context) {
           child: PageView(
             scrollDirection: Axis.horizontal,
             children:[
-              Container(width: double.infinity, height: 300, color: Colors.black,), //요 세줄 바꿔야되는데 이 셋은 위에있는 height보다 작아야함
-              Container(width: double.infinity, height: 300, color: Colors.amber,),
-               Container(width: double.infinity, height: 650,
-              child: expenses.isEmpty ? _buildNoExpensesPage()
+              Container(width: double.infinity, height: 650, color: Color(0xFFF8F6E8),child: expenses.isEmpty ? _buildNoExpensesPage()
                   : Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -582,7 +742,155 @@ Widget build(BuildContext context) {
                 )
                     ],
                 ),
-            ),
+            ),//컨테이너 하나(현재 해당하는 달)), //요 세줄 바꿔야되는데 이 셋은 위에있는 height보다 작아야함
+              Container(width: double.infinity, height: 650, color: Color(0xFFF8F6E8),
+              child: expenses.isEmpty ? _buildNoExpensesPage() : Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      margin: EdgeInsets.only(top: 10),
+                      width: MediaQuery.of(context).size.width * 0.7,
+                      height: MediaQuery.of(context).size.width * 0.7,
+                      child: FutureBuilder<List<PieModel>>(
+                        future: generatePieChartLastMonthData(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.done) {
+                            if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            }
+
+                            List<PieModel> modelLastMonth = snapshot.data ?? [];
+
+                            return AnimatedBuilder(
+                              animation: animationController,
+                              builder: (context, child) {
+                                if (animationController.value < 0.1) {
+                                  return const SizedBox();
+                                }
+                                return CustomPaint(
+                                  size: Size(
+                                    MediaQuery.of(context).size.width,
+                                    200,
+                                  ),
+                                  painter: _PieChart(modelLastMonth, animationController),
+                                );
+                              },
+                            );
+                          } else {
+                            return CircularProgressIndicator();
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Stack(
+                    alignment: Alignment.centerRight,
+                    children: [
+                      Positioned(
+                        left: 400.0,
+                        top: 8.0,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            RowItem(
+                              color: Color.fromARGB(255, 129, 201, 134).withOpacity(1),
+                              label: 'food',
+                              textStyle: TextStyle(
+                                fontFamily: 'JAL',
+                                fontWeight: FontWeight.w100,
+                                color: Colors.grey[750],
+                                fontSize: 12.0,
+                              ),
+                            ),
+                            RowItem(
+                              color: Color.fromARGB(255, 255, 204, 77).withOpacity(1),
+                              label: 'leisure',
+                              textStyle: TextStyle(
+                                fontFamily: 'JAL',
+                                fontWeight: FontWeight.w100,
+                                color: Colors.grey[750],
+                                fontSize: 12.0,
+                              ),
+                            ),
+                            RowItem(
+                              color: Color.fromARGB(255, 175, 246, 255).withOpacity(1),
+                              label: 'traffic',
+                              textStyle: TextStyle(
+                                fontFamily: 'JAL',
+                                fontWeight: FontWeight.w100,
+                                color: Colors.grey[750],
+                                fontSize: 12.0,
+                              ),
+                            ),
+                            RowItem(
+                              color: Color.fromARGB(255, 219, 133, 196).withOpacity(1),
+                              label: 'shopping',
+                              textStyle: TextStyle(
+                                fontFamily: 'JAL',
+                                fontWeight: FontWeight.w100,
+                                color: Colors.grey[750],
+                                fontSize: 12.0,
+                              ),
+                            ),
+                            RowItem(
+                              color: Color.fromARGB(255, 226, 226, 226).withOpacity(1),
+                              label: 'etc',
+                              textStyle: TextStyle(
+                                fontFamily: 'JAL',
+                                fontWeight: FontWeight.w100,
+                                color: Colors.grey[750],
+                                fontSize: 12.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 40.0),
+                    child: FutureBuilder<List<HorizontalDetailsModel>>(
+                      future: generateBarChartLastMonthData(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          }
+
+                          List<HorizontalDetailsModel> barChartDataLastMonth = snapshot.data ?? [];
+
+                          return SimpleBarChart(
+                            makeItDouble: true,
+                            listOfHorizontalBarData: barChartDataLastMonth,
+                            verticalInterval: 50000,
+                            horizontalBarPadding: 20,
+                          );
+                        } else {
+                          return CircularProgressIndicator();
+ }
+            },
+          ),
+        ),
+      )
+    ],
+  ),
+),
+               Container(
+  width: double.infinity,
+  height: 650,
+  color: Color(0xFFF8F6E8),
+),
             ],
           ),
         ),
