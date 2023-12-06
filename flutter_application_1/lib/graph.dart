@@ -491,7 +491,7 @@ RowItem(
             Expanded(
   flex: 3,
   child: Padding(
-    padding: EdgeInsets.only(bottom: 36.0), // 원하는 여백 값
+    padding: EdgeInsets.only(bottom: 40.0), // 원하는 여백 값
     child: FutureBuilder<List<HorizontalDetailsModel>>(
       future: generateBarChartData(),
       builder: (context, snapshot) {
