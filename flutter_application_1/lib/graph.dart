@@ -145,7 +145,7 @@ class _graphState extends State<graph> with TickerProviderStateMixin  {
   Map<String, double> categoryExpenses = await calculateCategoryExpenses();
   print('Category Expenses: $categoryExpenses');
 
-     //print('엥 여기선 나오나 Loaded Expenses: $expenses');
+     
     expensesFuture = _loadExpenses();
      setState(() {}); // UI 업데이트를 위해 setState 호출
 }
@@ -239,7 +239,6 @@ Future<double> calculateTotalExpensesForCurrentMonth() async {
     }
   }
 
-  //print('Total Expenses휴 해결~: $total'); // 계산된 total 확인
 
   return total;
 }
@@ -265,7 +264,7 @@ Future<double> calculateTotalExpensesForLastMonth() async {
     }
   }
 
-  //print('Total Expenses휴 해결~: $LastMonthtotal'); // 계산된 LastMonthtotal 확인
+  
 
   return LastMonthtotal;
 }
@@ -279,7 +278,7 @@ Future<Map<String, double>> calculateDailyExpenses() async {
   List<Map<String, dynamic>> expenses = await _loadExpenses();
   
   Map<String, double> dailyExpenses = {};
-  print('이번달은 순찌먹고싶다: $expenses');
+
 
 
   for (var expense in expenses) {
@@ -305,7 +304,6 @@ Future<Map<String, double>> calculateLastMonthDailyExpenses() async {
   List<Map<String, dynamic>> expenses = await _loadLastMonthExpenses();
   
   Map<String, double> LastMonthdailyExpenses = {};
-  print('지난달엔 해물파전 먹고싶었다: $expenses');
 
   for (var expense in expenses) {
     String date = expense['date']; // 날짜 가져옴
@@ -454,10 +452,6 @@ Future<List<PieModel>> generatePieChartData() async {
       ));
     }
   });
-
-  //print('돼라돼라 total Expenses: $totalExpenses');
-  //print('진짜됨 ㄹㅇCategory Expenses: $categoryExpenses');
-  //print(model);
 
   return model;
 }
