@@ -141,7 +141,7 @@ class _graphState extends State<graph> with TickerProviderStateMixin  {
   Map<String, double> categoryExpenses = await calculateCategoryExpenses();
   print('Category Expenses: $categoryExpenses');
 
-     print('엥 여기선 나오나 Loaded Expenses: $expenses');
+     //print('엥 여기선 나오나 Loaded Expenses: $expenses');
     expensesFuture = _loadExpenses();
      setState(() {}); // UI 업데이트를 위해 setState 호출
 }
@@ -201,7 +201,7 @@ Future<double> calculateTotalExpensesForCurrentMonth() async {
     }
   }
 
-  print('Total Expenses휴 해결~: $total'); // 계산된 total 확인
+  //print('Total Expenses휴 해결~: $total'); // 계산된 total 확인
 
   return total;
 }
@@ -214,7 +214,7 @@ Future<Map<String, double>> calculateDailyExpenses() async {
   List<Map<String, dynamic>> expenses = await _loadExpenses();
   
   Map<String, double> dailyExpenses = {};
-  print('순찌먹고싶다: $expenses');
+  //print('순찌먹고싶다: $expenses');
 
 
   for (var expense in expenses) {
@@ -224,10 +224,10 @@ Future<Map<String, double>> calculateDailyExpenses() async {
     // 날짜별로 지출 합계를 더함
     if (dailyExpenses.containsKey(date)) {
       double newValue = dailyExpenses[date]! + amount;
-      print('Date: $date, Updated Value: $newValue');
+      //print('Date: $date, Updated Value: $newValue');
       dailyExpenses[date] = newValue;
     } else {
-      print('Date: $date, Initial Value: $amount');
+      //print('Date: $date, Initial Value: $amount');
       dailyExpenses[date] = amount;
     }
   }
@@ -250,7 +250,7 @@ Future<List<HorizontalDetailsModel>> generateBarChartData() async {
         ? dailyExpenses[dateString]!
         : 0.0;
 
-    print('막대그래프 Day: $day, Expense Amount: $expenseAmount');
+    //print('막대그래프 Day: $day, Expense Amount: $expenseAmount');
 
     if (expenseAmount > 0) {
       barChartData.add(
@@ -289,9 +289,9 @@ Future<List<PieModel>> generatePieChartData() async {
     }
   });
 
-  print('돼라돼라 total Expenses: $totalExpenses');
-  print('진짜됨 ㄹㅇCategory Expenses: $categoryExpenses');
-  print(model);
+  //print('돼라돼라 total Expenses: $totalExpenses');
+  //print('진짜됨 ㄹㅇCategory Expenses: $categoryExpenses');
+  //print(model);
 
   return model;
 }
