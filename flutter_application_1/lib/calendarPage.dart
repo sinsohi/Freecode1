@@ -432,10 +432,10 @@ class _calendarPageState extends State<calendarPage> {
                                                           left:
                                                               24.0), // 좌측 여백 추가
                                                       child: Text(
-                                                        'Item: ${item['itemName']} , Amount: ${item['amount']}',
+                                                        'Item: ${item['itemName']} , Amount: ${item['amount']} won',
                                                         style: TextStyle(
-                                                          color: const Color(
-                                                              0xff37736c),
+                                                          color: Colors.black,
+
                                                           fontWeight:
                                                               FontWeight.bold,
                                                           // 글자 색상 변경
