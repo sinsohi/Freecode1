@@ -437,14 +437,16 @@ class _calendarPageState extends State<calendarPage> {
                                                     child: Padding(
                                                       padding: EdgeInsets.only(
                                                           left:
-                                                              24.0), // 좌측 여백 추가
+                                                              14.0), // 좌측 여백 추가
                                                       child: Row(
                                                         children: <Widget>[
-                                                          Icon(Icons
-                                                              .check), // 체크 아이콘 추가
+                                                          Icon(
+                                                              Icons
+                                                                  .fiber_manual_record,
+                                                              size: 10),
                                                           SizedBox(
                                                               width:
-                                                                  10), // 아이콘과 텍스트 사이의 간격 조정
+                                                                  2), // 아이콘과 텍스트 사이의 간격 조정
                                                           Text(
                                                             'Item: ${item['itemName']} , Amount: ${item['amount']} won',
                                                             style: TextStyle(
