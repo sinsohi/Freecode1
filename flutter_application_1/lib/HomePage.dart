@@ -302,6 +302,7 @@ class _HomePageState extends State<HomePage> {
                       letterSpacing: 1.5,
                       fontFamily: 'JAL'),
                 ),
+                
               ],
             ),
           ),
