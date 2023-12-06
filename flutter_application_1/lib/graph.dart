@@ -103,13 +103,17 @@ class _graphState extends State<graph> with TickerProviderStateMixin  {
       duration: Duration(milliseconds: 1200), // 1.2 seconds // 애니메이션 기간을 1.5초로 설정
       
     );
-     startAnimation(); // 여기서 애니메이션 시작
-     print('애니메이션: ${animationController.value}');
 
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+     startAnimation(); // 여기서 애니메이션 시작
+     
+    });
   }
 
   void startAnimation() {
+   if (mounted) {
     animationController.forward();
+  }
   }
 
   @override
@@ -654,6 +658,7 @@ class _PieChart extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
+
 
 
 
