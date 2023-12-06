@@ -612,7 +612,7 @@ Widget build(BuildContext context) {
     child: Text(
         '$currentMonth                                                                          ',
       style: TextStyle(
-        color: Colors.black,
+        color: const Color.fromARGB(255, 52, 52, 52),
         fontWeight: FontWeight.bold,
         fontSize: 18, // 원하는 크기로 조절
         fontFamily: 'JAL', // 사용할 폰트로 변경
@@ -779,7 +779,7 @@ Widget build(BuildContext context) {
     child: Text(
         '$formattedLastMonth                                                                           ',
       style: TextStyle(
-        color: Colors.black,
+        color: const Color.fromARGB(255, 52, 52, 52),
         fontWeight: FontWeight.bold,
         fontSize: 18, // 원하는 크기로 조절
         fontFamily: 'JAL', // 사용할 폰트로 변경
