@@ -405,7 +405,7 @@ Color getColorForExpense(double expenseAmount, double maxExpense) {
   // 연한 초록색
   final Color startColor = Color(0xFF37736C);
   // 최종 색상
-  final Color endColor = Colors.green; // 여기에 원하는 최종 색상을 설정
+  final Color endColor = const Color.fromARGB(255, 97, 198, 101); // 여기에 원하는 최종 색상을 설정
 
   // 현재 지출에 대한 비율 계산
   double ratio = expenseAmount / maxExpense;
