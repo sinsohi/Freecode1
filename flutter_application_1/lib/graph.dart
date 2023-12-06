@@ -596,7 +596,7 @@ RowItem(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-  'No expense records,\nor they are currently loading!',
+  'No expense records,\n\nor they are currently loading!',
   style: TextStyle(
     fontSize: 25.0,
     fontWeight: FontWeight.bold,
@@ -608,8 +608,8 @@ RowItem(
         SizedBox(height: 16.0),
         Image.asset(
           'assets/Lovepik.png',
-          width: 150.0,
-          height: 150.0,
+          width: 170.0,
+          height: 170.0,
         ),
       ],
     ),
