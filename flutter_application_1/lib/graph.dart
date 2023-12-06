@@ -5,7 +5,6 @@ import 'package:unique_simple_bar_chart/horizontal_bar.dart';
 import 'package:unique_simple_bar_chart/horizontal_line.dart';
 import 'package:unique_simple_bar_chart/simple_bar_chart.dart';
 import 'package:pie_chart/pie_chart.dart';
-import 'dart:math';
 import 'dart:math' as math;
 import 'calendarPage.dart'; //바텀네비게이션바
 import 'graph.dart';
@@ -20,6 +19,22 @@ import 'dart:ui';
 
 
 final String currentMonth = DateFormat('MMMM').format(DateTime.now());
+
+/*class HorizontalDetailsModel {
+  final String name;
+  final Color color;
+  final double size;
+  final double? sizeTwo;
+  final Color? colorTwo;
+
+  HorizontalDetailsModel({
+    required this.name,
+    required this.color,
+    required this.size,
+    this.sizeTwo,
+    this.colorTwo,
+  });
+}*/
 
 class RowItem extends StatelessWidget {
   final Color color;
@@ -410,154 +425,169 @@ Widget build(BuildContext context) {
 ),
       backgroundColor: Color(0xFF37736C),
     ), //상단
-    body: expenses.isEmpty ? _buildNoExpensesPage()
-        : Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Expanded(
-          flex: 2,
-          child: Align(
-            alignment: Alignment.center,
-            child: Container(
-              margin: EdgeInsets.only(top: 10), // 조절하고자 하는 여백 값. 숫자 커질수록 아래로
-              width: MediaQuery.of(context).size.width * 0.7,
-              height: MediaQuery.of(context).size.width * 0.7, //파이차트의 높이
-              child: FutureBuilder<List<PieModel>>(
-                future: generatePieChartData(),
+    body: Container(width: double.infinity, height: double.infinity,//이거 고정
+      child: SingleChildScrollView(
+        child: Container(width: double.infinity, height: 650,//이거
+          child: PageView(
+            scrollDirection: Axis.horizontal,
+            children:[
+              Container(width: double.infinity, height: 300, color: Colors.black,), //요 세줄 바꿔야되는데 이 셋은 위에있는 height보다 작아야함
+              Container(width: double.infinity, height: 300, color: Colors.amber,),
+               Container(width: double.infinity, height: 650,
+              child: expenses.isEmpty ? _buildNoExpensesPage()
+                  : Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                        margin: EdgeInsets.only(top: 10), // 조절하고자 하는 여백 값. 숫자 커질수록 아래로
+                        width: MediaQuery.of(context).size.width * 0.7,
+                        height: MediaQuery.of(context).size.width * 0.7, //파이차트의 높이
+                        child: FutureBuilder<List<PieModel>>(
+                          future: generatePieChartData(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.done) {
+                              if (snapshot.hasError) {
+                                return Text('Error: ${snapshot.error}');
+                              }
+                
+                              List<PieModel> model = snapshot.data ?? [];
+                
+                
+                              return AnimatedBuilder(
+                                        animation: animationController,
+                                        builder: (context, child) {
+                                           if (animationController.value < 0.1) {
+                          return const SizedBox();
+                        }
+                              return CustomPaint(
+                                size: Size(
+                                  MediaQuery.of(context).size.width,
+                                  200, //파이차트 높이
+                                ),
+                                painter: _PieChart(model, animationController),
+                              );
+                            },
+                );
+                            } else {
+                              // Future가 완료되지 않았을 때 반환할 위젯
+                              return CircularProgressIndicator();
+                            }
+                          }
+                        ),
+                    ),
+                      ),
+                    ),
+                Expanded(
+                  flex: 1,
+                  child: Stack(
+                    alignment: Alignment.centerRight,
+                    children: [
+                      Positioned(
+                        left: 400.0, //여백 조절(숫자 늘리면 오른쪽으로 감)
+                        top: 8.0, // 여백 및 이동 조절(숫자 커질수록 텍스트 위로 올라감)
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
+                          children: [
+                            RowItem(
+              color: Color.fromARGB(255, 129, 201, 134).withOpacity(1),
+              label: 'food',
+              textStyle: TextStyle(
+              fontFamily: 'JAL',
+              fontWeight: FontWeight.w100,
+              color: Colors.grey[750], // 진한 회색
+              fontSize: 12.0,
+              ),
+                ),
+                RowItem(
+              color: Color.fromARGB(255, 255, 204, 77).withOpacity(1),
+              label: 'leisure',
+              textStyle: TextStyle(
+              fontFamily: 'JAL',
+              fontWeight: FontWeight.w100,
+              color: Colors.grey[750], // 진한 회색
+              fontSize: 12.0,
+              ),
+                ),
+                RowItem(
+              color: Color.fromARGB(255, 175, 246, 255).withOpacity(1),
+              label: 'traffic',
+              textStyle: TextStyle(
+              fontFamily: 'JAL',
+              fontWeight: FontWeight.w100,
+              color: Colors.grey[750], // 진한 회색
+              fontSize: 12.0,
+              ),
+                ),
+                RowItem(
+              color: Color.fromARGB(255, 219, 133, 196).withOpacity(1),
+              label: 'shopping',
+              textStyle: TextStyle(
+              fontFamily: 'JAL',
+              fontWeight: FontWeight.w100,
+              color: Colors.grey[750], // 진한 회색
+              fontSize: 12.0,
+              ),
+                ),
+                RowItem(
+              color: Color.fromARGB(255, 226, 226, 226).withOpacity(1),
+              label: 'etc',
+              textStyle: TextStyle(
+              fontFamily: 'JAL',
+              fontWeight: FontWeight.w100,
+              color: Colors.grey[750], // 진한 회색
+              fontSize: 12.0,
+              ),
+                ),
+                
+                      //지출항목에 대한 RowItem 추가
+                    ],
+                  ),
+                ),
+                    ],
+                  ),
+                ),
+               
+                    //여기에 막대그래프 추가
+                      Expanded(
+              flex: 3,
+              child: Padding(
+              padding: EdgeInsets.only(bottom: 40.0), // 원하는 여백 값
+              child: FutureBuilder<List<HorizontalDetailsModel>>(
+                future: generateBarChartData(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     if (snapshot.hasError) {
                       return Text('Error: ${snapshot.error}');
                     }
-
-                    List<PieModel> model = snapshot.data ?? [];
-
-
-                    return AnimatedBuilder(
-                              animation: animationController,
-                              builder: (context, child) {
-                                 if (animationController.value < 0.1) {
-                return const SizedBox();
-              }
-                    return CustomPaint(
-                      size: Size(
-                        MediaQuery.of(context).size.width,
-                        200, //파이차트 높이
-                      ),
-                      painter: _PieChart(model, animationController),
+                
+                    List<HorizontalDetailsModel> barChartData = snapshot.data ?? [];
+                
+                    return SimpleBarChart(
+                      makeItDouble: true,
+                      listOfHorizontalBarData: barChartData,
+                      verticalInterval: 50000,
+                      horizontalBarPadding: 20,
                     );
-                  },
-);
                   } else {
-                    // Future가 완료되지 않았을 때 반환할 위젯
                     return CircularProgressIndicator();
                   }
-                }
+                },
               ),
-          ),
+              ),
+                )
+                    ],
+                ),
             ),
+            ],
           ),
-      Expanded(
-        flex: 1,
-        child: Stack(
-          alignment: Alignment.centerRight,
-          children: [
-            Positioned(
-              left: 400.0, //여백 조절(숫자 늘리면 오른쪽으로 감)
-              top: 8.0, // 여백 및 이동 조절(숫자 커질수록 텍스트 위로 올라감)
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
-                children: [
-                  RowItem(
-  color: Color.fromARGB(255, 129, 201, 134).withOpacity(1),
-  label: 'food',
-  textStyle: TextStyle(
-    fontFamily: 'JAL',
-    fontWeight: FontWeight.w100,
-    color: Colors.grey[750], // 진한 회색
-    fontSize: 12.0,
-  ),
-),
-RowItem(
-  color: Color.fromARGB(255, 255, 204, 77).withOpacity(1),
-  label: 'leisure',
-  textStyle: TextStyle(
-    fontFamily: 'JAL',
-    fontWeight: FontWeight.w100,
-    color: Colors.grey[750], // 진한 회색
-    fontSize: 12.0,
-  ),
-),
-RowItem(
-  color: Color.fromARGB(255, 175, 246, 255).withOpacity(1),
-  label: 'traffic',
-  textStyle: TextStyle(
-    fontFamily: 'JAL',
-    fontWeight: FontWeight.w100,
-    color: Colors.grey[750], // 진한 회색
-    fontSize: 12.0,
-  ),
-),
-RowItem(
-  color: Color.fromARGB(255, 219, 133, 196).withOpacity(1),
-  label: 'shopping',
-  textStyle: TextStyle(
-    fontFamily: 'JAL',
-    fontWeight: FontWeight.w100,
-    color: Colors.grey[750], // 진한 회색
-    fontSize: 12.0,
-  ),
-),
-RowItem(
-  color: Color.fromARGB(255, 226, 226, 226).withOpacity(1),
-  label: 'etc',
-  textStyle: TextStyle(
-    fontFamily: 'JAL',
-    fontWeight: FontWeight.w100,
-    color: Colors.grey[750], // 진한 회색
-    fontSize: 12.0,
-  ),
-),
-
-            //지출항목에 대한 RowItem 추가
-          ],
         ),
       ),
-          ],
-        ),
-      ),
-   
-          //여기에 막대그래프 추가
-            Expanded(
-  flex: 3,
-  child: Padding(
-    padding: EdgeInsets.only(bottom: 40.0), // 원하는 여백 값
-    child: FutureBuilder<List<HorizontalDetailsModel>>(
-      future: generateBarChartData(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          }
-
-          List<HorizontalDetailsModel> barChartData = snapshot.data ?? [];
-
-          return SimpleBarChart(
-            makeItDouble: true,
-            listOfHorizontalBarData: barChartData,
-            verticalInterval: 50000,
-            horizontalBarPadding: 20,
-          );
-        } else {
-          return CircularProgressIndicator();
-        }
-      },
     ),
-  ),
-)
-          ],
-      ),
       bottomNavigationBar: Container( //여기서부턴 바텀네비게이션바(하단)
           decoration: BoxDecoration(
             boxShadow: const <BoxShadow>[
