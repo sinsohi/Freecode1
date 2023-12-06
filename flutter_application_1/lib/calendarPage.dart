@@ -433,7 +433,14 @@ class _calendarPageState extends State<calendarPage> {
                                         ),
                                         actions: <Widget>[
                                           TextButton(
-                                            child: Text('Close'),
+                                            child: Text(
+                                              'Close',
+                                              style: TextStyle(
+                                                fontWeight:
+                                                    FontWeight.bold, // 글자를 두껍게
+                                                color: Colors.red, // 글자 색깔 변경
+                                              ),
+                                            ),
                                             onPressed: () {
                                               Navigator.of(context).pop();
                                             },
