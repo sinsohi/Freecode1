@@ -28,25 +28,27 @@ class RowItem extends StatelessWidget {
   RowItem({required this.color, required this.label, required this.textStyle});
 
 
-@override
-Widget build(BuildContext context) {
-  return Row(
-    children: [
-      Container(
-        width: 10, // 작은 네모 너비 조절
-        height: 10, // 작은 네모 높이 조절
-        color: color,
-      ),
-      SizedBox(width: 6), // 네모와 텍스트 간 간격 조절
-      Text(
-        label,
-        style: textStyle, // textStyle 적용
-      ),
-    ],
-  );
-}
-}
 
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 10, // 작은 네모 너비 조절
+          height: 10, // 작은 네모 높이 조절
+          color: color,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0), // 라벨과 다음 라벨 간 간격 조절
+          child: Text(
+            label,
+            style: textStyle, // textStyle 적용
+          ),
+        ),
+      ],
+    );
+  }
+}
 
 class PieModel {
   final double count;
@@ -432,7 +434,8 @@ Widget build(BuildContext context) {
   textStyle: TextStyle(
     fontFamily: 'JAL',
     fontWeight: FontWeight.w100,
-    color: Colors.grey[700], // 진한 회색
+    color: Colors.grey[750], // 진한 회색
+    fontSize: 12.0,
   ),
 ),
 RowItem(
@@ -441,7 +444,8 @@ RowItem(
   textStyle: TextStyle(
     fontFamily: 'JAL',
     fontWeight: FontWeight.w100,
-    color: Colors.grey[700], // 진한 회색
+    color: Colors.grey[750], // 진한 회색
+    fontSize: 12.0,
   ),
 ),
 RowItem(
@@ -450,7 +454,8 @@ RowItem(
   textStyle: TextStyle(
     fontFamily: 'JAL',
     fontWeight: FontWeight.w100,
-    color: Colors.grey[700], // 진한 회색
+    color: Colors.grey[750], // 진한 회색
+    fontSize: 12.0,
   ),
 ),
 RowItem(
@@ -459,7 +464,8 @@ RowItem(
   textStyle: TextStyle(
     fontFamily: 'JAL',
     fontWeight: FontWeight.w100,
-    color: Colors.grey[700], // 진한 회색
+    color: Colors.grey[750], // 진한 회색
+    fontSize: 12.0,
   ),
 ),
 RowItem(
@@ -468,7 +474,8 @@ RowItem(
   textStyle: TextStyle(
     fontFamily: 'JAL',
     fontWeight: FontWeight.w100,
-    color: Colors.grey[700], // 진한 회색
+    color: Colors.grey[750], // 진한 회색
+    fontSize: 12.0,
   ),
 ),
 
