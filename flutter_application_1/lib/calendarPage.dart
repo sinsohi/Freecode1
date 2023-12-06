@@ -327,18 +327,34 @@ class _calendarPageState extends State<calendarPage> {
               ),
             ),
             calendarBuilders: CalendarBuilders(
+              //데이터를 가져와서 내역을 표시하도록
               markerBuilder: (context, date, dynamic events) {
-                if (events.isNotEmpty) {
-                  return Container(
-                    width: 35,
-                    decoration: BoxDecoration(
-                      color: Colors.blue.withOpacity(0.2),
-                      shape: BoxShape.circle,
-                    ),
-                  );
-                } else {
-                  return Container(); // event가 비어있을 때는 빈 컨테이너 반환
-                }
+                return FutureBuilder<List<Map<String, dynamic>>>(
+                  future: _loadExpensesForDay(date),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      // return Text('오류 발생: ${snapshot.error}');
+                      return Text('오류 발생: $snapshot'); // 전체 snapshot 출력
+                    } else {
+                      List<Map<String, dynamic>> loadedExpenses =
+                          snapshot.data ?? [];
+
+                      if (loadedExpenses.isNotEmpty) {
+                        return Container(
+                          width: 35,
+                          decoration: BoxDecoration(
+                            color: Colors.blue.withOpacity(0.2),
+                            shape: BoxShape.circle,
+                          ),
+                        );
+                      } else {
+                        return Container();
+                      }
+                    }
+                  },
+                );
               },
             ),
           ),
