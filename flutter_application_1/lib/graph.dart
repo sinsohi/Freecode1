@@ -104,12 +104,11 @@ class _graphState extends State<graph> with TickerProviderStateMixin  {
       
     );
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-     startAnimation(); // 여기서 애니메이션 시작
-     
+    // 위젯이 화면에 나타난 후 애니메이션 시작
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      startAnimation();
     });
   }
-
   void startAnimation() {
    if (mounted) {
     animationController.forward();
