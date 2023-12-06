@@ -376,7 +376,7 @@ Widget build(BuildContext context) {
           child: Align(
             alignment: Alignment.center,
             child: Container(
-              margin: EdgeInsets.only(top: 20), // 조절하고자 하는 여백 값. 숫자 커질수록 아래로
+              margin: EdgeInsets.only(top: 10), // 조절하고자 하는 여백 값. 숫자 커질수록 아래로
               width: MediaQuery.of(context).size.width * 0.7,
               height: MediaQuery.of(context).size.width * 0.7, //파이차트의 높이
               child: FutureBuilder<List<PieModel>>(
