@@ -595,8 +595,8 @@ RowItem(
         SizedBox(height: 16.0),
         Image.asset(
           'assets/Lovepik.png',
-          width: 100.0,
-          height: 100.0,
+          width: 150.0,
+          height: 150.0,
         ),
       ],
     ),
