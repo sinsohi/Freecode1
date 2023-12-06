@@ -178,13 +178,40 @@ class _calendarPageState extends State<calendarPage> {
             'amount': value['amount'],
             'date': value['date'],
             'category': value['category'],
-            'detail': value['detail'],
           });
         });
       }
     }
 
     return loadedExpenses;
+  }
+
+  Future<List<Map<String, dynamic>>> _loadItemsForCategory(
+      String category, DateTime day) async {
+    List<Map<String, dynamic>> loadedItems = [];
+    String dayString = DateFormat('yyyy-MM-dd').format(day);
+
+    DataSnapshot snapshot =
+        await expenseRef.orderByChild('date').equalTo(dayString).get();
+
+    if (snapshot.value != null) {
+      Map<dynamic, dynamic>? values = snapshot.value as Map<dynamic, dynamic>?;
+
+      if (values != null) {
+        values.forEach((key, value) {
+          if (value['category'] == category &&
+              value['itemName'] != null &&
+              value['amount'] != null) {
+            loadedItems.add({
+              'itemName': value['itemName'],
+              'amount': value['amount'],
+            });
+          }
+        });
+      }
+    }
+
+    return loadedItems;
   }
 
   Future<List<Map<String, dynamic>>> _loadIncomes() async {
@@ -348,25 +375,95 @@ class _calendarPageState extends State<calendarPage> {
                     itemCount: categoryExpenses.length,
                     itemBuilder: (BuildContext context, int index) {
                       var entry = categoryExpenses.entries.elementAt(index);
-                      return Container(
-                        width: 200,
-                        height: 55,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.0),
-                          color: const Color(0xff82a282), // 초록색 배경 적용
-                        ),
-                        margin: const EdgeInsets.all(8.0), // 여백 추가
-                        child: Padding(
-                          // 텍스트와 사각형 사이에 여백 추가
-                          padding: const EdgeInsets.all(16.0),
-                          child: Text(
-                            '${entry.key}: ${entry.value}',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontFamily: 'JAL'),
-                          ),
-                        ),
+                      return FutureBuilder<List<Map<String, dynamic>>>(
+                        future: _loadItemsForCategory(entry.key, today),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<List<Map<String, dynamic>>>
+                                snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return CircularProgressIndicator(); // 데이터를 불러오는 동안의 처리
+                          } else {
+                            if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            } else {
+                              return InkWell(
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        contentPadding: EdgeInsets.zero,
+                                        insetPadding: EdgeInsets.all(
+                                            20), // 이 값을 조절하여 전체 AlertDialog 크기 조절
+                                        content: Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.5, // 이 값을 조절하여 가로 크기 조절
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.5, // 이 값을 조절하여 세로 크기 조절
+                                          child: Column(
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.only(
+                                                    bottom:
+                                                        10), // 이 값을 조절하여 텍스트와 리스트 사이의 간격을 조절
+                                                child: Text('지출 내역',
+                                                    style: TextStyle(
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.bold)),
+                                              ),
+                                              ...snapshot.data!.map((item) {
+                                                return Padding(
+                                                  padding: EdgeInsets.only(
+                                                      top: 3), // 원하는 간격으로 조절
+                                                  child: Text(
+                                                      'Item: ${item['itemName']}, Amount: ${item['amount']}'),
+                                                );
+                                              }).toList(),
+                                            ],
+                                          ),
+                                        ),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            child: Text('Close'),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                                child: Container(
+                                  width: 200,
+                                  height: 55,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    color: const Color(0xff82a282),
+                                  ),
+                                  margin: const EdgeInsets.all(8.0),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Text(
+                                      '${entry.key}: ${entry.value}',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontFamily: 'JAL',
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+                          }
+                        },
                       );
                     },
                   );
@@ -437,24 +534,25 @@ class _calendarPageState extends State<calendarPage> {
               itemCount: categoryEvents.keys.length,
               itemBuilder: (BuildContext context, int index) {
                 var category = categoryEvents.keys.elementAt(index);
-                return FutureBuilder<DataSnapshot>(
-                  future: FirebaseDatabase.instance
-                      .reference()
-                      .child('details')
-                      .child(category)
-                      .get(), // 카테고리에 해당하는 detail 데이터를 가져옵니다.
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      }
-                      // 데이터를 가져왔을 때의 처리
-                      String detail = snapshot.data!.value.toString();
-                      return InkWell(
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
+                return InkWell(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return FutureBuilder<DataSnapshot>(
+                          future: FirebaseDatabase.instance
+                              .reference()
+                              .child('details')
+                              .child(category)
+                              .get(), // 카테고리에 해당하는 detail 데이터를 가져옵니다.
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.done) {
+                              if (snapshot.hasError) {
+                                return Text('Error: ${snapshot.error}');
+                              }
+                              // 데이터를 가져왔을 때의 처리
+                              String detail = snapshot.data!.value.toString();
                               return AlertDialog(
                                 title: Text(category),
                                 content: Text(detail),
@@ -467,33 +565,13 @@ class _calendarPageState extends State<calendarPage> {
                                   ),
                                 ],
                               );
-                            },
-                          );
-                        },
-                        child: Container(
-                          width: 200,
-                          height: 55,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.0),
-                            color: const Color(0xff82a282), // 초록색 배경 적용
-                          ),
-                          margin: EdgeInsets.only(bottom: 8.0),
-                          child: Padding(
-                            // 텍스트와 사각형 사이에 여백 추가
-                            padding: const EdgeInsets.all(16.0),
-                            child: Text(
-                              '$category: $detail',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontFamily: 'JAL'),
-                            ),
-                          ),
-                        ),
-                      );
-                    } else {
-                      return CircularProgressIndicator(); // 데이터를 불러오는 동안의 처리
-                    }
+                            } else {
+                              return CircularProgressIndicator(); // 데이터를 불러오는 동안의 처리
+                            }
+                          },
+                        );
+                      },
+                    );
                   },
                 );
               },
