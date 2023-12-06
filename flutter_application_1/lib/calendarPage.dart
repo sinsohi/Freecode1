@@ -391,6 +391,7 @@ class _calendarPageState extends State<calendarPage> {
                                     context: context,
                                     builder: (BuildContext context) {
                                       return AlertDialog(
+                                        backgroundColor: Color(0xfff8f6e8),
                                         contentPadding: EdgeInsets.zero,
                                         insetPadding: EdgeInsets.all(
                                             20), // 이 값을 조절하여 전체 AlertDialog 크기 조절
@@ -407,14 +408,17 @@ class _calendarPageState extends State<calendarPage> {
                                             children: [
                                               Padding(
                                                 padding: EdgeInsets.only(
-                                                    bottom:
-                                                        10), // 이 값을 조절하여 텍스트와 리스트 사이의 간격을 조절
+                                                    top:
+                                                        20), // 이 값을 조절하여 원하는 만큼의 공간을 추가
                                                 child: Text(
-                                                    'breakdown of expenditure ',
-                                                    style: TextStyle(
-                                                        fontSize: 20,
-                                                        fontWeight:
-                                                            FontWeight.bold)),
+                                                  'breakdown of expenditure',
+                                                  style: TextStyle(
+                                                      color: const Color(
+                                                          0xff37736c),
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
                                               ),
                                               ...snapshot.data!.map((item) {
                                                 return Padding(
