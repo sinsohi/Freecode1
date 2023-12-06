@@ -424,8 +424,17 @@ class _calendarPageState extends State<calendarPage> {
                                                 return Padding(
                                                   padding: EdgeInsets.only(
                                                       top: 3), // 원하는 간격으로 조절
-                                                  child: Text(
-                                                      'Item: ${item['itemName']}, Amount: ${item['amount']}'),
+                                                  child: Align(
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    child: Text(
+                                                      'Item: ${item['itemName']}, Amount: ${item['amount']}',
+                                                      style: TextStyle(
+                                                        color: const Color(
+                                                            0xff37736c), // 글자 색상 변경
+                                                      ),
+                                                    ),
+                                                  ),
                                                 );
                                               }).toList(),
                                             ],
@@ -438,7 +447,8 @@ class _calendarPageState extends State<calendarPage> {
                                               style: TextStyle(
                                                 fontWeight:
                                                     FontWeight.bold, // 글자를 두껍게
-                                                color: Colors.red, // 글자 색깔 변경
+                                                color: const Color(
+                                                    0xff37736c), // 글자 색깔 변경
                                               ),
                                             ),
                                             onPressed: () {
