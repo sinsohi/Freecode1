@@ -357,6 +357,11 @@ class _calendarPageState extends State<calendarPage> {
             decoration: BoxDecoration(
               color: const Color(0xff37736c),
               borderRadius: BorderRadius.circular(10.0),
+              border: Border.all(
+                // 테두리 추가
+                color: Colors.black, // 테두리 색상 설정
+                width: 2, // 테두리 두께 설정
+              ),
             ),
             padding: EdgeInsets.all(5.0),
             child: FutureBuilder<List<Map<String, dynamic>>>(
