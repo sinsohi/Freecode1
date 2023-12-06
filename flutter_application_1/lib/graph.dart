@@ -19,6 +19,10 @@ import 'dart:ui';
 
 
 final String currentMonth = DateFormat('MMMM').format(DateTime.now());
+DateTime now = DateTime.now();
+DateTime lastMonth = DateTime(now.year, now.month - 1, now.day);
+
+String formattedLastMonth = DateFormat('MMMM').format(lastMonth);
 
 /*class HorizontalDetailsModel {
   final String name;
@@ -35,6 +39,7 @@ final String currentMonth = DateFormat('MMMM').format(DateTime.now());
     this.colorTwo,
   });
 }*/
+
 
 class RowItem extends StatelessWidget {
   final Color color;
@@ -254,6 +259,7 @@ Future<double> calculateTotalExpensesForCurrentMonth() async {
 
   return total;
 }
+
 
 Future<double> calculateTotalExpensesForLastMonth() async {
   // 데이터 로드
@@ -598,12 +604,29 @@ Widget build(BuildContext context) {
                   : Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  Positioned(
+  bottom: 0,
+  right: 0,
+  child: Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Text(
+        '$currentMonth                                                                          ',
+      style: TextStyle(
+        color: Colors.black,
+        fontWeight: FontWeight.bold,
+        fontSize: 18, // 원하는 크기로 조절
+        fontFamily: 'JAL', // 사용할 폰트로 변경
+      ),
+    ),
+  ),
+),
+
                   Expanded(
                     flex: 2,
                     child: Align(
                       alignment: Alignment.center,
                       child: Container(
-                        margin: EdgeInsets.only(top: 10), // 조절하고자 하는 여백 값. 숫자 커질수록 아래로
+                        margin: EdgeInsets.only(top: 5), // 조절하고자 하는 여백 값. 숫자 커질수록 아래로
                         width: MediaQuery.of(context).size.width * 0.7,
                         height: MediaQuery.of(context).size.width * 0.7, //파이차트의 높이
                         child: FutureBuilder<List<PieModel>>(
@@ -641,6 +664,7 @@ Widget build(BuildContext context) {
                     ),
                       ),
                     ),
+                    
                 Expanded(
                   flex: 1,
                   child: Stack(
@@ -747,6 +771,22 @@ Widget build(BuildContext context) {
               child: expenses.isEmpty ? _buildNoExpensesPage() : Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
+                 Positioned(
+  bottom: 0,
+  right: 0,
+  child: Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Text(
+        '$formattedLastMonth                                                                           ',
+      style: TextStyle(
+        color: Colors.black,
+        fontWeight: FontWeight.bold,
+        fontSize: 18, // 원하는 크기로 조절
+        fontFamily: 'JAL', // 사용할 폰트로 변경
+      ),
+    ),
+  ),
+),
                 Expanded(
                   flex: 2,
                   child: Align(
