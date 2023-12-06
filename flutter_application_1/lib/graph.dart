@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:unique_simple_bar_chart/data_models.dart';
-import 'package:unique_simple_bar_chart/horizontal_bar.dart';
-import 'package:unique_simple_bar_chart/horizontal_line.dart';
 import 'package:unique_simple_bar_chart/simple_bar_chart.dart';
-import 'package:pie_chart/pie_chart.dart';
 import 'dart:math' as math;
 import 'calendarPage.dart'; //바텀네비게이션바
-import 'graph.dart';
 import 'HomePage.dart';
 import 'profilePage.dart';
-import 'package:table_calendar/table_calendar.dart'; // 15~16 현재 월 표시
 import 'package:intl/intl.dart'; 
 import 'package:firebase_auth/firebase_auth.dart';//데이터베이스 가져오기
 import 'package:firebase_database/firebase_database.dart';
