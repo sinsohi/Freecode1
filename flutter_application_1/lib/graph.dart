@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-//import 'package:fl_chart/fl_chart.dart';
-//import 'package:syncfusion_flutter_charts/charts.dart';
-//import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 import 'package:unique_simple_bar_chart/data_models.dart';
 import 'package:unique_simple_bar_chart/horizontal_bar.dart';
 import 'package:unique_simple_bar_chart/horizontal_line.dart';
@@ -17,7 +14,7 @@ import 'package:table_calendar/table_calendar.dart'; // 15~16 현재 월 표시
 import 'package:intl/intl.dart'; 
 import 'package:firebase_auth/firebase_auth.dart';//데이터베이스 가져오기
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_core/firebase_core.dart'; //파이어베이스 초기화..?
+import 'package:firebase_core/firebase_core.dart'; //파이어베이스 초기화
 
 
 
@@ -31,25 +28,27 @@ class RowItem extends StatelessWidget {
   RowItem({required this.color, required this.label, required this.textStyle});
 
 
-@override
-Widget build(BuildContext context) {
-  return Row(
-    children: [
-      Container(
-        width: 10, // 작은 네모 너비 조절
-        height: 10, // 작은 네모 높이 조절
-        color: color,
-      ),
-      SizedBox(width: 6), // 네모와 텍스트 간 간격 조절
-      Text(
-        label,
-        style: textStyle, // textStyle 적용
-      ),
-    ],
-  );
-}
-}
 
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 10, // 작은 네모 너비 조절
+          height: 10, // 작은 네모 높이 조절
+          color: color,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0), // 라벨과 다음 라벨 간 간격 조절
+          child: Text(
+            label,
+            style: textStyle, // textStyle 적용
+          ),
+        ),
+      ],
+    );
+  }
+}
 
 class PieModel {
   final double count;
@@ -76,7 +75,7 @@ class graph extends StatefulWidget {
 }
 
 
-class _graphState extends State<graph> {
+class _graphState extends State<graph> with TickerProviderStateMixin  {
   late User? user;
   late String uid;
   DatabaseReference? expenseRef;
@@ -89,14 +88,40 @@ class _graphState extends State<graph> {
   late Future<List<Map<String, dynamic>>>? expensesFuture;
   late Future<List<Map<String, dynamic>>> incomesFuture;
   late List<PieModel> model;
+  late AnimationController animationController; // AnimationController 추가
   
-   @override
+  
+  @override
   void initState() {
     super.initState();
-    
-    initialize(); //여기서 initialize 함수 호출
-    
+
+      initialize(); //여기서 initialize 함수 호출
+
+    animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 1200), // 1.2 seconds // 애니메이션 기간을 1.5초로 설정
+      
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+     startAnimation(); // 여기서 애니메이션 시작
+     
+    });
   }
+
+  void startAnimation() {
+   if (mounted) {
+    animationController.forward();
+  }
+  }
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
+
+
 
   Future<void> initialize() async {
     user = FirebaseAuth.instance.currentUser;
@@ -340,7 +365,7 @@ Widget build(BuildContext context) {
   return Scaffold(
     backgroundColor: Color(0xFFF8F6E8),
     appBar: AppBar(
-      title: Text('$currentMonth', style: TextStyle(fontFamily: 'JAL'),
+      title: Text('$currentMonth Expense Stats', style: TextStyle(fontFamily: 'JAL'),
 ),
       backgroundColor: Color(0xFF37736C),
     ), //상단
@@ -353,7 +378,7 @@ Widget build(BuildContext context) {
           child: Align(
             alignment: Alignment.center,
             child: Container(
-              margin: EdgeInsets.only(top: 20), // 조절하고자 하는 여백 값. 숫자 커질수록 아래로
+              margin: EdgeInsets.only(top: 10), // 조절하고자 하는 여백 값. 숫자 커질수록 아래로
               width: MediaQuery.of(context).size.width * 0.7,
               height: MediaQuery.of(context).size.width * 0.7, //파이차트의 높이
               child: FutureBuilder<List<PieModel>>(
@@ -366,15 +391,23 @@ Widget build(BuildContext context) {
 
                     List<PieModel> model = snapshot.data ?? [];
 
+
+                    return AnimatedBuilder(
+                              animation: animationController,
+                              builder: (context, child) {
+                                 if (animationController.value < 0.1) {
+                return const SizedBox();
+              }
                     return CustomPaint(
                       size: Size(
                         MediaQuery.of(context).size.width,
                         200, //파이차트 높이
                       ),
-                      painter: _PieChart(model),
+                      painter: _PieChart(model, animationController),
                     );
-                  }
-                  else {
+                  },
+);
+                  } else {
                     // Future가 완료되지 않았을 때 반환할 위젯
                     return CircularProgressIndicator();
                   }
@@ -401,14 +434,18 @@ Widget build(BuildContext context) {
   textStyle: TextStyle(
     fontFamily: 'JAL',
     fontWeight: FontWeight.w100,
+    color: Colors.grey[750], // 진한 회색
+    fontSize: 12.0,
   ),
 ),
-           RowItem(
+RowItem(
   color: Color.fromARGB(255, 255, 204, 77).withOpacity(1),
   label: 'leisure',
   textStyle: TextStyle(
     fontFamily: 'JAL',
     fontWeight: FontWeight.w100,
+    color: Colors.grey[750], // 진한 회색
+    fontSize: 12.0,
   ),
 ),
 RowItem(
@@ -417,6 +454,8 @@ RowItem(
   textStyle: TextStyle(
     fontFamily: 'JAL',
     fontWeight: FontWeight.w100,
+    color: Colors.grey[750], // 진한 회색
+    fontSize: 12.0,
   ),
 ),
 RowItem(
@@ -424,7 +463,9 @@ RowItem(
   label: 'shopping',
   textStyle: TextStyle(
     fontFamily: 'JAL',
-     fontWeight: FontWeight.w100,
+    fontWeight: FontWeight.w100,
+    color: Colors.grey[750], // 진한 회색
+    fontSize: 12.0,
   ),
 ),
 RowItem(
@@ -432,9 +473,12 @@ RowItem(
   label: 'etc',
   textStyle: TextStyle(
     fontFamily: 'JAL',
-     fontWeight: FontWeight.w100,
+    fontWeight: FontWeight.w100,
+    color: Colors.grey[750], // 진한 회색
+    fontSize: 12.0,
   ),
 ),
+
             //지출항목에 대한 RowItem 추가
           ],
         ),
@@ -447,7 +491,7 @@ RowItem(
             Expanded(
   flex: 3,
   child: Padding(
-    padding: EdgeInsets.only(bottom: 30.0), // 원하는 여백 값
+    padding: EdgeInsets.only(bottom: 36.0), // 원하는 여백 값
     child: FutureBuilder<List<HorizontalDetailsModel>>(
       future: generateBarChartData(),
       builder: (context, snapshot) {
@@ -482,15 +526,15 @@ RowItem(
               ),
             ],
           ),
-          child: BottomNavigationBar(
+          child:  BottomNavigationBar(
             backgroundColor: Color.fromRGBO(55, 115, 108, 1),
             type: BottomNavigationBarType.fixed,
             selectedItemColor: Color.fromRGBO(248, 246, 232, 1),
             unselectedItemColor: Color.fromRGBO(248, 246, 232, 1),
-            selectedLabelStyle: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-            unselectedLabelStyle: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-            showSelectedLabels: true,
-            showUnselectedLabels: false,
+            selectedLabelStyle:
+                TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+            unselectedLabelStyle:
+                TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
@@ -512,28 +556,28 @@ RowItem(
             onTap: (int index) {
               switch (index) {
                 case 0:
-                Navigator.push(
+                  Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => HomePage()),
                   );
-                // 홈 페이지로 이동
                   break;
+
                 case 1:
-                // 캘린더 페이지로 이동
+                  // 캘린더 페이지로 이동
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => calendarPage()),
                   );
                   break;
                 case 2:
-                // 통계자료 페이지로 이동
+                  // 통계자료 페이지로 이동
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => graph()),
                   );
                   break;
                 case 3:
-                // 마이페이지로 이동
+                  // 마이페이지로 이동
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => profilePage()),
@@ -552,18 +596,20 @@ RowItem(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          'No expense records for this month!',
-          style: TextStyle(
-            fontSize: 25.0,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'JAL',
-          ),
-        ),
+  'No expense records,\n\nor they are currently loading!',
+  style: TextStyle(
+    fontSize: 25.0,
+    fontWeight: FontWeight.bold,
+    fontFamily: 'JAL',
+  ),
+  textAlign: TextAlign.center,
+),
+
         SizedBox(height: 16.0),
         Image.asset(
           'assets/Lovepik.png',
-          width: 100.0,
-          height: 100.0,
+          width: 170.0,
+          height: 170.0,
         ),
       ],
     ),
@@ -581,44 +627,50 @@ RowItem(
 
 class _PieChart extends CustomPainter {
   final List<PieModel> data;
+  final Animation<double> animation;
 
-  _PieChart(this.data);
+  _PieChart(this.data, this.animation);
   
   @override
   void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()..color = const Color.fromRGBO(61, 61, 61, 1);
 
-
-    Paint circlePaint = Paint()..color = Colors.white;
+    Paint circlePaint = Paint()..color = Color(0xFFF8F6E8);
 
     Offset offset = Offset(size.width / 2, size.width / 2);
     double radius = (size.width / 2) * 0.65;
 
     canvas.drawCircle(offset, radius, circlePaint);
+    paint.strokeWidth = 50;
+    paint.style = PaintingStyle.stroke;
+    paint.strokeCap = StrokeCap.round;
 
-    double _startPoint = -math.pi / 2; // 시작 각도를 -π / 2로 초기화
+    double totalPercentage = 0.0; // 각 파이의 시작 각도를 계산하기 위한 변수
 
     for (int i = 0; i < data.length; i++) {
-      double _startAngle = 2 * math.pi * (data[i].count / 100);
-      double _nextAngle = 2 * math.pi * (data[(i + 1) % data.length].count / 100);
+      double startAngle = totalPercentage * 2 * math.pi; // 시작 각도 계산
+      double endAngle = (totalPercentage + data[i].count / 100) * 2 * math.pi; // 종료 각도 계산
+      
+      double animatedStartAngle = startAngle * animation.value; // 애니메이션 적용
+       
       circlePaint.color = data[i].color;
 
       canvas.drawArc(
         Rect.fromCircle(center: Offset(size.width / 2, size.width / 2), radius: radius),
-        _startPoint,
-        _startAngle,
+        animatedStartAngle - math.pi / 2, // 시작 각도를 -π / 2로 초기화
+        (endAngle - startAngle) * animation.value, // 애니메이션 적용
         true,
-        circlePaint);
+        circlePaint,
+      );
 
-      _startPoint += _startAngle;
-
-
-    
+      totalPercentage += data[i].count / 100;
     }
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
+
 
 
 
