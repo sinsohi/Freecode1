@@ -474,6 +474,11 @@ class _calendarPageState extends State<calendarPage> {
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10.0),
                                     color: const Color(0xff82a282),
+                                    border: Border.all(
+                                      // 테두리 추가
+                                      color: Colors.black, // 테두리 색상 설정
+                                      width: 2, // 테두리 두께 설정
+                                    ),
                                   ),
                                   margin: const EdgeInsets.all(8.0),
                                   child: Padding(
