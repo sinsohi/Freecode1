@@ -5,6 +5,7 @@ import 'package:unique_simple_bar_chart/horizontal_bar.dart';
 import 'package:unique_simple_bar_chart/horizontal_line.dart';
 import 'package:unique_simple_bar_chart/simple_bar_chart.dart';
 import 'package:pie_chart/pie_chart.dart';
+import 'dart:math';
 import 'dart:math' as math;
 import 'calendarPage.dart'; //바텀네비게이션바
 import 'graph.dart';
@@ -15,7 +16,7 @@ import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';//데이터베이스 가져오기
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart'; //파이어베이스 초기화
-
+import 'dart:ui';
 
 
 final String currentMonth = DateFormat('MMMM').format(DateTime.now());
@@ -39,7 +40,7 @@ class RowItem extends StatelessWidget {
           color: color,
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0), // 라벨과 다음 라벨 간 간격 조절
+          padding: const EdgeInsets.symmetric(horizontal: 7.0), // 라벨과 다음 라벨 간 간격 조절
           child: Text(
             label,
             style: textStyle, // textStyle 적용
@@ -236,8 +237,11 @@ Future<Map<String, double>> calculateDailyExpenses() async {
 }
 
 
+
+
 Future<List<HorizontalDetailsModel>> generateBarChartData() async {
   Map<String, double> dailyExpenses = await calculateDailyExpenses();
+  double maxExpense = getMaxExpense(dailyExpenses);
 
   List<HorizontalDetailsModel> barChartData = [];
   DateTime now = DateTime.now();
@@ -250,23 +254,61 @@ Future<List<HorizontalDetailsModel>> generateBarChartData() async {
         ? dailyExpenses[dateString]!
         : 0.0;
 
-    //print('막대그래프 Day: $day, Expense Amount: $expenseAmount');
-
     if (expenseAmount > 0) {
+      Color barColor = getColorForExpense(expenseAmount, maxExpense);
+
       barChartData.add(
         HorizontalDetailsModel(
           name: '$day일',
-          color: Color(0xFF37736C),
+          color: barColor,
           size: expenseAmount,
           sizeTwo: expenseAmount,
-          colorTwo: Color(0xFF37736C),
+          colorTwo: barColor,
         ),
       );
     }
   }
 
   return barChartData;
-}//막대그래프
+}
+
+
+double getMaxExpense(Map<String, double> dailyExpenses) {
+  // 일별 지출 데이터 중 최대값 찾기
+  double maxExpense = 0.0;
+  dailyExpenses.forEach((_, amount) {
+    if (amount > maxExpense) {
+      maxExpense = amount;
+    }
+  });
+  return maxExpense;
+}
+
+Color getColorForExpense(double expenseAmount, double maxExpense) {
+  // 연한 초록색
+  final Color startColor = Color(0xFF37736C);
+  // 최종 색상
+  final Color endColor = Colors.green; // 여기에 원하는 최종 색상을 설정
+
+  // 현재 지출에 대한 비율 계산
+  double ratio = expenseAmount / maxExpense;
+
+  // 시작 색상과 끝 색상을 각각 RGB로 변환
+  List<int> startRGB = [startColor.red, startColor.green, startColor.blue];
+  List<int> endRGB = [endColor.red, endColor.green, endColor.blue];
+
+  // 현재 비율에 따라 RGB 보간 계산
+  List<int> resultRGB = [];
+  for (int i = 0; i < 3; i++) {
+    resultRGB.add((startRGB[i] + (endRGB[i] - startRGB[i]) * ratio).toInt());
+  }
+
+  // RGB 값을 사용하여 새로운 Color 생성
+  Color resultColor = Color.fromARGB(255, resultRGB[0], resultRGB[1], resultRGB[2]);
+
+  return resultColor;
+}
+
 
 Future<List<PieModel>> generatePieChartData() async {
   double totalExpenses = await calculateTotalExpensesForCurrentMonth();
@@ -422,7 +464,7 @@ Widget build(BuildContext context) {
           alignment: Alignment.centerRight,
           children: [
             Positioned(
-              left: 400.0, //여백 조절
+              left: 400.0, //여백 조절(숫자 늘리면 오른쪽으로 감)
               top: 8.0, // 여백 및 이동 조절(숫자 커질수록 텍스트 위로 올라감)
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
