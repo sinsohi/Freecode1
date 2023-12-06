@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-//import 'package:fl_chart/fl_chart.dart';
-//import 'package:syncfusion_flutter_charts/charts.dart';
-//import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 import 'package:unique_simple_bar_chart/data_models.dart';
 import 'package:unique_simple_bar_chart/horizontal_bar.dart';
 import 'package:unique_simple_bar_chart/horizontal_line.dart';
@@ -17,7 +14,7 @@ import 'package:table_calendar/table_calendar.dart'; // 15~16 현재 월 표시
 import 'package:intl/intl.dart'; 
 import 'package:firebase_auth/firebase_auth.dart';//데이터베이스 가져오기
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_core/firebase_core.dart'; //파이어베이스 초기화..?
+import 'package:firebase_core/firebase_core.dart'; //파이어베이스 초기화
 
 
 
@@ -586,13 +583,15 @@ RowItem(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          'No expense records for this month!',
-          style: TextStyle(
-            fontSize: 25.0,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'JAL',
-          ),
-        ),
+  'No expense records,\nor they are currently loading!',
+  style: TextStyle(
+    fontSize: 25.0,
+    fontWeight: FontWeight.bold,
+    fontFamily: 'JAL',
+  ),
+  textAlign: TextAlign.center,
+),
+
         SizedBox(height: 16.0),
         Image.asset(
           'assets/Lovepik.png',
