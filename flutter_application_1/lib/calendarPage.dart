@@ -423,15 +423,23 @@ class _calendarPageState extends State<calendarPage> {
                                               ...snapshot.data!.map((item) {
                                                 return Padding(
                                                   padding: EdgeInsets.only(
-                                                      top: 3), // 원하는 간격으로 조절
+                                                      top: 6), // 원하는 간격으로 조절
                                                   child: Align(
                                                     alignment:
                                                         Alignment.centerLeft,
-                                                    child: Text(
-                                                      'Item: ${item['itemName']}, Amount: ${item['amount']}',
-                                                      style: TextStyle(
-                                                        color: const Color(
-                                                            0xff37736c), // 글자 색상 변경
+                                                    child: Padding(
+                                                      padding: EdgeInsets.only(
+                                                          left:
+                                                              24.0), // 좌측 여백 추가
+                                                      child: Text(
+                                                        'Item: ${item['itemName']} , Amount: ${item['amount']}',
+                                                        style: TextStyle(
+                                                          color: const Color(
+                                                              0xff37736c),
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          // 글자 색상 변경
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
