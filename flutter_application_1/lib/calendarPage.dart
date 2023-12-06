@@ -326,10 +326,9 @@ class _calendarPageState extends State<calendarPage> {
                 shape: BoxShape.circle,
               ),
             ),
-            eventLoader: _getEventsForDay,
             calendarBuilders: CalendarBuilders(
-              markerBuilder: (context, date, dynamic event) {
-                if (event.isNotEmpty) {
+              markerBuilder: (context, date, dynamic events) {
+                if (events.isNotEmpty) {
                   return Container(
                     width: 35,
                     decoration: BoxDecoration(
@@ -357,6 +356,11 @@ class _calendarPageState extends State<calendarPage> {
             decoration: BoxDecoration(
               color: const Color(0xff37736c),
               borderRadius: BorderRadius.circular(10.0),
+              border: Border.all(
+                // 테두리 추가
+                color: Colors.black, // 테두리 색상 설정
+                width: 2, // 테두리 두께 설정
+              ),
             ),
             padding: EdgeInsets.all(5.0),
             child: FutureBuilder<List<Map<String, dynamic>>>(
@@ -413,11 +417,13 @@ class _calendarPageState extends State<calendarPage> {
                                                 child: Text(
                                                   'breakdown of expenditure',
                                                   style: TextStyle(
-                                                      color: const Color(
-                                                          0xff37736c),
-                                                      fontSize: 20,
-                                                      fontWeight:
-                                                          FontWeight.bold),
+                                                    fontFamily: 'JAL', // 폰트 변경
+                                                    fontSize: 17, // 글자 크기 변경
+                                                    fontWeight: FontWeight
+                                                        .w100, // 글자 굵기 변경
+                                                    color: const Color(
+                                                        0xff37736c), // 글자 색상 변경
+                                                  ),
                                                 ),
                                               ),
                                               ...snapshot.data!.map((item) {
@@ -430,16 +436,30 @@ class _calendarPageState extends State<calendarPage> {
                                                     child: Padding(
                                                       padding: EdgeInsets.only(
                                                           left:
-                                                              24.0), // 좌측 여백 추가
-                                                      child: Text(
-                                                        'Item: ${item['itemName']} , Amount: ${item['amount']} won',
-                                                        style: TextStyle(
-                                                          color: Colors.black,
-
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          // 글자 색상 변경
-                                                        ),
+                                                              14.0), // 좌측 여백 추가
+                                                      child: Row(
+                                                        children: <Widget>[
+                                                          Icon(
+                                                              Icons
+                                                                  .fiber_manual_record,
+                                                              size: 10),
+                                                          SizedBox(
+                                                              width:
+                                                                  2), // 아이콘과 텍스트 사이의 간격 조정
+                                                          Text(
+                                                            'Item: ${item['itemName']} , amount: ${item['amount']} won',
+                                                            style: TextStyle(
+                                                              fontFamily:
+                                                                  'JAL', // 폰트 변경
+                                                              fontSize:
+                                                                  14, // 글자 크기 변경
+                                                              fontWeight: FontWeight
+                                                                  .w100, // 글자 굵기 변경
+                                                              color: Colors
+                                                                  .black, // 글자 색상 변경
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
                                                     ),
                                                   ),
