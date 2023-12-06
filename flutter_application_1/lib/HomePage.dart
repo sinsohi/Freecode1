@@ -286,7 +286,7 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: Color.fromRGBO(55, 115, 108, 2),
           title: Container(
             child: Row(
-              children:  [
+              children: const [
                 Icon(
                   Icons.account_circle,
                   color: Color.fromRGBO(248, 246, 232, 1),
@@ -302,11 +302,7 @@ class _HomePageState extends State<HomePage> {
                       letterSpacing: 1.5,
                       fontFamily: 'JAL'),
                 ),
-                Container(child: Image.asset(
-                                                'assets/hmmpiggy.png',
-                                                height: 50,
-                                                fit: BoxFit.fill,
-                                              )),
+                
               ],
             ),
           ),
