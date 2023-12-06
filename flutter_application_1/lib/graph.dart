@@ -24,22 +24,6 @@ DateTime lastMonth = DateTime(now.year, now.month - 1, now.day);
 
 String formattedLastMonth = DateFormat('MMMM').format(lastMonth);
 
-/*class HorizontalDetailsModel {
-  final String name;
-  final Color color;
-  final double size;
-  final double? sizeTwo;
-  final Color? colorTwo;
-
-  HorizontalDetailsModel({
-    required this.name,
-    required this.color,
-    required this.size,
-    this.sizeTwo,
-    this.colorTwo,
-  });
-}*/
-
 
 class RowItem extends StatelessWidget {
   final Color color;
